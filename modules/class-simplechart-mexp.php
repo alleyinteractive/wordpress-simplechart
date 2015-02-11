@@ -122,7 +122,7 @@ class Simplechart_MEXP_Service extends MEXP_Service {
 		$response = new MEXP_Response();
 
 		$query_args = array(
-			'post_type' => 'simplechart'
+			'post_type' => 'simplechart',
 		);
 
 		// pagination
@@ -187,7 +187,7 @@ class Simplechart_MEXP_Service extends MEXP_Service {
 			'all' => array(
 				'defaultTab' => true,
 				'text'       => _x( 'All', 'Tab title', 'mexp' ),
-				'fetchOnRender' => true
+				'fetchOnRender' => true,
 			),
 		);
 
@@ -200,13 +200,13 @@ class Simplechart_MEXP_Service extends MEXP_Service {
 	 * @param array $labels Associative array of default labels.
 	 * @return array Associative array of labels.
 	 */
-	 public function labels( array $labels ) {
-	 	$labels['simplechart_mexp_service'] = array(
+	public function labels( array $labels ) {
+		$labels['simplechart_mexp_service'] = array(
 			'insert'    => __( 'Insert Chart', 'simplechart' ),
 			'noresults' => __( 'No charts matched your search query.', 'simplechart' ),
 			'title'     => __( 'Insert Chart', 'simplechart' ),
 		);
 
-	 	return $labels;
+		return $labels;
 	}
 }

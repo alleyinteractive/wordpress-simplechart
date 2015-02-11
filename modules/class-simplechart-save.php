@@ -17,7 +17,7 @@ class Simplechart_Save {
 	function save_post_action( $post_id ){
 
 		//ignore all other post types
-		if ( get_post_type( $post_id ) !== 'simplechart' ){
+		if ( 'simplechart' !== get_post_type( $post_id ) ){
 			return;
 		}
 
@@ -45,7 +45,7 @@ class Simplechart_Save {
 	function admin_notices(){
 		// skip if not editing single post in Chart post type
 		$screen = get_current_screen();
-		if ( $screen->post_type !== 'simplechart' || $screen->base !== 'post' ){
+		if ( 'simplechart' !== $screen->post_type || 'post' !== $screen->base ){
 			return;
 		}
 
@@ -73,14 +73,14 @@ class Simplechart_Save {
 	function do_save_post( $post ){
 
 		// handle base64 image string if provided
-		if ( !empty( $_POST['simplechart-png-string'] ) ){
+		if ( ! empty( $_POST['simplechart-png-string'] ) ){
 			$this->_save_chart_image( $post, $_POST['simplechart-png-string'], $this->_default_img_type );
 		}
 
 		// sanitize and validate JSON formatting of chart data
 		$json_data = $this->_validate_json( stripslashes( $_POST['simplechart-data'] ) );
 		if ( $json_data ){
-			update_post_meta( $post->ID, 'simplechart-data',  $json_data);
+			update_post_meta( $post->ID, 'simplechart-data',  $json_data );
 		}
 
 		// validate template HTML fragment
@@ -134,18 +134,17 @@ class Simplechart_Save {
 			$this->_errors = array_merge( $this->_errors, $temp_file->get_error_messages() ); // translation handled inside wp_upload_bits()
 			return false;
 		}
-		elseif ( $temp_file['error'] !== false ){
+		elseif ( false !== $temp_file['error'] ){
 			$this->_errors[] = $temp_file['error']; // translation handled inside wp_upload_bits()
 			return false;
 		}
 		$this->_debug_messages[] = sprintf( __( 'wp_upload_bits() stored in %s', 'simplechart' ), $temp_file['file'] );
 
-
 		// import to media library
 		$desc = 'Chart: ' . sanitize_text_field( get_the_title( $post->ID ) );
 		$attachment_id = media_handle_sideload( array(
 			'name' => $perm_file_name,
-			'tmp_name' => $temp_file['file']
+			'tmp_name' => $temp_file['file'],
 		), $post->ID, $desc);
 		$new_file_path = get_post_meta( $attachment_id, '_wp_attached_file', true );
 		$this->_debug_messages[] = sprintf( __( 'media_handle_sideload() to %s', 'simplechart' ), $new_file_path );
@@ -172,12 +171,12 @@ class Simplechart_Save {
 		$data_prefix = 'data:image/' . $img_type . ';base64,';
 
 		// validate input format for data URI
-		if ( strpos( $data_uri, $data_prefix ) !== 0 ){
+		if ( 0 !== strpos( $data_uri, $data_prefix ) ){
 			$this->_errors[] = __( 'Incorrect data URI formatting', 'simplechart' );
 		}
 
 		// remove prefix to get base64 data
-		$img_data = str_replace( $data_prefix, '', $data_uri);
+		$img_data = str_replace( $data_prefix, '', $data_uri );
 
 		return $img_data;
 	}
@@ -187,7 +186,7 @@ class Simplechart_Save {
 	 * use this instead of wp_kses_* because there are a large number of potential attributes for these tags
 	 */
 	function validate_template_fragment( $fragment ){
-		libxml_use_internal_errors(true);
+		libxml_use_internal_errors( true );
 		$el = simplexml_load_string( $fragment );
 
 		if ( $el && in_array( $el->getName(), $this->_allowed_template_tags ) && 0 === count( $el->children() ) ){
@@ -202,7 +201,7 @@ class Simplechart_Save {
 	}
 
 	private function _validate_json( $data ){
-		if ( "undefined" === $data ){
+		if ( 'undefined' === $data ){
 			$this->_errors[] = "JS app set value of input to 'undefined'";
 			return false;
 		}

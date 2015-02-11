@@ -13,7 +13,7 @@ class Simplechart_Template {
 
 	// do the shortcode
 	public function render_shortcode( $attrs ){
-		if ( empty( $attrs['id'] ) || !is_numeric( $attrs['id'] ) ){
+		if ( empty( $attrs['id'] ) || ! is_numeric( $attrs['id'] ) ){
 			return '';
 		}
 
@@ -31,7 +31,7 @@ class Simplechart_Template {
 		global $simplechart;
 
 		$json_data = get_post_meta( $id, 'simplechart-data', true );
-		$template_html = get_post_meta( $id, 'simplechart-template', true);
+		$template_html = get_post_meta( $id, 'simplechart-template', true );
 		$image_fallback = wp_get_attachment_image_src( get_post_thumbnail_id( $id ), 'large' );
 		$template_format = file_get_contents( $simplechart->get_plugin_dir() . 'templates/template-partial.html' );
 
@@ -39,7 +39,7 @@ class Simplechart_Template {
 			json_encode( json_decode( $json_data ) ),
 			$simplechart->save->validate_template_fragment( $template_html ),
 			esc_url( $simplechart->get_config( 'app_url_root' ) . '/bower_components/chartbuilder-widget/' ),
-			( !$image_fallback ? '' : esc_url( $image_fallback[0] ) )
+			( ! $image_fallback ? '' : esc_url( $image_fallback[0] ) )
 		);
 
 		return $template_html;

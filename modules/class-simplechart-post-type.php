@@ -29,7 +29,7 @@ class Simplechart_Post_Type {
 				'new_item' => esc_html__( 'New Chart', 'simplechart' ),
 				'view_item' => esc_html__( 'View Chart', 'simplechart' ),
 				'search_items' => esc_html__( 'Search Charts', 'simplechart' ),
-				'not_found' =>  esc_html__( 'No charts found', 'simplechart' ),
+				'not_found' => esc_html__( 'No charts found', 'simplechart' ),
 				'not_found_in_trash' => esc_html__( 'No charts found in Trash', 'simplechart' ),
 			),
 
@@ -62,7 +62,7 @@ class Simplechart_Post_Type {
 		$json_data = $args['args'][1];
 		$meta_box_html = file_get_contents( $plugin_dir_path . 'templates/meta-box.html' );
 		$nonce = wp_create_nonce( 'simplechart_save' );
-		$template_html = get_post_meta( $post->ID, 'simplechart-template', true);
+		$template_html = get_post_meta( $post->ID, 'simplechart-template', true );
 		$app_url = $simplechart->get_config( 'app_url_root' ) . $simplechart->get_config( 'app_url_path' );
 
 		$html = sprintf( $meta_box_html,
