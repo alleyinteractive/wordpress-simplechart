@@ -7,8 +7,6 @@ function WPSimplechartApp(){
 		},
 		modalInitialized : false,
 		chartData : null,
-		inputEl : null,
-		inputTemplateEl: null,
 		childWindow : null,
 
 		init : function(){
@@ -16,6 +14,8 @@ function WPSimplechartApp(){
 			this.inputEl = document.getElementById( WPSimplechartBootstrap.postmetaKey );
 			this.inputTemplateEl = document.getElementById( 'simplechart-template' );
 			this.imgInputEl = document.getElementById( 'simplechart-png-string' );
+			this.inputChartUrlEl = document.getElementById( 'simplechart-chart-url' );
+
 			$( '#simplechart-clear' ).click( this.clearInputEl );
 			$( '#simplechart-launch' ).click( this.openModal );
 			// just to make dev go a little faster...
@@ -32,6 +32,7 @@ function WPSimplechartApp(){
 			e.preventDefault();
 			app.inputEl.setAttribute('value', '');
 			app.inputTemplateEl.setAttribute('value', '');
+			this.inputChartUrlEl.setAttribute('value', '');
 		},
 
 		openModal : function(){
@@ -67,13 +68,23 @@ function WPSimplechartApp(){
 				return;
 			}
 
-			// store data from iframe
+			// parse data for iframe
 			app.chartData = JSON.parse( e.data.data.chartData );
+
+			// store template string
 			app.inputTemplateEl.value = app.chartData.template;
+
+			// store rest of JSON for chart
 			delete app.chartData.template;
 			app.inputEl.value = JSON.stringify( app.chartData );
 
+			// store base64 image string
 			app.imgInputEl.value = e.data.data.chartImg;
+
+			// store published chart URL
+			if ( ! _.isUndefined( app.chartData.chartUrl ) ){
+				app.inputChartUrlEl.value = app.chartData.chartUrl;
+			}
 
 			console.log( 'parent window received data from app iframe' );
 			console.log( app.inputTemplateEl.value, app.chartData );
