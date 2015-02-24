@@ -87,7 +87,7 @@ function WPSimplechartApp(){
 			var options = window.simplechartSiteOptions || false;
 
 			var msgObj = {
-				src : 'chartbuilder',
+				src : 'simplechart',
 				channel : 'downstream',
 				msg : 'options',
 				data : options
@@ -102,7 +102,7 @@ function WPSimplechartApp(){
 			}
 
 			var msgObj = {
-				src : 'chartbuilder',
+				src : 'simplechart',
 				channel : 'downstream',
 				msg : 'savedData',
 				data : mergedFields
@@ -112,7 +112,7 @@ function WPSimplechartApp(){
 
 		isFrameReadyMessage : function(msgObj){
 			return	!_.isUndefined( msgObj.src ) &&
-					msgObj.src === 'chartbuilder' &&
+					msgObj.src === 'simplechart' &&
 					!_.isUndefined( msgObj.channel ) &&
 					msgObj.channel === 'upstream' &&
 					!_.isUndefined( msgObj.msg ) &&

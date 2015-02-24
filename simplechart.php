@@ -18,8 +18,8 @@ class Simplechart {
 	// config vars that will eventually come from settings page
 	private $_config = array(
 		'clear_mexp_default_svcs' => true, // override default Media Explorer services
-		'app_url_root' => 'http://dmachat.github.io/angularjs-d3-chartbuilder',
-		'app_url_path' => '/#/chartbuilder',
+		'app_url_root' => 'http://simplechart.io',
+		'app_url_path' => '/#/simplechart',
 	);
 
 	// startup
