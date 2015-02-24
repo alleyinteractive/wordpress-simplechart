@@ -38,7 +38,7 @@ class Simplechart_Template {
 		// if we have a chart URL, use that in an iframe
 		$chart_url = get_post_meta( $id, 'simplechart-chart-url', true );
 		if ( ! empty( $chart_url ) ){
-			return '<iframe id="simplechart-"' . esc_attr( $id ) . 'class="simplechart-frame" src="' . esc_url( $chart_url ) . '"></iframe>';
+			return '<iframe id="simplechart-' . esc_attr( $id ) . '" class="simplechart-frame" src="' . esc_url( $chart_url ) . '"></iframe>';
 		}
 
 		// otherwise, support early versions of the plugin
