@@ -38,7 +38,7 @@ class Simplechart_Template {
 		$template_html = sprintf( $template_format,
 			json_encode( json_decode( $json_data ) ),
 			$simplechart->save->validate_template_fragment( $template_html ),
-			esc_url( $simplechart->get_config( 'app_url_root' ) . '/bower_components/chartbuilder-widget/' ),
+			esc_url( $simplechart->get_config( 'app_url_root' ) . $simplechart->get_config( 'loader_js_path' ) ),
 			( ! $image_fallback ? '' : esc_url( $image_fallback[0] ) )
 		);
 
