@@ -63,6 +63,7 @@ class Simplechart_Post_Type {
 		$meta_box_html = file_get_contents( $plugin_dir_path . 'templates/meta-box.html' );
 		$nonce = wp_create_nonce( 'simplechart_save' );
 		$template_html = get_post_meta( $post->ID, 'simplechart-template', true );
+		$chart_url = get_post_meta( $post->ID, 'simplechart-chart-url', true );
 		$app_url = $simplechart->get_config( 'app_url_root' ) . $simplechart->get_config( 'app_url_path' );
 
 		$html = sprintf( $meta_box_html,
@@ -75,7 +76,8 @@ class Simplechart_Post_Type {
 			__( 'Close Modal', 'simplechart' ),
 			esc_attr( $nonce ),
 			json_encode( json_decode( $json_data ) ),
-			esc_attr( $template_html )
+			esc_attr( $template_html ),
+			esc_url( $chart_url )
 		);
 
 		echo $html;

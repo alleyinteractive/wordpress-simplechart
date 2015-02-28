@@ -32,13 +32,13 @@ In your theme's `functions.php`:
 `require_once( __DIR__ . '/plugins/wordpress-simplechart/simplechart.php' );`
 
 The Simplechart JS app will be loaded from the default URL:
-`http://dmachat.github.io/angularjs-d3-chartbuilder/#/chartbuilder`
+`http://simplechart.io/#/simplechart`
 
 #### Case #2: Any other domain
 
 For non-VIP sites, the JS app and plugin must be on the same origin. You can load the WordPress plugin either from your `wp-content/plugins` directory or by requiring in your theme as above.
 
-Then clone https://github.com/dmachat/angularjs-d3-chartbuilder into a directory in your theme like `mytheme/plugins/wordpress-simplechart/app`
+Then clone https://github.com/alleyinteractive/simplechart into a directory in your theme like `mytheme/plugins/wordpress-simplechart/app`
 
 You might need to switch to the `gh-pages` branch
 
@@ -49,9 +49,9 @@ In your WordPress theme `functions.php`:
 
 If you need to troubleshoot the cross-domain postMessage interface.
 
-Create a local vhost for simplechart.dev
+Create a local vhost for `http://simplechart.dev` of just run on `http://localhost` (any port is ok)
 
 Place the app anywhere on that domain
 
 In your theme's `functions.php`:
-`define( 'SIMPLECHART_APP_URL_ROOT', 'http://simplechart.dev/' );`
+`define( 'SIMPLECHART_APP_URL_ROOT', 'http://simplechart.dev/' );` or `http://localhost:[port number]` if that's what you're doing.

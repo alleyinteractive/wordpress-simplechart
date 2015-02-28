@@ -9,6 +9,18 @@ class Simplechart_Template {
 	function __construct(){
 		add_shortcode( 'simplechart', array( $this, 'render_shortcode' ) );
 		add_action( 'wp', array( $this, 'add_filter_post_content') );
+		add_action( 'wp_enqueue_scripts', array( $this, 'frontend_enqueues' ) );
+	}
+
+	public function frontend_enqueues(){
+		if ( is_admin() ){
+			return;
+		}
+		global $simplechart;
+		$root = $simplechart->get_config( 'app_url_root' );
+		wp_register_style( 'nvd3-css',	$root . '/bower_components/nvd3/nv.d3.min.css' );
+		wp_register_style( 'simplechart', $simplechart->get_plugin_url() . 'css/style.css', array( 'nvd3-css' ), $simplechart->get_config( 'version' ) );
+		wp_enqueue_style( 'simplechart' );
 	}
 
 	// do the shortcode
@@ -30,6 +42,18 @@ class Simplechart_Template {
 	public function render( $id ){
 		global $simplechart;
 
+		// only allow non-published charts if we're looking at a post preview
+		if ( 'publish' !== get_post_status( $id ) && ! is_preview() ){
+			return '';
+		}
+
+		// if we have a chart URL, use that in an iframe
+		$chart_url = get_post_meta( $id, 'simplechart-chart-url', true );
+		if ( ! empty( $chart_url ) ){
+			return '<iframe id="simplechart-' . esc_attr( $id ) . '" class="simplechart-frame" src="' . esc_url( $chart_url ) . '"></iframe>';
+		}
+
+		// otherwise, support early versions of the plugin
 		$json_data = get_post_meta( $id, 'simplechart-data', true );
 		$template_html = get_post_meta( $id, 'simplechart-template', true );
 		$image_fallback = wp_get_attachment_image_src( get_post_thumbnail_id( $id ), 'large' );
@@ -38,7 +62,7 @@ class Simplechart_Template {
 		$template_html = sprintf( $template_format,
 			json_encode( json_decode( $json_data ) ),
 			$simplechart->save->validate_template_fragment( $template_html ),
-			esc_url( $simplechart->get_config( 'app_url_root' ) . '/bower_components/chartbuilder-widget/' ),
+			esc_url( $simplechart->get_config( 'app_url_root' ) . $simplechart->get_config( 'loader_js_path' ) ),
 			( ! $image_fallback ? '' : esc_url( $image_fallback[0] ) )
 		);
 

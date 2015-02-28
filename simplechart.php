@@ -3,8 +3,8 @@
 Plugin Name: Simplechart
 Plugin URI: https://github.com/alleyinteractive/wordpress-simplechart
 Description: Create and render interactive charts in WordPress using Simplechart
-Author: Josh Kadis, Drew Machat, Alley Interactive
-Version: 0.1
+Author: Drew Machat, Josh Kadis, Alley Interactive
+Version: 0.0.1
 Author URI: http://www.alleyinteractive.com/
 */
 
@@ -18,8 +18,10 @@ class Simplechart {
 	// config vars that will eventually come from settings page
 	private $_config = array(
 		'clear_mexp_default_svcs' => true, // override default Media Explorer services
-		'app_url_root' => 'http://dmachat.github.io/angularjs-d3-chartbuilder',
-		'app_url_path' => '/#/chartbuilder',
+		'app_url_root' => 'http://simplechart.io',
+		'app_url_path' => '/#/simplechart',
+		'loader_js_path' => '/bower_components/chartbuilder-widget/loader/dist/chartbuilder.load.v1.default.js',
+		'version' => '0.0.1',
 	);
 
 	// startup
@@ -121,8 +123,6 @@ class Simplechart {
 
 		if ( is_admin() ){
 			$this->_admin_setup();
-		} else {
-			$this->_frontend_setup();
 		}
 	}
 
@@ -172,21 +172,6 @@ class Simplechart {
 		return $this->_plugin_dir_path;
 	}
 
-	/*
-	 * frontend functions
-	 */
-	private function _frontend_setup(){
-		add_action( 'wp_enqueue_scripts', array( $this, 'frontend_enqueues' ) );
-	}
-
-	/*
-	 * should find a way to load more selectively since only needed when chart is present
-	 */
-	public function frontend_enqueues(){
-		$root = $this->get_config( 'app_url_root' );
-		wp_register_style( 'nvd3-css',	$root . '/bower_components/nvd3/nv.d3.min.css' );
-		wp_enqueue_style( 'nvd3-css' );
-	}
 
 }
 global $simplechart;

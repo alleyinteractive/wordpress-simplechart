@@ -1,3 +1,4 @@
 *.DS_Store*
 *.css.map
 app/
+css/.sass-cache/
