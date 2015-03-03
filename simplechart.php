@@ -20,7 +20,7 @@ class Simplechart {
 		'clear_mexp_default_svcs' => true, // override default Media Explorer services
 		'app_url_root' => 'http://simplechart.io',
 		'app_url_path' => '/#/simplechart',
-		'loader_js_path' => '/bower_components/chartbuilder-widget/loader/dist/chartbuilder.load.v1.default.js',
+		'loader_js_path' => '/widgets/chartbuilder-widget/loader/dist/chartbuilder.load.v1.default.js',
 		'version' => '0.0.1',
 	);
 
