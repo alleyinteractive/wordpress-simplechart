@@ -47,13 +47,6 @@ class Simplechart_Template {
 			return '';
 		}
 
-		// if we have a chart URL, use that in an iframe
-		$chart_url = get_post_meta( $id, 'simplechart-chart-url', true );
-		if ( ! empty( $chart_url ) ){
-			return '<iframe id="simplechart-' . esc_attr( $id ) . '" class="simplechart-frame" src="' . esc_url( $chart_url ) . '"></iframe>';
-		}
-
-		// otherwise, support early versions of the plugin
 		$json_data = get_post_meta( $id, 'simplechart-data', true );
 		$template_html = get_post_meta( $id, 'simplechart-template', true );
 		$image_fallback = wp_get_attachment_image_src( get_post_thumbnail_id( $id ), 'large' );
