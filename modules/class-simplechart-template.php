@@ -52,10 +52,13 @@ class Simplechart_Template {
 		$image_fallback = wp_get_attachment_image_src( get_post_thumbnail_id( $id ), 'large' );
 		$template_format = file_get_contents( $simplechart->get_plugin_dir() . 'templates/template-partial.html' );
 
+		$loader_url = $simplechart->get_config( 'app_url_root' ) . $simplechart->get_config( 'loader_js_path' );
+		$loader_url = apply_filters( 'simplechart_loader_url', $loader_url );
+
 		$template_html = sprintf( $template_format,
 			json_encode( json_decode( $json_data ) ),
 			$simplechart->save->validate_template_fragment( $template_html ),
-			esc_url( $simplechart->get_config( 'app_url_root' ) . $simplechart->get_config( 'loader_js_path' ) ),
+			esc_url( $loader_url ),
 			( ! $image_fallback ? '' : esc_url( $image_fallback[0] ) )
 		);
 
