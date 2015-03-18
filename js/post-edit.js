@@ -93,6 +93,11 @@ function WPSimplechartApp(){
 				app.inputChartIdEl.value = app.chartData.id;
 			}
 
+			// set post title to chart name if empty
+			if ( !document.getElementById( 'title' ).value ){
+				document.getElementById( 'title' ).value = app.chartData.name;
+			}
+
 			console.log( 'parent window received data from app iframe' );
 			console.log( app.inputTemplateEl.value, app.chartData );
 
