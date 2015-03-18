@@ -94,8 +94,9 @@ function WPSimplechartApp(){
 			}
 
 			// set post title to chart name if empty
-			if ( !document.getElementById( 'title' ).value ){
-				document.getElementById( 'title' ).value = app.chartData.name;
+			$title =  $( '#title' );
+			if ( ! $title.val() ){
+				$title.val( decodeURIComponent( app.chartData.meta.title ) ).focus();
 			}
 
 			console.log( 'parent window received data from app iframe' );
