@@ -47,11 +47,15 @@ In your WordPress theme `functions.php`:
 
 #### Case #3: Local development
 
-If you need to troubleshoot the cross-domain postMessage interface.
+If you need to troubleshoot the cross-domain postMessage interface. Get Simplechart running locally on http://localhost:5000
 
-Create a local vhost for `http://simplechart.dev` of just run on `http://localhost` (any port is ok)
+Your WordPress install should be on one of these whitelisted domains:
 
-Place the app anywhere on that domain
+* `http://simplechart.dev`,
+* `http://simplechart.wp.dev`,
+* `http://localhost`, (any port is okay)
+* `http://vip.local`
 
-In your theme's `functions.php`:
-`define( 'SIMPLECHART_APP_URL_ROOT', 'http://simplechart.dev/' );` or `http://localhost:[port number]` if that's what you're doing.
+Add this to your wp-config.php (or wp-config-local.php if that's how you roll):
+
+`define( 'SIMPLECHART_APP_URL_ROOT', 'http://localhost:5000' );`
