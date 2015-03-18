@@ -22,9 +22,7 @@ class Simplechart_Template {
 			return;
 		}
 		global $simplechart;
-		$root = $simplechart->get_config( 'app_url_root' );
-		wp_register_style( 'nvd3-css',	$root . '/bower_components/nvd3/nv.d3.min.css' );
-		wp_register_style( 'simplechart', $simplechart->get_plugin_url() . 'css/style.css', array( 'nvd3-css' ), $simplechart->get_config( 'version' ) );
+		wp_register_style( 'simplechart', $simplechart->get_plugin_url() . 'css/style.css', array(), $simplechart->get_config( 'version' ) );
 		wp_enqueue_style( 'simplechart' );
 	}
 
