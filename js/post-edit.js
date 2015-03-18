@@ -15,6 +15,7 @@ function WPSimplechartApp(){
 			this.inputTemplateEl = document.getElementById( 'simplechart-template' );
 			this.imgInputEl = document.getElementById( 'simplechart-png-string' );
 			this.inputChartUrlEl = document.getElementById( 'simplechart-chart-url' );
+			this.inputChartIdEl = document.getElementById( 'simplechart-chart-url' );
 
 			$( '#simplechart-clear' ).click( this.clearInputEl );
 			$( '#simplechart-launch' ).click( this.openModal );
@@ -32,7 +33,8 @@ function WPSimplechartApp(){
 			e.preventDefault();
 			app.inputEl.setAttribute('value', '');
 			app.inputTemplateEl.setAttribute('value', '');
-			this.inputChartUrlEl.setAttribute('value', '');
+			app.inputChartUrlEl.setAttribute('value', '');
+			app.inputChartIdEl.setAttribute('value', '');
 		},
 
 		openModal : function(){
@@ -84,6 +86,11 @@ function WPSimplechartApp(){
 			// store published chart URL
 			if ( ! _.isUndefined( app.chartData.chartUrl ) ){
 				app.inputChartUrlEl.value = app.chartData.chartUrl;
+			}
+
+			// store published chart ID
+			if ( ! _.isUndefined( app.chartData.id ) ){
+				app.inputChartIdEl.value = app.chartData.id;
 			}
 
 			console.log( 'parent window received data from app iframe' );
