@@ -94,6 +94,11 @@ class Simplechart_Save {
 			update_post_meta( $post->ID, 'simplechart-chart-url',  esc_url( $_POST['simplechart-chart-url'] ) );
 		}
 
+		// save chart ID if provided
+		if ( ! empty( $_POST['simplechart-chart-id'] ) ){
+			update_post_meta( $post->ID, 'simplechart-chart-id',  sanitize_text_field( $_POST['simplechart-chart-id'] ) );
+		}
+
 		// save error messages
 		if ( empty( $this->_errors ) ){
 			delete_post_meta( $post->ID, 'simplechart-errors' );
