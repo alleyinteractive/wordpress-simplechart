@@ -50,13 +50,21 @@ class Simplechart_Template {
 			return '';
 		}
 
+		$loader_url = $simplechart->get_config( 'app_url_root' ) . $simplechart->get_config( 'loader_js_path' );
+		$loader_url = apply_filters( 'simplechart_loader_url', $loader_url );
+
+		// if we have a chart ID saved, use that for the embed
+		$chart_id = get_post_meta( $id, 'simplechart-chart-id', true );
+		if ( ! empty( $chart_id ) ){
+			$embed_code = sprintf( '<script async data-id="%s" src="%s"></script>', esc_attr( $chart_id ), esc_url( $loader_url ) );
+			return $embed_code;
+		}
+
+		// support versions that predate loading by chart ID
 		$json_data = get_post_meta( $id, 'simplechart-data', true );
 		$template_html = get_post_meta( $id, 'simplechart-template', true );
 		$image_fallback = wp_get_attachment_image_src( get_post_thumbnail_id( $id ), 'large' );
 		$template_format = file_get_contents( $simplechart->get_plugin_dir() . 'templates/template-partial.html' );
-
-		$loader_url = $simplechart->get_config( 'app_url_root' ) . $simplechart->get_config( 'loader_js_path' );
-		$loader_url = apply_filters( 'simplechart_loader_url', $loader_url );
 
 		$template_html = sprintf( $template_format,
 			json_encode( json_decode( $json_data ) ),
