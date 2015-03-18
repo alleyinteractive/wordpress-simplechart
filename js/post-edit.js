@@ -15,7 +15,7 @@ function WPSimplechartApp(){
 			this.inputTemplateEl = document.getElementById( 'simplechart-template' );
 			this.imgInputEl = document.getElementById( 'simplechart-png-string' );
 			this.inputChartUrlEl = document.getElementById( 'simplechart-chart-url' );
-			this.inputChartIdEl = document.getElementById( 'simplechart-chart-url' );
+			this.inputChartIdEl = document.getElementById( 'simplechart-chart-id' );
 
 			$( '#simplechart-clear' ).click( this.clearInputEl );
 			$( '#simplechart-launch' ).click( this.openModal );
