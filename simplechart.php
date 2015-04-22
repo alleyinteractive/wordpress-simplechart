@@ -14,6 +14,7 @@ class Simplechart {
 	private $_plugin_dir_path = null;
 	private $_plugin_dir_url = null;
 	private $_admin_notices = array( 'updated' => array(), 'error' => array() );
+	private $_plugin_id = 'wordpress-simplechart/simplechart.php';
 
 	// config vars that will eventually come from settings page
 	private $_config = array(
@@ -28,6 +29,7 @@ class Simplechart {
 	function __construct(){
 		if ( ! $this->_check_dependencies() ){
 			add_action( 'admin_notices', array( $this, 'admin_notices' ) );
+			add_action( 'admin_init', array( $this, 'deactivate' ) );
 			return;
 		}
 		$this->_plugin_dir_url = $this->_set_plugin_dir_url();
@@ -48,6 +50,15 @@ class Simplechart {
 		}
 
 		return $deps_found;
+	}
+
+	/**
+	 * deactivate plugin if it is active
+	 */
+	public function deactivate() {
+		if ( is_plugin_active( $this->_plugin_id ) ) {
+			deactivate_plugins( $this->_plugin_id );
+		}
 	}
 
 	/**
