@@ -1,0 +1,23 @@
+{
+  "name": "wordpress-simplechart",
+  "version": "0.0.0",
+  "description": "WordPress-Simplechart plugin",
+  "main": "simplechart-install.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alleyinteractive/wordpress-simplechart.git"
+  },
+  "author": "Alley Interactive",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alleyinteractive/wordpress-simplechart/issues"
+  },
+  "homepage": "https://github.com/alleyinteractive/wordpress-simplechart",
+  "dependencies": {
+    "nodegit": "^0.3.3",
+    "rimraf": "^2.3.2"
+  }
+}
