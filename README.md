@@ -12,10 +12,10 @@ When the post is rendered on the front end, this same data is used to bootstrap 
 
 1. Place the plugin in a directory inside your theme, e.g.  `mytheme/inc/wordpress-simplechart`
 1. Follow the **Local app setup commands** steps below
-1. Add this line to your theme's `functions.php`
+1. Add this line to your theme's `functions.php` to "activate" the plugin:
 
 ````
-require_once( __DIR__ . '/plugins/wordpress-simplechart/simplechart.php' );
+require_once( get_template_directory() . '/inc/wordpress-simplechart/simplechart.php' );
 ````
 
 ### Installation on non-VIP sites
