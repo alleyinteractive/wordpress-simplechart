@@ -46,8 +46,7 @@ class Simplechart_Template {
 			return '';
 		}
 
-		$loader_url = $simplechart->get_config( 'app_url_root' ) . $simplechart->get_config( 'loader_js_path' );
-		$loader_url = apply_filters( 'simplechart_loader_url', $loader_url );
+		$loader_url = $simplechart->get_config( 'loader_js_url' );
 
 		// if we have a chart ID saved, use that for the embed
 		$chart_id = get_post_meta( $id, 'simplechart-chart-id', true );
@@ -91,16 +90,8 @@ class Simplechart_Template {
 	// print app host as JS var in head if overriding simplechart.io
 	public function print_app_host(){
 		global $simplechart;
-
-		// no need to print in this case
-		if ( 'http://simplechart.io' === $simplechart->get_config( 'app_url_root' ) ) {
-			return;
-		}
-
 		// set app host URL
-		echo	"\n<script>" .
-				"window.simplechartAppHost = window.simplechartAppHost || '" . esc_js( $simplechart->get_config( 'app_url_root' ) ).
-				"'</script>\n";
+		echo "\n<script> window.simplechartAppHost = window.simplechartAppHost || " . json_encode( $simplechart->get_config( 'web_app_url' ) ) . "; </script>\n";
 	}
 
 }

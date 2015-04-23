@@ -18,8 +18,9 @@ class Simplechart {
 	// config vars that will eventually come from settings page
 	private $_config = array(
 		'clear_mexp_default_svcs' => true, // override default Media Explorer services
-		'app_url_root' => null,
+		'loader_js_url' => null,
 		'web_app_iframe_src' => null,
+		'web_app_url' => null,
 		'loader_js_path' => '/assets/widget/loader.js',
 		'version' => '0.0.1',
 	);
@@ -111,26 +112,16 @@ class Simplechart {
 	 * on the 'init' action, do frontend or backend startup
 	 */
 	public function action_init(){
+		$this->_config['web_app_url'] = $this->_plugin_dir_url . 'app';
+		$this->_config['web_app_url'] = apply_filters( 'simplechart_web_app_url', $this->_config['web_app_url'] );
 
-		// allow local theme or wp-config to set app URL
-		if ( defined( 'SIMPLECHART_APP_URL_ROOT' ) ){
-			$this->_config['app_url_root'] = SIMPLECHART_APP_URL_ROOT;
-		}
-		// or use simplechart.io if on VIP
-		elseif ( defined( 'WPCOM_IS_VIP_ENV' ) && WPCOM_IS_VIP_ENV ) {
-			$this->_config['app_url_root'] = 'http://simplechart.io';
-		}
-		// or load local friendly iframe
-		else {
-			$this->_config['app_url_root'] = $this->_plugin_dir_url . 'app';
-		}
+		// get URL of loader.js for front-end chart display
+		$this->_config['loader_js_url'] = $this->_config['web_app_url'] . $this->_config['loader_js_path'];
+		$this->_config['loader_js_url'] = apply_filters( 'simplechart_loader_js_url', $this->_config['loader_js_url'] );
 
-		if ( defined( 'SIMPLECHART_WEB_APP_IFRAME_SRC' ) ){
-			$this->_config['web_app_iframe_src'] = SIMPLECHART_WEB_APP_IFRAME_SRC;
-		} else {
-			$path = parse_url( $this->_config['app_url_root'], PHP_URL_PATH );
-			$this->_config['web_app_iframe_src'] = $path . '/#/simplechart';
-		}
+		// default to root-relative path to simplechart web app
+		$this->_config['web_app_iframe_src'] = parse_url( $this->_config['web_app_url'], PHP_URL_PATH ) . '/#/simplechart';
+		$this->_config['web_app_iframe_src'] = apply_filters( 'simplechart_web_app_iframe_src', $this->_config['web_app_iframe_src'] );
 
 		if ( is_admin() ){
 			$this->_admin_setup();
