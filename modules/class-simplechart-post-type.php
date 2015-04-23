@@ -65,7 +65,7 @@ class Simplechart_Post_Type {
 		$template_html = get_post_meta( $post->ID, 'simplechart-template', true );
 		$chart_url = get_post_meta( $post->ID, 'simplechart-chart-url', true );
 		$chart_id = get_post_meta( $post->ID, 'simplechart-chart-id', true );
-		$app_url = $simplechart->get_config( 'app_url_root' ) . $simplechart->get_config( 'app_url_path' );
+		$app_url = $simplechart->get_config( 'web_app_iframe_src' );
 
 		$html = sprintf( $meta_box_html,
 			__( 'Launch Simplechart App', 'simplechart' ),
