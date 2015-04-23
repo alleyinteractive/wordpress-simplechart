@@ -10,11 +10,7 @@ class Simplechart_Template {
 		add_shortcode( 'simplechart', array( $this, 'render_shortcode' ) );
 		add_action( 'wp', array( $this, 'add_filter_post_content') );
 		add_action( 'wp_enqueue_scripts', array( $this, 'frontend_enqueues' ) );
-
-		// if overriding simplechart.io as app host
-		if ( defined( 'SIMPLECHART_APP_URL_ROOT' ) ){
-			add_action( 'wp_head', array( $this, 'print_app_host' ) );
-		}
+		add_action( 'wp_head', array( $this, 'print_app_host' ) );
 	}
 
 	public function frontend_enqueues(){
