@@ -18,7 +18,7 @@ class Simplechart {
 	// config vars that will eventually come from settings page
 	private $_config = array(
 		'clear_mexp_default_svcs' => true, // override default Media Explorer services
-		'app_url_root' => 'http://simplechart.io',
+		'app_url_root' => null,
 		'app_url_path' => '/#/simplechart',
 		'loader_js_path' => '/assets/widget/loader.js',
 		'version' => '0.0.1',
@@ -113,8 +113,17 @@ class Simplechart {
 	 */
 	public function action_init(){
 
+		// allow local theme or wp-config to set app URL
 		if ( defined( 'SIMPLECHART_APP_URL_ROOT' ) ){
 			$this->_config['app_url_root'] = SIMPLECHART_APP_URL_ROOT;
+		}
+		// or use simplechart.io if on VIP
+		elseif ( defined( 'WPCOM_IS_VIP_ENV' ) && WPCOM_IS_VIP_ENV ) {
+			$this->_config['app_url_root'] = 'http://simplechart.io';
+		}
+		// or load local friendly iframe
+		else {
+			$this->_config['app_url_root'] = $this->_plugin_dir_url . 'app';
 		}
 
 		if ( defined( 'SIMPLECHART_APP_URL_PATH' ) ){
