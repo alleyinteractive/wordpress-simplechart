@@ -19,7 +19,7 @@ class Simplechart {
 	private $_config = array(
 		'clear_mexp_default_svcs' => true, // override default Media Explorer services
 		'app_url_root' => null,
-		'app_url_path' => '/#/simplechart',
+		'web_app_iframe_src' => null,
 		'loader_js_path' => '/assets/widget/loader.js',
 		'version' => '0.0.1',
 	);
@@ -125,8 +125,11 @@ class Simplechart {
 			$this->_config['app_url_root'] = $this->_plugin_dir_url . 'app';
 		}
 
-		if ( defined( 'SIMPLECHART_APP_URL_PATH' ) ){
-			$this->_config['app_url_path'] = SIMPLECHART_APP_URL_PATH;
+		if ( defined( 'SIMPLECHART_WEB_APP_IFRAME_SRC' ) ){
+			$this->_config['web_app_iframe_src'] = SIMPLECHART_WEB_APP_IFRAME_SRC;
+		} else {
+			$path = parse_url( $this->_config['app_url_root'], PHP_URL_PATH );
+			$this->_config['web_app_iframe_src'] = $path . '/#/simplechart';
 		}
 
 		if ( is_admin() ){
