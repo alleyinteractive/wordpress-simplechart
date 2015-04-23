@@ -42,14 +42,15 @@ function setupLocalSimplechart() {
   rimraf.sync(simplechartPath);
 
   console.log('Downloading Simplechart repo to ' + simplechartTmp);
-  Git.Clone(simplechartRepo, simplechartTmp, cloneOptions).then(function(repo) {
-    // move the standalone web app then delete the temp folder
-    console.log('Moving web app to ' + simplechartApp);
-    fs.renameSync(simplechartTmp + '/client/pages', simplechartApp);
-    console.log('Deleting ' + simplechartTmp);
-    rimraf.sync(simplechartTmp);
-    process.exit(1);
-  });
+  Git.Clone.clone(simplechartRepo, simplechartTmp, cloneOptions)
+  	.then(function(repo) {
+	  // move the standalone web app then delete the temp folder
+	  console.log('Moving web app to ' + simplechartApp);
+	  fs.renameSync(simplechartTmp + '/client/pages', simplechartApp);
+	  console.log('Deleting ' + simplechartTmp);
+	  rimraf.sync(simplechartTmp);
+	  process.exit(1);
+	});
 }
 
 /**
@@ -59,7 +60,7 @@ function installMediaExplorer(err, files) {
   if (typeof files === 'undefined' || files.length === 0) {
     console.log('Installing Media Exlorer plugin');
     var  cloneOptions = githubHttpsCloneOptions();
-    Git.Clone(mediaExplorerRepo, mediaExplorerPath, cloneOptions)
+    Git.Clone.clone(mediaExplorerRepo, mediaExplorerPath, cloneOptions)
       .then(function(repo) {
         setupLocalSimplechart();
       });
