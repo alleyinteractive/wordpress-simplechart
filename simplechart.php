@@ -19,8 +19,9 @@ class Simplechart {
 	// config vars that will eventually come from settings page
 	private $_config = array(
 		'clear_mexp_default_svcs' => true, // override default Media Explorer services
-		'app_url_root' => 'http://simplechart.io',
-		'app_url_path' => '/#/simplechart',
+		'loader_js_url' => null,
+		'web_app_iframe_src' => null,
+		'web_app_url' => null,
 		'loader_js_path' => '/assets/widget/loader.js',
 		'version' => '0.0.1',
 	);
@@ -32,6 +33,7 @@ class Simplechart {
 			add_action( 'admin_init', array( $this, 'deactivate' ) );
 			return;
 		}
+		$this->_plugin_dir_path = plugin_dir_path( __FILE__ );
 		$this->_plugin_dir_url = $this->_set_plugin_dir_url();
 		$this->_init_modules();
 		add_action( 'init', array( $this, 'action_init' ) );
@@ -76,8 +78,6 @@ class Simplechart {
 	 * get root url and path of plugin, whether loaded from plugins directory or in theme
 	 */
 	private function _set_plugin_dir_url(){
-		// will get full path to this file even if it's inside theme
-		$this->_plugin_dir_path = plugin_dir_path( __FILE__ );
 
 		// if running as plugin
 		if ( 0 === strpos( $this->_plugin_dir_path, WP_PLUGIN_DIR ) ){
@@ -123,14 +123,16 @@ class Simplechart {
 	 * on the 'init' action, do frontend or backend startup
 	 */
 	public function action_init(){
+		$this->_config['web_app_url'] = $this->_plugin_dir_url . 'app';
+		$this->_config['web_app_url'] = apply_filters( 'simplechart_web_app_url', $this->_config['web_app_url'] );
 
-		if ( defined( 'SIMPLECHART_APP_URL_ROOT' ) ){
-			$this->_config['app_url_root'] = SIMPLECHART_APP_URL_ROOT;
-		}
+		// get URL of loader.js for front-end chart display
+		$this->_config['loader_js_url'] = $this->_config['web_app_url'] . $this->_config['loader_js_path'];
+		$this->_config['loader_js_url'] = apply_filters( 'simplechart_loader_js_url', $this->_config['loader_js_url'] );
 
-		if ( defined( 'SIMPLECHART_APP_URL_PATH' ) ){
-			$this->_config['app_url_path'] = SIMPLECHART_APP_URL_PATH;
-		}
+		// default to root-relative path to simplechart web app
+		$this->_config['web_app_iframe_src'] = parse_url( $this->_config['web_app_url'], PHP_URL_PATH ) . '/#/simplechart';
+		$this->_config['web_app_iframe_src'] = apply_filters( 'simplechart_web_app_iframe_src', $this->_config['web_app_iframe_src'] );
 
 		if ( is_admin() ){
 			$this->_admin_setup();
@@ -163,14 +165,14 @@ class Simplechart {
 	public function add_meta_box(){
 		global $post;
 		$json_data = $data = get_post_meta( $post->ID, 'simplechart-data', true );
-		add_meta_box(	'simplechart-preview',
-						__( 'Simplechart', 'simplechart' ),
-						array( $this->post_type, 'render_meta_box' ),
-						'simplechart',
-						'normal',
-						'default',
-						array( $this->_plugin_dir_path, $json_data )
-					);
+		add_meta_box( 'simplechart-preview',
+			__( 'Simplechart', 'simplechart' ),
+			array( $this->post_type, 'render_meta_box' ),
+			'simplechart',
+			'normal',
+			'default',
+			array( $this->_plugin_dir_path, $json_data )
+		);
 	}
 
 	// used by modules that need this info
@@ -182,7 +184,6 @@ class Simplechart {
 	public function get_plugin_dir(){
 		return $this->_plugin_dir_path;
 	}
-
 
 }
 global $simplechart;

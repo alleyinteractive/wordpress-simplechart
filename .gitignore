@@ -2,6 +2,5 @@
 *.css.map
 app/
 css/.sass-cache/
-node_modules
 github_token.txt
-_tmp_simplechart
+node_modules
