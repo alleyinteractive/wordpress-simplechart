@@ -113,9 +113,16 @@ class Simplechart {
 	 */
 	public function action_init(){
 
+		// allow local theme or wp-config to set app URL
 		if ( defined( 'SIMPLECHART_APP_URL_ROOT' ) ){
 			$this->_config['app_url_root'] = SIMPLECHART_APP_URL_ROOT;
-		} else {
+		}
+		// or use simplechart.io if on VIP
+		elseif ( defined( 'WPCOM_IS_VIP_ENV' ) && WPCOM_IS_VIP_ENV ) {
+			$this->_config['app_url_root'] = 'http://simplechart.io';
+		}
+		// or load local friendly iframe
+		else {
 			$this->_config['app_url_root'] = $this->_plugin_dir_url . 'app';
 		}
 

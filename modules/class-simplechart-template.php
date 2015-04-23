@@ -91,6 +91,13 @@ class Simplechart_Template {
 	// print app host as JS var in head if overriding simplechart.io
 	public function print_app_host(){
 		global $simplechart;
+
+		// no need to print in this case
+		if ( 'http://simplechart.io' === $simplechart->get_config( 'app_url_root' ) ) {
+			return;
+		}
+
+		// set app host URL
 		echo	"\n<script>" .
 				"window.simplechartAppHost = window.simplechartAppHost || '" . esc_js( $simplechart->get_config( 'app_url_root' ) ).
 				"'</script>\n";
