@@ -30,6 +30,7 @@ class Simplechart {
 			add_action( 'admin_notices', array( $this, 'admin_notices' ) );
 			return;
 		}
+		$this->_plugin_dir_path = plugin_dir_path( __FILE__ );
 		$this->_plugin_dir_url = $this->_set_plugin_dir_url();
 		$this->_init_modules();
 		add_action( 'init', array( $this, 'action_init' ) );
@@ -65,8 +66,6 @@ class Simplechart {
 	 * get root url and path of plugin, whether loaded from plugins directory or in theme
 	 */
 	private function _set_plugin_dir_url(){
-		// will get full path to this file even if it's inside theme
-		$this->_plugin_dir_path = plugin_dir_path( __FILE__ );
 
 		// if running as plugin
 		if ( 0 === strpos( $this->_plugin_dir_path, WP_PLUGIN_DIR ) ){
@@ -161,14 +160,14 @@ class Simplechart {
 	public function add_meta_box(){
 		global $post;
 		$json_data = $data = get_post_meta( $post->ID, 'simplechart-data', true );
-		add_meta_box(	'simplechart-preview',
-						__( 'Simplechart', 'simplechart' ),
-						array( $this->post_type, 'render_meta_box' ),
-						'simplechart',
-						'normal',
-						'default',
-						array( $this->_plugin_dir_path, $json_data )
-					);
+		add_meta_box( 'simplechart-preview',
+			__( 'Simplechart', 'simplechart' ),
+			array( $this->post_type, 'render_meta_box' ),
+			'simplechart',
+			'normal',
+			'default',
+			array( $this->_plugin_dir_path, $json_data )
+		);
 	}
 
 	// used by modules that need this info
@@ -180,7 +179,6 @@ class Simplechart {
 	public function get_plugin_dir(){
 		return $this->_plugin_dir_path;
 	}
-
 
 }
 global $simplechart;
