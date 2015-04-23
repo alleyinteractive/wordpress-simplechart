@@ -41,3 +41,26 @@ $ git clone git@github.com:alleyinteractive/simplechart.git
 $ mv simplechart/client/pages/ app
 $ rm -rf simplechart
 ````
+
+### Available filters
+
+##### simplechart_web_app_url
+
+URL of the Simplechart web app, e.g.
+````
+http://www.mysite.com/wp-content/plugins/wordpress-simplechart/app
+````
+
+##### simplechart_loader_js_url
+
+URL of the JS file used to render charts on the front-end, e.g.
+````
+http://www.mysite.com/wp-content/plugins/wordpress-simplechart/app/assets/widget/loader.js
+````
+
+##### simplechart_web_app_iframe_src
+
+Set the `src` attribute of the iframe for creating/editing charts in wp-admin. Defaults to root-relative for postMessage security reasons, e.g.
+````
+/wp-content/plugins/wordpress-simplechart/app/#/simplechart
+````
