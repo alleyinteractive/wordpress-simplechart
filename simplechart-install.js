@@ -1,6 +1,8 @@
 /**
  * Installs the Simplechart WordPress plugin
- * After the script runs, this folder will NOT be a Git repo
+ * To remove Git and other install files, add `--deploy-mode` when you run the script
+ * e.g. `$ node simplechart-install.js --deploy-mode`
+ * This makes it easier to deploy to hosts like Pantheon
  */
 
 // Node dependencies
@@ -19,6 +21,36 @@ var mediaExplorerPath;
 var simplechartPath = __dirname + '/app';
 var simplechartTmp = __dirname + '/_tmp_simplechart';
 
+// install files to be deleted
+var installFiles = [
+  '.gitignore',
+  'github_token.txt',
+  'package.json'
+];
+var installDirs = [
+  'node_modules',
+  '.git'
+];
+
+/**
+ * if requested by including argument `--deploy-mode`, delete .git and other files needed for install
+ * this makes it easier to deploy to hosts like Pantheon, but harder to do local development
+ */
+function deleteInstallFiles() {
+  if (process.argv.indexOf('--deploy-mode') === -1) {
+    console.log('Install files NOT deleted')
+    return;
+  }
+  console.log('Deleting install files:');
+  installFiles.forEach(function(value) {
+    console.log(value);
+    fs.unlinkSync(value);
+  });
+  installDirs.forEach(function(value) {
+    console.log(value + '/');
+    rimraf.sync(value);
+  });
+}
 
 /**
  * get path to the plugins directory where we want to install Media Explorer
@@ -47,7 +79,7 @@ var simplechartTmp = __dirname + '/_tmp_simplechart';
     pluginsDir.push('plugins');
   }
 
-  // pluginsDir should now be an array of directories leading up to wp-content/plugins/
+  // should now be an array of directories leading up to wp-content/plugins/
   pluginsDir.push('media-explorer');
   return pluginsDir.join('/');
  }
@@ -86,6 +118,7 @@ function setupLocalSimplechart() {
     fs.renameSync(simplechartTmp + '/client/pages', simplechartPath);
     console.log('Deleting temp folder');
     rimraf.sync(simplechartTmp);
+    deleteInstallFiles();
     console.log('Setup complete!');
     process.exit(1);
   });
