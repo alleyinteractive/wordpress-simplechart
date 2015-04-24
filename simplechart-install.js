@@ -2,7 +2,7 @@
  * Installs the Simplechart WordPress plugin
  * To remove Git and other install files, add `--deploy-mode` when you run the script
  * e.g. `$ node simplechart-install.js --deploy-mode`
- * This makes it easier to deploy to hosts like Pantheon
+ * This makes it easier to deploy to hosts like Pantheon but should NOT be used for local development
  */
 
 // Node dependencies
@@ -37,7 +37,7 @@ var installDirs = [
  * this makes it easier to deploy to hosts like Pantheon, but harder to do local development
  */
 function deleteInstallFiles() {
-  if (process.argv.indexOf('--deploy-mode') === -1) {
+  if (! getNamedArg('deploy-mode')) {
     console.log('Install files NOT deleted')
     return;
   }
@@ -138,11 +138,31 @@ function installMediaExplorer(err, files) {
   }
 }
 
-// start by trying to get Github API token from github_token.txt
-fs.readFile('github_token.txt', {encoding: 'utf8'}, function(err, data) {
-  if (err) throw err;
-  GITHUB_TOKEN = data;
+/**
+ * get named command line arg
+ */
+function getNamedArg(key) {
+  // return true for --key
+  if (process.argv.indexOf('--'+key) > -1) {
+    return true;
+  }
+  argValue = false;
+  process.argv.forEach(function(value) {
+    if(value.indexOf('--'+key+'=') === 0) {
+      argValue = value.replace('--'+key+'=', '');
+    }
+  });
+  return argValue;
+}
+
+/**
+ * main install functions
+ */
+function doInstall() {
+  GITHUB_TOKEN = getNamedArg('token') || fs.readFileSync('github_token.txt', {encoding: 'utf8'});
   mediaExplorerPath = getMediaExplorerPath();
   fs.readdir(mediaExplorerPath, installMediaExplorer);
   setupLocalSimplechart();
-});
+}
+
+doInstall();
