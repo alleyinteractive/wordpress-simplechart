@@ -56,14 +56,18 @@ function WPSimplechartApp(){
 		 * postMessage send/receive functions
 		 */
 		receiveMessages: function(e) {
+			if ( _.isUndefined( e.data.src ) || 'simplechart' !== e.data.src ) {
+				return;
+			}
+
 			app.appOrigin = app.appOrigin || app.setAppOrigin();
 			if ( e.origin !== app.appOrigin ){
-				throw( 'Illegal postMessage from ' + e.appOrigin );
+				throw( 'Illegal Simplechart postMessage from ' + e.appOrigin );
 				return;
 			}
 
 			if ( app.isFrameReadyMessage( e.data ) ){
-				console.log( 'parent window received ready message from app iframe');
+				console.log( 'window received ready message from Simplechart iframe');
 				app.childWindow = app.childWindow || document.getElementById('simplechart-frame').contentWindow;
 				app.sendSimplechartOptions();
 				app.sendSavedData();
@@ -135,12 +139,10 @@ function WPSimplechartApp(){
 		},
 
 		isFrameReadyMessage : function(msgObj){
-			return	!_.isUndefined( msgObj.src ) &&
-					msgObj.src === 'simplechart' &&
-					!_.isUndefined( msgObj.channel ) &&
-					msgObj.channel === 'upstream' &&
-					!_.isUndefined( msgObj.msg ) &&
-					msgObj.msg === 'ready';
+			return !_.isUndefined( msgObj.channel ) &&
+				msgObj.channel === 'upstream' &&
+				!_.isUndefined( msgObj.msg ) &&
+				msgObj.msg === 'ready';
 		}
 	};
 
