@@ -49,14 +49,14 @@ If you want to install a copy plugin for deployment to Pantheon or other Git-bas
 
 ##### simplechart_web_app_url
 
-URL of the Simplechart web app, e.g.
+URL of the Simplechart web app. This is used to locate the `assets/widget/loader.js` script (unless overridden by the `'simplechart_loader_js_url'` filter) and then by `loader.js` to find `assets/widget/js/app.js`.
 ````
 http://www.mysite.com/wp-content/plugins/wordpress-simplechart/app
 ````
 
 ##### simplechart_loader_js_url
 
-URL of the JS file used to render charts on the front-end, e.g.
+URL of the JS file used to render charts on the front-end. Override the default location of `loader.js` by providing the full URL of the script.
 ````
 http://www.mysite.com/wp-content/plugins/wordpress-simplechart/app/assets/widget/loader.js
 ````
