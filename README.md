@@ -11,7 +11,6 @@ When the post is rendered on the front end, this same data is used to bootstrap 
 ### Installation on WordPress.com VIP
 
 1. Place the plugin in a directory inside your theme, e.g.  `mytheme/inc/wordpress-simplechart`
-1. Follow the **Local app setup script** steps below
 1. Add this line to your theme's `functions.php` to "activate" the plugin:
 
 ````
@@ -22,7 +21,6 @@ require_once( get_template_directory() . '/inc/wordpress-simplechart/simplechart
 
 1. Install and activate [Media Explorer](https://github.com/Automattic/media-explorer)
 1. Install and activate the Simplechart plugin
-1. Follow the **Local app setup script** steps below
 
 ### Usage
 
@@ -32,18 +30,18 @@ require_once( get_template_directory() . '/inc/wordpress-simplechart/simplechart
 1. Save the post in WordPress
 1. You can now embed the Chart in any post by selecting it from the Charts section in the Media Manager, which will drop a shortcode into the post content.
 
-### Local app setup script
+### Update script for Simplechart web app
 
 Do this from the root of the `wordpress-simplechart` plugin directory, either in your theme or in `wp-plugins`:
 
 ````
 $ npm install
-$ node simplechart-install.js
+$ node simplechart-update.js
 ````
 
 This script will download the Simplechart web app to your local copy of the WordPress plugin. It **requires** a [GitHub access token](https://github.com/settings/tokens), which you can pass to the script with the command line argument `--token=<your GitHub token>` or by putting it in a file `github_token.txt`
 
-If you want to install a copy plugin for deployment to Pantheon or other Git-based hosts, there is a `--deploy-mode` flag. Use cautiously, as it will delete the plugin's Git files and other stuff necessary for reinstallation. If you think you might be doing local development, **do not use this option!**
+If you want to install the plugin for deployment to Pantheon or other Git-based hosts, there is a `--deploy-mode` flag. Use cautiously, as it will delete the plugin's Git files and other stuff necessary for reinstallation. If you think you might be doing local development, **do not use this option!**
 
 ### Available WordPress filters
 

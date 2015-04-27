@@ -1,6 +1,5 @@
 *.DS_Store*
 *.css.map
-app/
 css/.sass-cache/
 github_token.txt
 node_modules

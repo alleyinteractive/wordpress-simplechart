@@ -1,5 +1,5 @@
 /**
- * Installs the Simplechart WordPress plugin
+ * Updates the Simplechart WordPress plugin
  * To remove Git and other install files, add `--deploy-mode` when you run the script
  * e.g. `$ node simplechart-install.js --deploy-mode`
  * This makes it easier to deploy to hosts like Pantheon but should NOT be used for local development
@@ -113,6 +113,7 @@ function setupLocalSimplechart() {
 
   console.log('Downloading Simplechart repo');
   Git.Clone.clone(simplechartRepo, simplechartTmp, cloneOptions).done(function(){
+    deleteStandaloneAppFilesSync();
     // move the standalone web app then delete the temp folder
     console.log('Moving web app');
     fs.renameSync(simplechartTmp + '/client/pages', simplechartPath);
@@ -121,6 +122,18 @@ function setupLocalSimplechart() {
     deleteInstallFiles();
     console.log('Setup complete!');
     process.exit(1);
+  });
+}
+
+/**
+ * delete files needed only for standalone web app
+ */
+function deleteStandaloneAppFilesSync() {
+  var files = JSON.parse(fs.readFileSync(simplechartTmp + '/client/standaloneFiles.json', {encoding: 'utf8'}));
+  console.log('Deleting files needed only for standalone web service');
+  files.forEach(function(value){
+    console.log(value);
+    fs.unlinkSync(simplechartTmp + '/client/' + value);
   });
 }
 
