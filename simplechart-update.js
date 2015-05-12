@@ -42,11 +42,22 @@ function deleteInstallFiles() {
   console.log('Deleting install files:');
   installFiles.forEach(function(value) {
     console.log(value);
-    fs.unlinkSync(value);
+    fs.unlink(value, function(err){
+      if (err) {
+        console.log('Could not delete ' + value);
+      } else {
+        console.log('Deleted ' + value);
+      }
+    });
   });
   installDirs.forEach(function(value) {
-    console.log(value + '/');
-    rimraf.sync(value);
+    rimraf(value, function(err){
+      if (err) {
+        console.log('Could not delete ' + value + '/');
+      } else {
+        console.log('Deleted ' + value + '/');
+      }
+    });
   });
 }
 
