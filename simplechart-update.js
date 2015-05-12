@@ -36,18 +36,20 @@ var installDirs = [
  */
 function deleteInstallFiles() {
   if (! getNamedArg('deploy-mode')) {
-    console.log('Install files NOT deleted')
+    console.log('Install files NOT deleted');
+    process.exit(1);
     return;
   }
+
   console.log('Deleting install files:');
   installFiles.forEach(function(value) {
-    console.log(value);
     fs.unlink(value, function(err){
       if (err) {
         console.log('Could not delete ' + value);
       } else {
         console.log('Deleted ' + value);
       }
+      maybeExit();
     });
   });
   installDirs.forEach(function(value) {
@@ -57,8 +59,21 @@ function deleteInstallFiles() {
       } else {
         console.log('Deleted ' + value + '/');
       }
+      maybeExit();
     });
   });
+}
+
+/**
+ * keep track of install files/dirs to be deleted, then exit when they're all accounted for
+ */
+var installRemainder = installFiles.length + installDirs.length;
+function maybeExit() {
+  installRemainder--;
+  if (installRemainder === 0) {
+    console.log('Setup complete!');
+    process.exit(1);
+  }
 }
 
 /**
@@ -129,8 +144,6 @@ function setupLocalSimplechart() {
     console.log('Deleting temp folder');
     rimraf.sync(simplechartTmp);
     deleteInstallFiles();
-    console.log('Setup complete!');
-    process.exit(1);
   });
 }
 
