@@ -1,8 +1,5 @@
 /**
- * Updates the Simplechart WordPress plugin
- * To remove Git and other install files, add `--deploy-mode` when you run the script
- * e.g. `$ node simplechart-install.js --deploy-mode`
- * This makes it easier to deploy to hosts like Pantheon but should NOT be used for local development
+ * Updates the web app portion of the Simplechart WordPress plugin
  */
 
 // Node dependencies
@@ -25,7 +22,8 @@ var simplechartTmp = __dirname + '/_tmp_simplechart';
 var installFiles = [
   '.gitignore',
   'github_token.txt',
-  'package.json'
+  'package.json',
+  'simplechart-update.js'
 ];
 var installDirs = [
   'node_modules',
@@ -44,11 +42,22 @@ function deleteInstallFiles() {
   console.log('Deleting install files:');
   installFiles.forEach(function(value) {
     console.log(value);
-    fs.unlinkSync(value);
+    fs.unlink(value, function(err){
+      if (err) {
+        console.log('Could not delete ' + value);
+      } else {
+        console.log('Deleted ' + value);
+      }
+    });
   });
   installDirs.forEach(function(value) {
-    console.log(value + '/');
-    rimraf.sync(value);
+    rimraf(value, function(err){
+      if (err) {
+        console.log('Could not delete ' + value + '/');
+      } else {
+        console.log('Deleted ' + value + '/');
+      }
+    });
   });
 }
 
@@ -173,8 +182,10 @@ function getNamedArg(key) {
  */
 function doInstall() {
   GITHUB_TOKEN = getNamedArg('token') || fs.readFileSync('github_token.txt', {encoding: 'utf8'});
-  mediaExplorerPath = getMediaExplorerPath();
-  fs.readdir(mediaExplorerPath, installMediaExplorer);
+  if (getNamedArg('deploy-mode') !== 'vip') {
+    mediaExplorerPath = getMediaExplorerPath();
+    fs.readdir(mediaExplorerPath, installMediaExplorer);
+  }
   setupLocalSimplechart();
 }
 

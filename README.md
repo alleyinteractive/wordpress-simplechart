@@ -32,16 +32,18 @@ require_once( get_template_directory() . '/inc/wordpress-simplechart/simplechart
 
 ### Update script for Simplechart web app
 
-Do this from the root of the `wordpress-simplechart` plugin directory, either in your theme or in `wp-plugins`:
+Next, you'll need to download the Simplechart web app to your local copy of the WordPress plugin. Do this from the root of the `wordpress-simplechart` plugin directory, either in your theme or in `wp-plugins`:
 
 ````
 $ npm install
 $ node simplechart-update.js
 ````
 
-This script will download the Simplechart web app to your local copy of the WordPress plugin. It **requires** a [GitHub access token](https://github.com/settings/tokens), which you can pass to the script with the command line argument `--token=<your GitHub token>` or by putting it in a file `github_token.txt`
+The command accepts two arguments:
 
-If you want to install the plugin for deployment to Pantheon or other Git-based hosts, there is a `--deploy-mode` flag. Use cautiously, as it will delete the plugin's Git files and other stuff necessary for reinstallation. If you think you might be doing local development, **do not use this option!**
+`--token=<your GitHub token>` A [GitHub access token](https://github.com/settings/tokens) is **required**. You can provide it with the `--token` argument or by placing it in a text file `github_token.txt` in this directory.
+
+`--deploy-mode` deletes Git files, Node modules, and other stuff not necessary for deploying _and updating_ the plugin. **Use with caution!** Note that `--deploy-mode` does not require a value, but you can specify `--deploy-mode=vip`. This will skip the check for the Media Explorer plugin, which is part of the platform on WordPress.com VIP.
 
 ### Available WordPress filters
 
