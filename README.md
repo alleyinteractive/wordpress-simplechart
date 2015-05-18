@@ -10,6 +10,7 @@ When the post is rendered on the front end, this same data is used to bootstrap 
 
 ### Installation on WordPress.com VIP
 
+1. Install and activate [Media Explorer](https://github.com/Automattic/media-explorer) in your development environment. It is loaded as part of the platform on WordPress.com.
 1. Place the plugin in a directory inside your theme, e.g.  `mytheme/inc/wordpress-simplechart`
 1. Add this line to your theme's `functions.php` to "activate" the plugin:
 
