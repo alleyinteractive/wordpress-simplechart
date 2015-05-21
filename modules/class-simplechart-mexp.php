@@ -3,8 +3,10 @@
 function simplechart_mexp_init( $services ){
 
 	//should we remove all other Media Explorer services?
-	global $simplechart;
-	if ( true === $simplechart->get_config( 'clear_mexp_default_svcs' ) ){
+	$clear_defaults = ! defined( 'WPCOM_IS_VIP_ENV' ) || ! WPCOM_IS_VIP_ENV;
+	$clear_defaults = apply_filters( 'simplechart_clear_mexp_default_services', $clear_defaults );
+
+	if ( $clear_defaults ){
 		$services = array();
 	}
 

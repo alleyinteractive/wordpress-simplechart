@@ -18,7 +18,6 @@ class Simplechart {
 
 	// config vars that will eventually come from settings page
 	private $_config = array(
-		'clear_mexp_default_svcs' => true, // override default Media Explorer services
 		'loader_js_url' => null,
 		'web_app_iframe_src' => null,
 		'web_app_url' => null,
