@@ -71,3 +71,5 @@ Set the `src` attribute of the iframe for creating/editing charts in wp-admin. D
 ##### simplechart_clear_mexp_default_services
 
 Simplechart is integrated into the WordPress media manager using the [Media Explorer](https://github.com/Automattic/media-explorer) plugin, which adds the ability to embed from services like Twitter and YouTube. By default, Simplechart removes these other services - **except** on WordPress.com VIP, where Media Explorer is part of the platform. To force your desired behavior, use the `'simplechart_clear_mexp_default_services'` filter to return `true` or `false`.
+
+Note for VIP sites: Unless you use this filter to force a consistent value, the value of `'simplechart_clear_mexp_default_services'` will be `true` in your local development environment and `false` on WordPress.com VIP.
