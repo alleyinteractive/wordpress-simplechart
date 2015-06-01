@@ -9,17 +9,12 @@ class Simplechart_Save {
 	private $_show_debug_messages = false;
 
 	function __construct(){
-		add_action( 'save_post', array( $this, 'save_post_action' ), 10, 1 );
+		add_action( 'save_post_simplechart', array( $this, 'save_post_action' ), 10, 1 );
 		add_action( 'admin_notices', array( $this, 'admin_notices' ) );
 	}
 
 	// use remove-add to prevent infinite loop
 	function save_post_action( $post_id ){
-
-		//ignore all other post types
-		if ( 'simplechart' !== get_post_type( $post_id ) ){
-			return;
-		}
 
 		// verify nonce
 		if ( empty( $_POST['simplechart-nonce'] ) || ! wp_verify_nonce( $_POST['simplechart-nonce'], 'simplechart_save' ) ){
@@ -36,10 +31,10 @@ class Simplechart_Save {
 			return;
 		}
 
-		remove_action( 'save_post', array($this, 'save_post_action' ), 10, 1 );
+		remove_action( 'save_post_simplechart', array($this, 'save_post_action' ), 10, 1 );
 		$post = get_post( $post_id );
 		$this->do_save_post( $post );
-		add_action( 'save_post', array($this, 'save_post_action' ), 10, 1 );
+		add_action( 'save_post_simplechart', array($this, 'save_post_action' ), 10, 1 );
 	}
 
 	function admin_notices(){
