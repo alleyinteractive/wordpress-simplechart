@@ -68,8 +68,10 @@ class Simplechart_Save {
 	function do_save_post( $post ){
 
 		// handle base64 image string if provided
-		if ( ! empty( $_POST['simplechart-png-string'] ) ){
+		if ( ! empty( $_POST['simplechart-png-string'] ) && 'publish' === $post->post_status ){
 			$this->_save_chart_image( $post, $_POST['simplechart-png-string'], $this->_default_img_type );
+		} elseif ( 'publish' !== $post->post_status && has_post_thumbnail( $post->ID ) ){
+			wp_delete_attachment( get_post_thumbnail_id( $post->ID ), true );
 		}
 
 		// sanitize and validate JSON formatting of chart data
