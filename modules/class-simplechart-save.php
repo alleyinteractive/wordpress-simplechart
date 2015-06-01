@@ -85,7 +85,7 @@ class Simplechart_Save {
 			// store data URI for future post so it can be saved as image later
 			elseif ( 'future' === get_post_status( $post->ID ) ) {
 				update_post_meta( $post->ID, $this->_data_uri_key, sanitize_text_field( $_POST['simplechart-png-string'] ) );
-				error_log( 'saved data URI to post meta' );
+				error_log( 'saved data URI to post meta for ' . $post->ID );
 			}
 		}
 
@@ -129,9 +129,19 @@ class Simplechart_Save {
 
 	private function _save_chart_image( $post, $data_uri, $img_type ){
 
+		// make sure we have a post object
 		if ( is_numeric( $post ) ) {
 			$post = get_post( $post );
 		}
+
+		// may be applicable during WP Cron
+		if ( ! function_exists( 'media_handle_sideload' ) ) {
+			require_once( ABSPATH . 'wp-admin/includes/media.php' );
+		}
+		if ( ! function_exists( 'wp_handle_sideload' ) ) {
+			require_once( ABSPATH . 'wp-admin/includes/file.php' );
+		}
+
 
 		$perm_file_name = 'simplechart_' . $post->ID . '.' . $img_type;
 		$temp_file_name = 'temp_' . $perm_file_name;
