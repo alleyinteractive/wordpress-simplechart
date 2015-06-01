@@ -171,16 +171,16 @@ class Simplechart_Save {
 
 		// import to media library
 		$desc = 'Chart: ' . sanitize_text_field( get_the_title( $post->ID ) );
-		$attachment_id = media_handle_sideload( array(
+		$this->_attachment_id = media_handle_sideload( array(
 			'name' => $perm_file_name,
 			'tmp_name' => $temp_file['file'],
 		), $post->ID, $desc);
-		$new_file_path = get_post_meta( $attachment_id, '_wp_attached_file', true );
+		$new_file_path = get_post_meta( $this->_attachment_id, '_wp_attached_file', true );
 		$this->_debug_messages[] = sprintf( __( 'media_handle_sideload() to %s', 'simplechart' ), $new_file_path );
 		$this->_debug_messages[] = $new_file_path === $old_file_path ? __( 'New file path matches old file path', 'simplechart' ) : __( 'New file path does NOT match old file path', 'simplechart' );
 
-		if ( is_wp_error( $attachment_id ) ){
-			$this->_errors = array_merge( $this->_errors, $attachment_id->get_error_messages() );
+		if ( is_wp_error( $this->_attachment_id ) ){
+			$this->_errors = array_merge( $this->_errors, $this->_attachment_id->get_error_messages() );
 			return false;
 		}
 
@@ -190,10 +190,7 @@ class Simplechart_Save {
 		}
 
 		// set as post featured image
-		set_post_thumbnail( $post->ID, $attachment_id );
-
-		// use custom post status
-		$this->_attachment_id = $attachment_id;
+		set_post_thumbnail( $post->ID, $this->_attachment_id );
 
 		// delete the temporary file!
 		if ( file_exists( $temp_file['file'] ) ){
