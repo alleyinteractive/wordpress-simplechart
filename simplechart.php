@@ -83,7 +83,7 @@ class Simplechart {
 			return plugin_dir_url( __FILE__ );
 		}
 		// if running as VIP plugin
-		elseif ( function_exists( 'wpcom_vip_get_loaded_plugins' ) && in_array( 'plugins/simplechart', wpcom_vip_get_loaded_plugins() ) ) {
+		elseif ( function_exists( 'wpcom_vip_get_loaded_plugins' ) && in_array( 'plugins/simplechart', wpcom_vip_get_loaded_plugins(), true ) ) {
 			return plugins_url( '', __FILE__ );
 		}
 		// assume running inside theme

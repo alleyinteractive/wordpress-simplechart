@@ -86,7 +86,7 @@ class Simplechart_Save {
 		}
 
 		// handle base64 image string if provided
-		if ( ! empty( $_POST['simplechart-png-string'] ) && in_array( get_post_status( $post->ID ), array( 'publish', 'future' ) ) ){
+		if ( ! empty( $_POST['simplechart-png-string'] ) && in_array( get_post_status( $post->ID ), array( 'publish', 'future' ), true ) ){
 			$this->_save_chart_image( $post, $_POST['simplechart-png-string'], $this->_default_img_type );
 		}
 
@@ -230,7 +230,7 @@ class Simplechart_Save {
 		libxml_use_internal_errors( true );
 		$el = simplexml_load_string( $fragment );
 
-		if ( $el && in_array( $el->getName(), $this->_allowed_template_tags ) && 0 === count( $el->children() ) ){
+		if ( $el && in_array( $el->getName(), $this->_allowed_template_tags, true ) && 0 === count( $el->children() ) ){
 			return $fragment;
 		} else {
 			foreach ( libxml_get_errors() as $error ){
