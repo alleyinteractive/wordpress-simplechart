@@ -10,13 +10,10 @@ When the post is rendered on the front end, this same data is used to bootstrap 
 
 ### Installation for WordPress.com VIP themes
 
-1. Install and activate [Media Explorer](https://github.com/Automattic/media-explorer) in your development environment. It is loaded automatically as part of the platform on WordPress.com.
-1. Make sure that your VIP plugins repo is up to date. You can probably do this like `$ svn up` from `broadway/themes/vip/plugins`
-1. Add this line in your theme's `functions.php`:
-
-````
-wpcom_vip_load_plugin( 'simplechart' );
-````
+1. Install and activate [Media Explorer](https://github.com/Automattic/media-explorer) as a normal plugin in your development environment. It is loaded automatically as part of the platform on WordPress.com.
+1. Request _read access_ to the `alley-plugins` VIP repository.
+1. cd into `broadway/themes/vip` and:<br>`$ svn co https://vip-svn.wordpress.com/alley-plugins alley-plugins`
+1. Add this line in your theme's `functions.php`:<br>`wpcom_vip_load_plugin( 'simplechart', 'alley-plugins' );`
 
 ### Installation for non-VIP themes
 
