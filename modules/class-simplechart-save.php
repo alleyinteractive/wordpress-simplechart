@@ -7,19 +7,27 @@ class Simplechart_Save {
 	private $_errors = array();
 	private $_debug_messages = array();
 	private $_show_debug_messages = false;
+	private $_image_post_status = 'simplechart_image';
 
 	function __construct(){
-		add_action( 'save_post', array( $this, 'save_post_action' ), 10, 1 );
+		add_action( 'save_post_simplechart', array( $this, 'save_post_action' ), 10, 1 );
 		add_action( 'admin_notices', array( $this, 'admin_notices' ) );
+		add_action( 'init', array( $this, 'register_image_post_status' ), 10 );
+		add_filter( 'wp_insert_attachment_data', array( $this, 'set_chart_image_status' ), 10, 2 );
+	}
+
+	public function register_image_post_status() {
+		register_post_status( $this->_image_post_status, array(
+			'label' => __( 'Chart Image', 'simplechart' ),
+			'public' => false,
+			'exclude_from_search' => true,
+			'show_in_admin_all_list' => false,
+			'show_in_admin_status_list' => false,
+		) );
 	}
 
 	// use remove-add to prevent infinite loop
 	function save_post_action( $post_id ){
-
-		//ignore all other post types
-		if ( 'simplechart' !== get_post_type( $post_id ) ){
-			return;
-		}
 
 		// verify nonce
 		if ( empty( $_POST['simplechart-nonce'] ) || ! wp_verify_nonce( $_POST['simplechart-nonce'], 'simplechart_save' ) ){
@@ -36,10 +44,10 @@ class Simplechart_Save {
 			return;
 		}
 
-		remove_action( 'save_post', array($this, 'save_post_action' ), 10, 1 );
+		remove_action( 'save_post_simplechart', array($this, 'save_post_action' ), 10, 1 );
 		$post = get_post( $post_id );
 		$this->do_save_post( $post );
-		add_action( 'save_post', array($this, 'save_post_action' ), 10, 1 );
+		add_action( 'save_post_simplechart', array($this, 'save_post_action' ), 10, 1 );
 	}
 
 	function admin_notices(){
@@ -72,8 +80,13 @@ class Simplechart_Save {
 
 	function do_save_post( $post ){
 
+		// delete featured image if post is NOT published but has a featured image
+		if ( 'publish' !== get_post_status( $post->ID ) && has_post_thumbnail( $post->ID ) ) {
+			wp_delete_attachment( get_post_thumbnail_id( $post->ID ), true );
+		}
+
 		// handle base64 image string if provided
-		if ( ! empty( $_POST['simplechart-png-string'] ) ){
+		if ( ! empty( $_POST['simplechart-png-string'] ) && in_array( get_post_status( $post->ID ), array( 'publish', 'future' ) ) ){
 			$this->_save_chart_image( $post, $_POST['simplechart-png-string'], $this->_default_img_type );
 		}
 
@@ -116,6 +129,12 @@ class Simplechart_Save {
 	}
 
 	private function _save_chart_image( $post, $data_uri, $img_type ){
+
+		// make sure we have a post object
+		if ( is_numeric( $post ) ) {
+			$post = get_post( $post );
+		}
+
 		$perm_file_name = 'simplechart_' . $post->ID . '.' . $img_type;
 		$temp_file_name = 'temp_' . $perm_file_name;
 
@@ -152,21 +171,26 @@ class Simplechart_Save {
 
 		// import to media library
 		$desc = 'Chart: ' . sanitize_text_field( get_the_title( $post->ID ) );
-		$attachment_id = media_handle_sideload( array(
+		$this->_attachment_id = media_handle_sideload( array(
 			'name' => $perm_file_name,
 			'tmp_name' => $temp_file['file'],
 		), $post->ID, $desc);
-		$new_file_path = get_post_meta( $attachment_id, '_wp_attached_file', true );
+		$new_file_path = get_post_meta( $this->_attachment_id, '_wp_attached_file', true );
 		$this->_debug_messages[] = sprintf( __( 'media_handle_sideload() to %s', 'simplechart' ), $new_file_path );
 		$this->_debug_messages[] = $new_file_path === $old_file_path ? __( 'New file path matches old file path', 'simplechart' ) : __( 'New file path does NOT match old file path', 'simplechart' );
 
-		if ( is_wp_error( $attachment_id ) ){
-			$this->_errors = array_merge( $this->_errors, $attachment_id->get_error_messages() );
+		if ( is_wp_error( $this->_attachment_id ) ){
+			$this->_errors = array_merge( $this->_errors, $this->_attachment_id->get_error_messages() );
 			return false;
 		}
 
-		// set as post featured image and store string in postmeta
-		set_post_thumbnail( $post->ID, $attachment_id );
+		if ( is_wp_error( $updated ) ){
+			$this->_errors = array_merge( $this->_errors, $updated->get_error_messages() );
+			return false;
+		}
+
+		// set as post featured image
+		set_post_thumbnail( $post->ID, $this->_attachment_id );
 
 		// delete the temporary file!
 		if ( file_exists( $temp_file['file'] ) ){
@@ -175,6 +199,13 @@ class Simplechart_Save {
 		} else {
 			$this->_debug_messages[] = sprintf( __( '%s was already deleted', 'simplechart' ), $temp_file['file'] );
 		}
+	}
+
+	public function set_chart_image_status( $data, $postarr ) {
+		if ( $this->_attachment_id === $data['ID'] ) {
+			$data['post_status'] = $this->_image_post_status;
+		}
+		return $data;
 	}
 
 	private function _process_data_uri( $data_uri, $img_type ){
