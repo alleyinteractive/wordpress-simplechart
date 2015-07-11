@@ -57,7 +57,6 @@ class Simplechart_Post_Type {
 	}
 
 	public function render_meta_box( $post, $args ) {
-		global $simplechart;
 		$plugin_dir_path = $args['args'][0];
 		$json_data = $args['args'][1];
 		$meta_box_html = file_get_contents( $plugin_dir_path . 'templates/meta-box.html' );
@@ -65,7 +64,7 @@ class Simplechart_Post_Type {
 		$template_html = get_post_meta( $post->ID, 'simplechart-template', true );
 		$chart_url = get_post_meta( $post->ID, 'simplechart-chart-url', true );
 		$chart_id = get_post_meta( $post->ID, 'simplechart-chart-id', true );
-		$app_url = $simplechart->get_config( 'web_app_iframe_src' );
+		$app_url = Simplechart::instance()->get_config( 'web_app_iframe_src' );
 
 		$html = sprintf( $meta_box_html,
 			__( 'Launch Simplechart App', 'simplechart' ),
@@ -73,7 +72,7 @@ class Simplechart_Post_Type {
 			esc_url( $app_url ),
 			'simplechart-data',
 			json_encode( json_decode( $json_data ) ), // escapes without converting " to &quot
-			$simplechart->save->validate_template_fragment( $template_html ),
+			Simplechart::instance()->save->validate_template_fragment( $template_html ),
 			__( 'Close Modal', 'simplechart' ),
 			esc_attr( $nonce ),
 			json_encode( json_decode( $json_data ) ),
