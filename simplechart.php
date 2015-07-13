@@ -10,6 +10,8 @@ Author URI: http://www.alleyinteractive.com/
 
 class Simplechart {
 
+	private static $instance;
+
 	// both will include trailing slash
 	private $_plugin_dir_path = null;
 	private $_plugin_dir_url = null;
@@ -26,7 +28,7 @@ class Simplechart {
 	);
 
 	// startup
-	function __construct(){
+	private function __construct(){
 		if ( ! $this->_check_dependencies() ){
 			add_action( 'admin_notices', array( $this, 'admin_notices' ) );
 			add_action( 'admin_init', array( $this, 'deactivate' ) );
@@ -36,6 +38,16 @@ class Simplechart {
 		$this->_plugin_dir_url = $this->_set_plugin_dir_url();
 		$this->_init_modules();
 		add_action( 'init', array( $this, 'action_init' ) );
+	}
+
+	/**
+	* Static accessor
+	*/
+	public static function instance() {
+		if ( ! is_object( self::$instance ) ) {
+			self::$instance = new Simplechart;
+		}
+		return self::$instance;
 	}
 
 	/**
@@ -189,14 +201,11 @@ class Simplechart {
 	}
 
 }
-global $simplechart;
-$simplechart = new Simplechart;
-
+Simplechart::instance();
 
 /**
  * Helper Functions
  */
 function simplechart_render_chart( $id ){
-	global $simplechart;
-	return $simplechart->template->render( $id );
+	return Simplechart::instance()->template->render( $id );
 }

@@ -17,8 +17,7 @@ class Simplechart_Template {
 		if ( is_admin() ){
 			return;
 		}
-		global $simplechart;
-		wp_register_style( 'simplechart', $simplechart->get_plugin_url() . 'css/style.css', array(), $simplechart->get_config( 'version' ) );
+		wp_register_style( 'simplechart', Simplechart::instance()->get_plugin_url() . 'css/style.css', array(), Simplechart::instance()->get_config( 'version' ) );
 		wp_enqueue_style( 'simplechart' );
 	}
 
@@ -39,14 +38,13 @@ class Simplechart_Template {
 
 	// render the chart from template
 	public function render( $id ){
-		global $simplechart;
 
 		// only allow non-published charts if we're looking at a post preview
 		if ( 'publish' !== get_post_status( $id ) && ! is_preview() ){
 			return '';
 		}
 
-		$loader_url = $simplechart->get_config( 'loader_js_url' );
+		$loader_url = Simplechart::instance()->get_config( 'loader_js_url' );
 
 		// if we have a chart ID saved, use that for the embed
 		$chart_id = get_post_meta( $id, 'simplechart-chart-id', true );
@@ -59,11 +57,11 @@ class Simplechart_Template {
 		$json_data = get_post_meta( $id, 'simplechart-data', true );
 		$template_html = get_post_meta( $id, 'simplechart-template', true );
 		$image_fallback = wp_get_attachment_image_src( get_post_thumbnail_id( $id ), 'large' );
-		$template_format = file_get_contents( $simplechart->get_plugin_dir() . 'templates/template-partial.html' );
+		$template_format = file_get_contents( Simplechart::instance()->get_plugin_dir() . 'templates/template-partial.html' );
 
 		$template_html = sprintf( $template_format,
 			json_encode( json_decode( $json_data ) ),
-			$simplechart->save->validate_template_fragment( $template_html ),
+			Simplechart::instance()->save->validate_template_fragment( $template_html ),
 			esc_url( $loader_url ),
 			( ! $image_fallback ? '' : esc_url( $image_fallback[0] ) )
 		);
@@ -89,9 +87,8 @@ class Simplechart_Template {
 
 	// print app host as JS var in head if overriding simplechart.io
 	public function print_app_host(){
-		global $simplechart;
 		// set app host URL
-		echo "\n<script> window.simplechartAppHost = window.simplechartAppHost || " . json_encode( $simplechart->get_config( 'web_app_url' ) ) . "; </script>\n";
+		echo "\n<script> window.simplechartAppHost = window.simplechartAppHost || " . json_encode( Simplechart::instance()->get_config( 'web_app_url' ) ) . "; </script>\n";
 	}
 
 }
