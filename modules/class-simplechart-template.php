@@ -60,7 +60,7 @@ class Simplechart_Template {
 		$template_format = file_get_contents( Simplechart::instance()->get_plugin_dir() . 'templates/template-partial.html' );
 
 		$template_html = sprintf( $template_format,
-			json_encode( json_decode( $json_data ) ),
+			json_encode( json_decode( $json_data ), JSON_HEX_APOS ),
 			Simplechart::instance()->save->validate_template_fragment( $template_html ),
 			esc_url( $loader_url ),
 			( ! $image_fallback ? '' : esc_url( $image_fallback[0] ) )

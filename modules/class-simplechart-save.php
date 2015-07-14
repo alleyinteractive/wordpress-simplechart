@@ -3,7 +3,7 @@
 class Simplechart_Save {
 
 	private $_default_img_type = 'png';
-	private $_allowed_template_tags = array( 'nvd3', 'datamaps', 'highchart' );
+	private $_allowed_template_tags = array( 'nvd3', 'datamap', 'highchart' );
 	private $_errors = array();
 	private $_debug_messages = array();
 	private $_show_debug_messages = false;
