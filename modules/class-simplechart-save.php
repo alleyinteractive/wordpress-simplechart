@@ -202,7 +202,7 @@ class Simplechart_Save {
 	}
 
 	public function set_chart_image_status( $data, $postarr ) {
-		if ( $this->_attachment_id === $data['ID'] ) {
+		if ( ! empty( $data['ID'] ) && ! empty( $this->_attachment_id ) && $this->_attachment_id === $data['ID'] ) {
 			$data['post_status'] = $this->_image_post_status;
 		}
 		return $data;
