@@ -57,15 +57,17 @@ class Simplechart_WP_CLI extends WP_CLI_Command {
 		$post_ids = array_map( 'absint', $post_ids );
 		$site_id = absint( $assoc_args['site'] );
 		$this->_set_author( $assoc_args );
-		WP_CLI::line( sprintf( __( 'Starting import of %s posts from site %s', 'simplechart' ), count( $post_ids ), $site_id ) );
+		WP_CLI::line( sprintf( __( "Starting import of %s posts from site %s\n", 'simplechart' ), count( $post_ids ), $site_id ) );
 		foreach ( $post_ids as $post_id ) {
+			WP_CLI::line( sprintf( __( 'Processing post %s', 'simplechart' ), $post_id ) );
 			$post_object = $this->_extract_wpcom_post_object( $site_id, $post_id );
 			if ( $post_object ) {
 				$transformed = $this->_transform_from_wpcom_api( $post_object );
 				$this->_load_post( $transformed );
 			}
+			WP_CLI::line( '' );
 		}
-		WP_CLI::success( sprintf( __( 'Processed %s posts from site %s', 'simplechart' ), count( $post_ids ), $site_id ) );
+		WP_CLI::line( sprintf( __( 'Processed %s posts from site %s', 'simplechart' ), count( $post_ids ), $site_id ) );
 	}
 
 	/**
