@@ -69,32 +69,6 @@ class Simplechart_WP_CLI extends WP_CLI_Command {
 	}
 
 	/**
-	 * set author by ID or username to assign imported posts to
-	 * @var array Assoc args from command
-	 */
-	private function _set_author( $assoc_args ) {
-		// was an author provided?
-		if ( empty( $assoc_args['author'] ) ) {
-			return;
-		}
-
-		// check for author ID
-		if ( is_numeric( $assoc_args['author'] ) ) {
-			$user = get_user_by( 'id', absint( $assoc_args['author'] ) );
-		}
-		// check for author by slug
-		else {
-			$user = get_user_by( 'slug', $assoc_args['author'] );
-		}
-
-		// set author
-		if ( ! empty( $user ) ) {
-			$this->_author = $user->ID;
-		}
-		return;
-	}
-
-	/**
 	 * Retrieve a single post from the WordPress.com REST API
 	 * see https://developer.wordpress.com/docs/api/1.1/get/sites/%24site/posts/%24post_ID/#apidoc-response
 	 * @param int $site WPCOM site ID
@@ -218,6 +192,32 @@ class Simplechart_WP_CLI extends WP_CLI_Command {
 	 */
 	private function _attach_featured_image_to_post( $image, $post_id ) {
 		// https://codex.wordpress.org/Function_Reference/media_handle_sideload#Examples
+	}
+
+	/**
+	 * set author by ID or username to assign imported posts to
+	 * @var array Assoc args from command
+	 */
+	private function _set_author( $assoc_args ) {
+		// was an author provided?
+		if ( empty( $assoc_args['author'] ) ) {
+			return;
+		}
+
+		// check for author ID
+		if ( is_numeric( $assoc_args['author'] ) ) {
+			$user = get_user_by( 'id', absint( $assoc_args['author'] ) );
+		}
+		// check for author by slug
+		else {
+			$user = get_user_by( 'slug', $assoc_args['author'] );
+		}
+
+		// set author
+		if ( ! empty( $user ) ) {
+			$this->_author = $user->ID;
+		}
+		return;
 	}
 }
 WP_CLI::add_command( 'simplechart', 'Simplechart_WP_CLI' );
