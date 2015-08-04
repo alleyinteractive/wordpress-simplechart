@@ -136,14 +136,7 @@ class Simplechart_WP_CLI extends WP_CLI_Command {
 		}
 
 		// featured image
-		$featured_image = null;
-		if ( ! empty( $post_object['post_thumbnail' ] ) ) {
-			$featured_image = array(
-				'url' => $post_object['post_thumbnail' ]['URL'],
-				'width' => $post_object['post_thumbnail' ]['width'],
-				'height' => $post_object['post_thumbnail' ]['height'],
-			);
-		}
+		$featured_image = ! empty( $post_object['featured_image'] ) ? $post_object['featured_image'] : null;
 
 		return array(
 			'post_data' => $post_data,
@@ -178,8 +171,8 @@ class Simplechart_WP_CLI extends WP_CLI_Command {
 		}
 
 		// attach the featured image
-		if ( $post_data['featured_image'] ) {
-			$this->_attach_featured_image_to_post( $post_data['featured_image']['url'], $post_id, $data['post_data']['post_title'] );
+		if ( $data['featured_image'] ) {
+			$this->_attach_featured_image_to_post( $data['featured_image'], $post_id, $data['post_data']['post_title'] );
 		}
 
 		return true;
