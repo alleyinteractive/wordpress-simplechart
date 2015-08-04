@@ -179,7 +179,7 @@ class Simplechart_WP_CLI extends WP_CLI_Command {
 
 		// attach the featured image
 		if ( $post_data['featured_image'] ) {
-			$this->_attach_featured_image_to_post( $post_data['featured_image'], $post_id );
+			$this->_attach_featured_image_to_post( $post_data['featured_image']['url'], $post_id, $data['post_data']['post_title'] );
 		}
 
 		return true;
@@ -187,11 +187,32 @@ class Simplechart_WP_CLI extends WP_CLI_Command {
 
 	/**
 	 * sideload featured image from URL and set as post thumbnail
-	 * @var array $image Image URL, width, height
+	 * @var array $image Image URL
 	 * @var int $post_id ID of Simplechart post
+	 * @var string $desc Description for image
 	 */
-	private function _attach_featured_image_to_post( $image, $post_id ) {
-		// https://codex.wordpress.org/Function_Reference/media_handle_sideload#Examples
+	private function _attach_featured_image_to_post( $image, $post_id, $desc ) {
+		$tmp = download_url( $image );
+		if ( is_wp_error( $tmp ) ) {
+			WP_CLI::warning( 'Error downloading ' . $image );
+			if ( file_exists( $tmp ) ) {
+				@unlink( $tmp );
+			}
+			return;
+		}
+
+		$file_array = array(
+			'tmp_name' => $tmp,
+			'name' => basename( $image ),
+		);
+		$media_id = media_handle_sideload( $file_array, $post_id, $desc );
+
+		if ( ! is_wp_error( $media_id ) ) {
+			set_post_thumbnail( $post_id, $media_id );
+		}
+		if ( file_exists( $tmp ) ) {
+			@unlink( $tmp );
+		}
 	}
 
 	/**
