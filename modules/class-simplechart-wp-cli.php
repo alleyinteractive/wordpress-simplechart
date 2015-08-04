@@ -126,8 +126,10 @@ class Simplechart_WP_CLI extends WP_CLI_Command {
 			$post_data['post_author'] = $this->_author;
 		}
 
-		// loop through post metadata
-		$post_meta = array();
+		// setup post metadata
+		$post_meta = array(
+			'_src_guid' => $post_data['guid'],
+		);
 		if ( ! empty( $post_object['metadata'] ) && is_array( $post_object['metadata'] ) ) {
 			foreach ( $post_object['metadata']  as $meta ) {
 				if ( in_array( $meta['key'], $this->_meta_keys, true ) ) {
