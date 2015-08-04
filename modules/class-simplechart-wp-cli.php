@@ -57,7 +57,7 @@ class Simplechart_WP_CLI extends WP_CLI_Command {
 		$post_ids = array_map( 'absint', $post_ids );
 		$site_id = absint( $assoc_args['site'] );
 		$this->_set_author( $assoc_args );
-		WP_CLI::line( sprintf( 'Starting import of %s posts from site %s', count( $post_ids ), $site_id ) );
+		WP_CLI::line( sprintf( __( 'Starting import of %s posts from site %s', 'simplechart' ), count( $post_ids ), $site_id ) );
 		foreach ( $post_ids as $post_id ) {
 			$post_object = $this->_extract_wpcom_post_object( $site_id, $post_id );
 			if ( $post_object ) {
@@ -65,7 +65,7 @@ class Simplechart_WP_CLI extends WP_CLI_Command {
 				$this->_load_post( $transformed );
 			}
 		}
-		WP_CLI::success( sprintf( 'Processed %s posts from site %s', count( $post_ids ), $site_id ) );
+		WP_CLI::success( sprintf( __( 'Processed %s posts from site %s', 'simplechart' ), count( $post_ids ), $site_id ) );
 	}
 
 	/**
@@ -85,12 +85,12 @@ class Simplechart_WP_CLI extends WP_CLI_Command {
 
 		// validate response
 		if ( is_wp_error( $response ) ) {
-			$warning = sprintf( "Failed to GET post %s from site %s\n", $post, $site );
+			$warning = sprintf( __( "Failed to GET post %s from site %s\n", 'simplechart' ), $post, $site );
 			$warning .= implode( "\n", $response->get_error_messages() );
 			WP_CLI::warning( $warning );
 			return null;
 		} elseif ( 200 !== $code = wp_remote_retrieve_response_code( $response ) ) {
-			WP_CLI::warning( sprintf( 'Post %s from site %s returned error code %s', $post, $site, $code ) );
+			WP_CLI::warning( sprintf( __( 'Post %s from site %s returned error code %s', 'simplechart' ), $post, $site, $code ) );
 			return null;
 		}
 
@@ -98,7 +98,7 @@ class Simplechart_WP_CLI extends WP_CLI_Command {
 
 		// make sure it's the right post type
 		if ( $this->_post_type !== $post_object['type'] ) {
-			WP_CLI::warning( sprintf( "Post %s from site %s does not have post_type '%s'", $post, $site, $this->_post_type ) );
+			WP_CLI::warning( sprintf( __( "Post %s from site %s does not have post_type '%s'", 'simplechart' ), $post, $site, $this->_post_type ) );
 			return null;
 		}
 
@@ -162,7 +162,7 @@ class Simplechart_WP_CLI extends WP_CLI_Command {
 	 */
 	private function _load_post( $data ) {
 		if ( empty( $data['post_data'] ) ) {
-			WP_CLI::warning( 'Tried to insert post with no post_data' );
+			WP_CLI::warning( __( 'Tried to insert post with no post_data', 'simplechart' ) );
 			return false;
 		}
 
@@ -194,7 +194,7 @@ class Simplechart_WP_CLI extends WP_CLI_Command {
 	private function _attach_featured_image_to_post( $image, $post_id, $desc ) {
 		$tmp = download_url( $image );
 		if ( is_wp_error( $tmp ) ) {
-			WP_CLI::warning( 'Error downloading ' . $image );
+			WP_CLI::warning( sprintf( __( 'Error downloading %s', 'simplechart' ), esc_url( $image ) ) );
 			if ( file_exists( $tmp ) ) {
 				@unlink( $tmp );
 			}
