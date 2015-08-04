@@ -102,6 +102,7 @@ class Simplechart_WP_CLI extends WP_CLI_Command {
 			return null;
 		}
 
+		WP_CLI::success( sprintf( __( 'Retrieved post %s from site %s', 'simplechart' ), $post, $site ) );
 		return $post_object;
 	}
 
@@ -135,7 +136,7 @@ class Simplechart_WP_CLI extends WP_CLI_Command {
 			}
 		}
 
-		// featured image
+		// featured image URL
 		$featured_image = ! empty( $post_object['featured_image'] ) ? $post_object['featured_image'] : null;
 
 		return array(
@@ -155,13 +156,14 @@ class Simplechart_WP_CLI extends WP_CLI_Command {
 	 */
 	private function _load_post( $data ) {
 		if ( empty( $data['post_data'] ) ) {
-			WP_CLI::warning( __( 'Tried to insert post with no post_data', 'simplechart' ) );
+			WP_CLI::warning( __( 'Cannot insert post with no post_data', 'simplechart' ) );
 			return false;
 		}
 
 		// create the post
 		$post_id = wp_insert_post( $data['post_data'] );
 		if ( 0 === $post_id ) {
+			WP_CLI::warning( __( 'Failed to insert post', 'simplechart' ) );
 			return false;
 		}
 
@@ -202,6 +204,9 @@ class Simplechart_WP_CLI extends WP_CLI_Command {
 
 		if ( ! is_wp_error( $media_id ) ) {
 			set_post_thumbnail( $post_id, $media_id );
+			WP_CLI::success( sprintf( __( 'Set attachment %s as thumbnail for post %s', 'simplechart' ), $media_id, $post_id ) );
+		} else {
+			WP_CLI::warning( sprintf( __( 'Sideload failed: %s', 'simplechart' ), $media_id->get_error_message() ) );
 		}
 		if ( file_exists( $tmp ) ) {
 			@unlink( $tmp );
