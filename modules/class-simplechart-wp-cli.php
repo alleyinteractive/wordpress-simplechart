@@ -98,6 +98,12 @@ class Simplechart_WP_CLI extends WP_CLI_Command {
 
 		$post_object = json_decode( wp_remote_retrieve_body( $response ), true );
 
+		// make sure json_decode worked
+		if ( empty( $post_object ) ) {
+			WP_CLI::warning( sprintf( __( 'Invalid JSON response from %s', 'simplechart' ), $url ) );
+			return null;
+		}
+
 		// make sure it's the right post type
 		if ( $this->_post_type !== $post_object['type'] ) {
 			WP_CLI::warning( sprintf( __( "Post %s from site %s does not have post_type '%s'", 'simplechart' ), $post, $site, $this->_post_type ) );
@@ -186,7 +192,7 @@ class Simplechart_WP_CLI extends WP_CLI_Command {
 
 	/**
 	 * sideload featured image from URL and set as post thumbnail
-	 * @var array $image Image URL
+	 * @var string $image Image URL
 	 * @var int $post_id ID of Simplechart post
 	 * @var string $desc Description for image
 	 */
