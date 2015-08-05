@@ -132,6 +132,11 @@ class Simplechart {
 		require_once( $this->_plugin_dir_path . 'modules/class-simplechart-template.php' );
 		$this->template = new Simplechart_Template;
 
+		// WP-CLI commands
+		if ( defined( 'WP_CLI' ) && WP_CLI ) {
+			require_once( $this->_plugin_dir_path . 'modules/class-simplechart-wp-cli.php' );
+		}
+
 	}
 
 	/**
