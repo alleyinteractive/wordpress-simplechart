@@ -118,6 +118,13 @@ function githubHttpsCloneOptions() {
       return 1;
     }
   };
+
+  // check if --branch=<branch> was passed
+  // we can live with the shortcomings of typeof here
+  var branch = getNamedArg('branch');
+  if (typeof branch === 'string') {
+    cloneOptions.checkoutBranch = branch;
+  }
   return cloneOptions;
 }
 
