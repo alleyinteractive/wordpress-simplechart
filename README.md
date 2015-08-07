@@ -34,14 +34,16 @@ In the unlikely event that you need to update the version of the app that lives 
 
 ````
 $ npm install
-$ node simplechart-update.js
+$ node simplechart-update.js [--token=<token>] [--deploy-mode=<deploy-mode>] [--branch=<branch>]
 ````
 
-The command accepts two arguments:
+The command accepts these optional arguments:
 
-`--token=<your GitHub token>` A [GitHub access token](https://github.com/settings/tokens) is **required**. You can provide it with the `--token` argument or by placing it in a text file `github_token.txt` in this directory.
+`--token=<your GitHub token>` A [GitHub access token](https://github.com/settings/tokens) is **required**. If you do not pass it with the `--token` argument, you can store it in a text file `github_token.txt` in this directory and the script will pick it up from there.
 
-`--deploy-mode` deletes Git files, Node modules, and other stuff not necessary for deploying _and updating_ the plugin. **Use with caution!** Note that `--deploy-mode` does not require a value, but you can specify `--deploy-mode=vip`. This will skip the check for the Media Explorer plugin, which is part of the platform on WordPress.com VIP.
+`--deploy-mode=<deploy-mode>` deletes Git files, Node modules, and other stuff not necessary for deploying _and updating_ the plugin. **You probably do not want to use this!** Note that `--deploy-mode` does not require a value, but you can specify `--deploy-mode=vip`. This will skip the check for the Media Explorer plugin, which is part of the platform on WordPress.com VIP.
+
+`--branch=<branch>` allows you to checkout a specific branch of the Simplechart repo before updating the WordPress plugin. Defaults to `master`.
 
 ### Available WordPress filters
 
