@@ -69,11 +69,13 @@ class Simplechart_Post_Type {
 		$chart_url = get_post_meta( $post->ID, 'simplechart-chart-url', true );
 		$chart_id = get_post_meta( $post->ID, 'simplechart-chart-id', true );
 		$app_url = Simplechart::instance()->get_config( 'web_app_iframe_src' );
+		$assets_url = Simplechart::instance()->get_plugin_url() . 'app/assets';
 
 		$html = sprintf( $meta_box_html,
 			__( 'Launch Simplechart App', 'simplechart' ),
 			__( 'Clear Simplechart Data', 'simplechart' ),
 			esc_url( $app_url ),
+			esc_url( $assets_url ),
 			'simplechart-data',
 			json_encode( json_decode( $json_data ) ), // escapes without converting " to &quot
 			Simplechart::instance()->save->validate_template_fragment( $template_html ),
