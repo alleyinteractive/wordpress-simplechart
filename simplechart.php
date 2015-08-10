@@ -151,7 +151,7 @@ class Simplechart {
 		$this->_config['loader_js_url'] = apply_filters( 'simplechart_loader_js_url', $this->_config['loader_js_url'] );
 
 		// default to root-relative path to simplechart web app
-		$this->_config['web_app_iframe_src'] = parse_url( $this->_config['web_app_url'], PHP_URL_PATH ) . '/#/simplechart';
+		$this->_config['web_app_iframe_src'] = $this->post_type->get_web_app_iframe_src();
 		$this->_config['web_app_iframe_src'] = apply_filters( 'simplechart_web_app_iframe_src', $this->_config['web_app_iframe_src'] );
 
 		if ( is_admin() ){

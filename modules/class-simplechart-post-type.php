@@ -6,9 +6,13 @@
 
 class Simplechart_Post_Type {
 
+	private $_iframe_slug = 'simplechart_app';
+	private $_app_cap = 'edit_posts';
+
 	public function __construct(){
 		add_action( 'init', array( $this, 'register_post_type' ) );
 		add_action( 'after_setup_theme', array( $this, 'support_thumbnails' ) );
+		add_action( 'init', array( $this, 'setup_iframe_page' ) );
 	}
 
 	public function support_thumbnails(){
@@ -84,5 +88,27 @@ class Simplechart_Post_Type {
 		echo $html;
 	}
 
+	public function setup_iframe_page() {
+		add_menu_page( 'Simplechart App', 'Simplechart App', $this->_app_cap, 'simplechart_app', array( $this, 'render_iframe_page' ) );
+	}
+
+	public function render_iframe_page() {
+		require_once( Simplechart::instance()->get_plugin_dir() . 'app/index.php' );
+	}
+
+	/**
+	 * getter for iframe src
+	 * @return string path to use as src
+	 */
+	public function get_web_app_iframe_src() {
+		return '/wp-admin/admin.php?page=' . $this->_iframe_slug . '&noheader#/simplechart';
+	}
+
+	/**
+	 * use capability for this feature
+	 */
+	public function current_user_can() {
+		return current_user_can( $this->_app_cap );
+	}
 
 }
