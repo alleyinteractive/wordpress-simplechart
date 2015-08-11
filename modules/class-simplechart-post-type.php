@@ -12,7 +12,7 @@ class Simplechart_Post_Type {
 	public function __construct(){
 		add_action( 'init', array( $this, 'register_post_type' ) );
 		add_action( 'after_setup_theme', array( $this, 'support_thumbnails' ) );
-		add_action( 'init', array( $this, 'setup_iframe_page' ) );
+		add_action( 'admin_menu', array( $this, 'setup_iframe_page' ) );
 		add_filter( 'custom_menu_order', '__return_true' );
 		add_filter( 'menu_order', array( $this, 'remove_menu_link' ), 999 );
 	}
