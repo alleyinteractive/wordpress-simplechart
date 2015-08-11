@@ -104,11 +104,38 @@ class Simplechart_Post_Type {
 	 * remove menu page from wp-admin nav since we're only creating it for the iframe when creating/editing a chart
 	 */
 	public function remove_menu_link( $menu_list ) {
-		$index = array_search( $this->_iframe_slug, $menu_list, true );
-		if ( false !== $index ) {
-			unset( $menu_list[ $index ] );
+
+		// remove from flat array of slugs for menu order
+		$menu_list = $this->_remove_slug_from_menu_order( $menu_list );
+
+		// remove from global 'default' menu order
+		global $default_menu_order;
+		$default_menu_order = $this->_remove_slug_from_menu_order( $default_menu_order );
+
+		// remove from global menu
+		global $menu;
+		if ( ! empty( $menu ) && is_array( $menu ) ) {
+			foreach ( $menu as $index => $item ) {
+				if ( ! empty( $item[2] ) && $item[2] === $this->_iframe_slug ) {
+					unset( $menu[ $index ] );
+					$menu = array_values( $menu );
+					break;
+				}
+			}
 		}
+
 		return $menu_list;
+	}
+
+	private function _remove_slug_from_menu_order( $array ) {
+		if ( ! empty( $array ) && is_array( $array ) ) {
+			$index = array_search( $this->_iframe_slug, $array, true );
+			if ( false !== $index ) {
+				unset( $array[ $index ] );
+				$array = array_values( $array );
+			}
+		}
+		return $array;
 	}
 
 	/**
