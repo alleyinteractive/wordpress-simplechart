@@ -14,6 +14,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simplechart</title>
     <link rel="icon" type="image/png" href="<?php echo esc_url( Simplechart::instance()->get_plugin_url() . 'app/assets/images/simplechartIcon.png' );?>">
+    <base href="<?php echo esc_url( Simplechart::instance()->get_plugin_url() . 'app/' ); ?>"></base>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-animate.min.js"></script>
