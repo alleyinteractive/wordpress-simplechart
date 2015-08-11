@@ -1,3 +1,7 @@
+<?php if ( ! Simplechart::instance()->post_type->current_user_can() ) {
+	die( esc_html__( 'Insufficient user capability', 'simplechart' ) );
+} ?>
+
 <!doctype html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
@@ -9,12 +13,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simplechart</title>
-    <link rel="icon" type="image/png" href="assets/images/simplechartIcon.png">
+    <link rel="icon" type="image/png" href="<?php echo esc_url( Simplechart::instance()->get_plugin_url() . 'app/assets/images/simplechartIcon.png' );?>">
+    <base href="<?php echo esc_url( Simplechart::instance()->get_plugin_url() . 'app/' ); ?>"></base>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-animate.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-resource.min.js"></script>
-    <script src="main.bundle.js"></script>
+    <script src="<?php echo esc_url( Simplechart::instance()->get_plugin_url() . 'app/main.bundle.js' ); ?>"></script>
 </head>
 
 <body>
@@ -29,7 +34,7 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a ui-sref="/" class="navbar-brand"><img width="150" src="assets/images/simplechartLogo.svg" /></a>
+			<a ui-sref="/" class="navbar-brand"><img width="150" src="<?php echo esc_url( Simplechart::instance()->get_plugin_url() . 'app/assets/images/simplechartLogo.svg' );?>" /></a>
 		</div>
 
 		<div id="simplechart-nav-main" class="collapse navbar-collapse" ng-controller="Nav">
@@ -38,7 +43,11 @@
 				<li ui-sref-active="active"><a ui-sref="tutorials">Tutorials</a></li>
 				<li ui-sref-active="active"><a ui-sref="faq">FAQ</a></li>
 				<li ui-sref-active="active"><a ui-sref="about">About</a></li>
-				<li class="alley-logo hidden-xs"><a href="http://alleyinteractive.com" target="_blank" title="Alley Interactive"><img src="assets/images/alleyLogo.svg" /></a></li>
+				<li class="alley-logo hidden-xs">
+					<a href="http://alleyinteractive.com" target="_blank" title="Alley Interactive">
+						<img src="<?php echo esc_url( Simplechart::instance()->get_plugin_url() . 'app/assets/images/alleyLogo.png' );?>" />
+					</a>
+				</li>
 			</ul>
 		</div>
 	</nav>
@@ -49,3 +58,4 @@
 </body>
 
 </html>
+<?php die(); ?>
