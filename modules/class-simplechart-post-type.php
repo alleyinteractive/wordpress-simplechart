@@ -13,6 +13,8 @@ class Simplechart_Post_Type {
 		add_action( 'init', array( $this, 'register_post_type' ) );
 		add_action( 'after_setup_theme', array( $this, 'support_thumbnails' ) );
 		add_action( 'init', array( $this, 'setup_iframe_page' ) );
+		add_filter( 'custom_menu_order', '__return_true' );
+		add_filter( 'menu_order', array( $this, 'remove_menu_link' ), 999 );
 	}
 
 	public function support_thumbnails(){
@@ -96,6 +98,17 @@ class Simplechart_Post_Type {
 
 	public function render_iframe_page() {
 		require_once( Simplechart::instance()->get_plugin_dir() . 'app/index.php' );
+	}
+
+	/**
+	 * remove menu page from wp-admin nav since we're only creating it for the iframe when creating/editing a chart
+	 */
+	public function remove_menu_link( $menu_list ) {
+		$index = array_search( $this->_iframe_slug, $menu_list, true );
+		if ( false !== $index ) {
+			unset( $menu_list[ $index ] );
+		}
+		return $menu_list;
 	}
 
 	/**
