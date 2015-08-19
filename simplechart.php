@@ -54,6 +54,12 @@ class Simplechart {
 	 * test for plugin dependencies and add error messages to admin notices as needed
 	 */
 	private function _check_dependencies() {
+
+		// skip check for Media Explorer on VIP since it's part of WPCOM platform
+		if ( defined( 'WPCOM_IS_VIP_ENV' ) && WPCOM_IS_VIP_ENV ) {
+			return true;
+		}
+
 		$deps_found = true;
 
 		// require Media Explorer
