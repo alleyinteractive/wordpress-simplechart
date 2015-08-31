@@ -8,8 +8,10 @@ function WPSimplechartApp(){
 		modalInitialized : false,
 		chartData : null,
 		childWindow : null,
+		confirmNoDataMessage : '',
 
 		init : function() {
+			this.confirmNoDataMessage = WPSimplechartBootstrap.confirmNoDataMessage;
 			window.addEventListener('message', this.receiveMessages );
 			this.inputEl = document.getElementById( WPSimplechartBootstrap.postmetaKey );
 			this.inputTemplateEl = document.getElementById( 'simplechart-template' );
@@ -44,7 +46,9 @@ function WPSimplechartApp(){
 				$( 'body' ).append( app.modalElements.container + app.modalElements.backdrop );
 				$( '#simplechart-close' ).click( function( e ) {
 					e.preventDefault();
-					$( '#simplechart-backdrop, #simplechart-modal' ).hide();
+					if ( app.chartData || confirm( app.confirmNoDataMessage ) ) {
+						$( '#simplechart-backdrop, #simplechart-modal' ).hide();
+					}
 				} );
 
 				app.modalInitialized = true;
