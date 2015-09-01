@@ -82,6 +82,7 @@ class Simplechart_Post_Type {
 			json_encode( json_decode( $json_data ) ), // escapes without converting " to &quot
 			Simplechart::instance()->save->validate_template_fragment( $template_html ),
 			__( 'Close Modal', 'simplechart' ),
+			__( 'Confirming this message will proceed without saving changes. If you have made changes that you wish to save, cancel this message, proceed to the final step, and click the Save Chart button.', 'simplechart' ),
 			esc_attr( $nonce ),
 			json_encode( json_decode( $json_data ) ),
 			esc_attr( $template_html ),

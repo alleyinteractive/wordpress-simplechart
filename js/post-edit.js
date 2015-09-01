@@ -8,8 +8,11 @@ function WPSimplechartApp(){
 		modalInitialized : false,
 		chartData : null,
 		childWindow : null,
+		confirmNoDataMessage : '',
+		savedChart : false,
 
-		init : function(){
+		init : function() {
+			this.confirmNoDataMessage = WPSimplechartBootstrap.confirmNoDataMessage;
 			window.addEventListener('message', this.receiveMessages );
 			this.inputEl = document.getElementById( WPSimplechartBootstrap.postmetaKey );
 			this.inputTemplateEl = document.getElementById( 'simplechart-template' );
@@ -23,13 +26,13 @@ function WPSimplechartApp(){
 			$( '#simplechart-launch' ).click();
 		},
 
-		setAppOrigin : function(){
+		setAppOrigin : function() {
 			var tempEl = document.createElement( 'a' );
 			tempEl.href = WPSimplechartBootstrap.appUrl;
 			return tempEl.origin;
 		},
 
-		clearInputEl : function(e){
+		clearInputEl : function(e) {
 			e.preventDefault();
 			app.inputEl.setAttribute('value', '');
 			app.inputTemplateEl.setAttribute('value', '');
@@ -42,8 +45,12 @@ function WPSimplechartApp(){
 				app.modalElements.container = app.modalElements.container.replace('{{iframeSrc}}', WPSimplechartBootstrap.appUrl);
 				app.modalElements.container = app.modalElements.container.replace('{{closeModal}}', WPSimplechartBootstrap.closeModal);
 				$( 'body' ).append( app.modalElements.container + app.modalElements.backdrop );
-				$( '#simplechart-close' ).click( function(){
-					$( '#simplechart-backdrop, #simplechart-modal' ).hide();
+				$( '#simplechart-close' ).click( function( e ) {
+					e.preventDefault();
+					if ( app.savedChart || confirm( app.confirmNoDataMessage ) ) {
+						$( '#simplechart-backdrop, #simplechart-modal' ).hide();
+						app.savedChart = false;
+					}
 				} );
 
 				app.modalInitialized = true;
@@ -55,7 +62,7 @@ function WPSimplechartApp(){
 		/*
 		 * postMessage send/receive functions
 		 */
-		receiveMessages: function(e) {
+		receiveMessages: function( e ) {
 			if ( _.isUndefined( e.data.src ) || 'simplechart' !== e.data.src ) {
 				return;
 			}
@@ -66,7 +73,7 @@ function WPSimplechartApp(){
 				return;
 			}
 
-			if ( app.isFrameReadyMessage( e.data ) ){
+			if ( app.isFrameReadyMessage( e.data ) ) {
 				console.log( 'window received ready message from Simplechart iframe');
 				app.childWindow = app.childWindow || document.getElementById('simplechart-frame').contentWindow;
 				app.sendSimplechartOptions();
@@ -88,21 +95,22 @@ function WPSimplechartApp(){
 			app.imgInputEl.value = e.data.data.chartImg;
 
 			// store published chart URL
-			if ( ! _.isUndefined( app.chartData.chartUrl ) ){
+			if ( ! _.isUndefined( app.chartData.chartUrl ) ) {
 				app.inputChartUrlEl.value = app.chartData.chartUrl;
 			}
 
 			// store published chart ID
-			if ( ! _.isUndefined( app.chartData.id ) ){
+			if ( ! _.isUndefined( app.chartData.id ) ) {
 				app.inputChartIdEl.value = app.chartData.id;
 			}
 
 			// set post title to chart name if empty
 			$title =  $( '#title' );
-			if ( ! $title.val() ){
+			if ( ! $title.val() ) {
 				$title.val( decodeURIComponent( app.chartData.meta.title ) ).focus();
 			}
 
+			app.savedChart = true;
 			console.log( 'parent window received data from app iframe' );
 			console.log( app.inputTemplateEl.value, app.chartData );
 
@@ -123,7 +131,7 @@ function WPSimplechartApp(){
 			app.childWindow.postMessage( msgObj, app.appOrigin );
 		},
 
-		sendSavedData : function(){
+		sendSavedData : function() {
 			var mergedFields = WPSimplechartBootstrap.data || null;
 			if ( mergedFields ){
 				mergedFields.template = WPSimplechartBootstrap.template;
@@ -138,7 +146,7 @@ function WPSimplechartApp(){
 			app.childWindow.postMessage( msgObj, app.appOrigin );
 		},
 
-		isFrameReadyMessage : function(msgObj){
+		isFrameReadyMessage : function(msgObj) {
 			return !_.isUndefined( msgObj.channel ) &&
 				msgObj.channel === 'upstream' &&
 				!_.isUndefined( msgObj.msg ) &&
@@ -147,12 +155,12 @@ function WPSimplechartApp(){
 	};
 
 	// initialize when document is ready;
-	if ( typeof $ === 'undefined' ){
+	if ( typeof $ === 'undefined' ) {
 		var $ = jQuery;
 	}
-	$(document).ready(function(){
+	$( document ).ready( function() {
 		app.init();
-	});
+	} );
 
 	return app;
 };

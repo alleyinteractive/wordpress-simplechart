@@ -86,7 +86,7 @@ class Simplechart_Save {
 		}
 
 		// handle base64 image string if provided
-		if ( ! empty( $_POST['simplechart-png-string'] ) && in_array( get_post_status( $post->ID ), array( 'publish', 'future' ), true ) ){
+		if ( ! empty( $_POST['simplechart-png-string'] ) ){
 			$this->_save_chart_image( $post, $_POST['simplechart-png-string'], $this->_default_img_type );
 		}
 
@@ -202,7 +202,7 @@ class Simplechart_Save {
 	}
 
 	public function set_chart_image_status( $data, $postarr ) {
-		if ( ! empty( $data['ID'] ) && ! empty( $this->_attachment_id ) && $this->_attachment_id === $data['ID'] ) {
+		if ( 'simplechart' === get_post_type( $data['post_parent'] ) ) {
 			$data['post_status'] = $this->_image_post_status;
 		}
 		return $data;
