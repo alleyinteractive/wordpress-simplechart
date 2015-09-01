@@ -9,6 +9,7 @@ function WPSimplechartApp(){
 		chartData : null,
 		childWindow : null,
 		confirmNoDataMessage : '',
+		savedChart : false,
 
 		init : function() {
 			this.confirmNoDataMessage = WPSimplechartBootstrap.confirmNoDataMessage;
@@ -46,8 +47,9 @@ function WPSimplechartApp(){
 				$( 'body' ).append( app.modalElements.container + app.modalElements.backdrop );
 				$( '#simplechart-close' ).click( function( e ) {
 					e.preventDefault();
-					if ( app.chartData || confirm( app.confirmNoDataMessage ) ) {
+					if ( app.savedChart || confirm( app.confirmNoDataMessage ) ) {
 						$( '#simplechart-backdrop, #simplechart-modal' ).hide();
+						app.savedChart = false;
 					}
 				} );
 
@@ -108,6 +110,7 @@ function WPSimplechartApp(){
 				$title.val( decodeURIComponent( app.chartData.meta.title ) ).focus();
 			}
 
+			app.savedChart = true;
 			console.log( 'parent window received data from app iframe' );
 			console.log( app.inputTemplateEl.value, app.chartData );
 
