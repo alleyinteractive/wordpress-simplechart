@@ -86,7 +86,7 @@ class Simplechart_Save {
 		}
 
 		// handle base64 image string if provided
-		if ( ! empty( $_POST['simplechart-png-string'] ) && in_array( get_post_status( $post->ID ), array( 'publish', 'future' ), true ) ){
+		if ( ! empty( $_POST['simplechart-png-string'] ) ){
 			$this->_save_chart_image( $post, $_POST['simplechart-png-string'], $this->_default_img_type );
 		}
 
