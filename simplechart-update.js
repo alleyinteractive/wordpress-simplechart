@@ -7,6 +7,8 @@ var Git = require('nodegit');
 var fs = require('fs');
 var path = require('path');
 var rimraf = require('rimraf');
+var jsdiff = require('diff');
+var colors = require('colors');
 
 // repos needed
 mediaExplorerRepo = 'https://github.com/Automattic/media-explorer.git';
@@ -17,6 +19,7 @@ var GITHUB_TOKEN;
 var mediaExplorerPath;
 var simplechartPath = __dirname + '/app';
 var simplechartTmp = __dirname + '/_tmp_simplechart';
+var indexTmp = __dirname + '/_tmp_index';
 
 // install files to be deleted
 var installFiles = [
@@ -138,6 +141,10 @@ function setupLocalSimplechart() {
     return Git.Cred.userpassPlaintextNew(GITHUB_TOKEN, 'x-oauth-basic');
   }
 
+  // move index files to temp folder
+  fs.renameSync(simplechartPath + '/index.html', indexTmp + '/index.html');
+  fs.renameSync(simplechartPath + '/index.php', indexTmp + '/index.php');
+
   // delete existing stuff
   rimraf.sync(simplechartTmp);
   rimraf.sync(simplechartPath);
@@ -151,7 +158,27 @@ function setupLocalSimplechart() {
     console.log('Deleting temp folder');
     rimraf.sync(simplechartTmp);
     deleteInstallFiles();
+    diffIndex();
   });
+}
+
+/**
+ * test for changes in index.html, since we can't directly copy to index.php
+ */
+function diffIndex() {
+  var newIndex = fs.readFileSync(simplechartPath + '/index.html');
+  var oldIndex = fs.readFileSync(indexTmp + '/index.html');
+  var diff = jsdiff.diffChars(oldIndex, newIndex);
+  console.log('about to diff');
+  diff.forEach(function(part){
+    // green for additions, red for deletions
+    // grey for common parts
+    var color = part.added ? 'green' :
+      part.removed ? 'red' : 'grey';
+    process.stderr.write(part.value[color]);
+  });
+
+  console.log()
 }
 
 /**
