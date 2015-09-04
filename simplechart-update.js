@@ -168,19 +168,32 @@ function setupLocalSimplechart() {
  * test for changes in index.html, since we can't directly copy to index.php
  */
 function diffIndex() {
+  console.log('checking for changes to index.html');
   var newIndex = fs.readFileSync(simplechartPath + '/index.html', {encoding: 'utf8'});
   var oldIndex = fs.readFileSync(indexTmp + '/index.html', {encoding: 'utf8'});
   var diff = jsdiff.diffChars(oldIndex, newIndex);
-  console.log('about to diff');
-  diff.forEach(function(part){
-    // green for additions, red for deletions
-    // grey for common parts
-    var color = part.added ? 'green' :
-      part.removed ? 'red' : 'grey';
-    process.stderr.write(part.value[color]);
-  });
+  if (diff.length > 1) {
+    var output  = '';
+    diff.forEach(function(part, index){
+      // green for additions, red for deletions, grey for common parts
+      var color = part.added ? 'green' : part.removed ? 'red' : 'grey';
 
-  console.log()
+      // indicate newline chars in console
+      if ((part.added || part.removed) && part.value === '\n') {
+        part.value = '\\n\n';
+      }
+
+      output += part.value[color];
+    });
+    console.log(output);
+    console.log('You need to manually edit index.php to reflect these changes!');
+  } else {
+    console.log('No changes found in index.html');
+  }
+
+  // replace index.php and remove temp dir
+  fs.renameSync(indexTmp + '/index.php', simplechartPath + '/index.php');
+  rimraf.sync(indexTmp);
 }
 
 /**
