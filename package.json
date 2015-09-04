@@ -18,6 +18,8 @@
   "homepage": "https://github.com/alleyinteractive/wordpress-simplechart",
   "dependencies": {
     "nodegit": "^0.3.3",
-    "rimraf": "^2.3.2"
+    "rimraf": "^2.3.2",
+    "diff": "^2.1.0",
+    "colors": "^1.1.2"
   }
 }
