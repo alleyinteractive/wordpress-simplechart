@@ -141,7 +141,9 @@ function setupLocalSimplechart() {
     return Git.Cred.userpassPlaintextNew(GITHUB_TOKEN, 'x-oauth-basic');
   }
 
+
   // move index files to temp folder
+  fs.mkdirSync(indexTmp);
   fs.renameSync(simplechartPath + '/index.html', indexTmp + '/index.html');
   fs.renameSync(simplechartPath + '/index.php', indexTmp + '/index.php');
 
@@ -157,8 +159,8 @@ function setupLocalSimplechart() {
     fs.renameSync(simplechartTmp + '/client/pages', simplechartPath);
     console.log('Deleting temp folder');
     rimraf.sync(simplechartTmp);
-    deleteInstallFiles();
     diffIndex();
+    deleteInstallFiles();
   });
 }
 
@@ -166,8 +168,8 @@ function setupLocalSimplechart() {
  * test for changes in index.html, since we can't directly copy to index.php
  */
 function diffIndex() {
-  var newIndex = fs.readFileSync(simplechartPath + '/index.html');
-  var oldIndex = fs.readFileSync(indexTmp + '/index.html');
+  var newIndex = fs.readFileSync(simplechartPath + '/index.html', {encoding: 'utf8'});
+  var oldIndex = fs.readFileSync(indexTmp + '/index.html', {encoding: 'utf8'});
   var diff = jsdiff.diffChars(oldIndex, newIndex);
   console.log('about to diff');
   diff.forEach(function(part){
