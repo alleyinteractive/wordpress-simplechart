@@ -76,6 +76,10 @@ class Simplechart_Save {
 				}
 			}
 		}
+
+		// clear errors and debug messages
+		delete_post_meta( $post->ID, 'simplechart-errors' );
+		delete_post_meta( $post->ID, 'simplechart-debug' );
 	}
 
 	function do_save_post( $post ) {
