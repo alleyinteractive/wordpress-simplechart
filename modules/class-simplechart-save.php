@@ -68,6 +68,7 @@ class Simplechart_Save {
 		}
 
 		// print debug messages
+		$this->_show_debug_messages = apply_filters( 'simplechart_show_debug_messages', $this->_show_debug_messages );
 		if ( $this->_show_debug_messages ) {
 			$messages = maybe_unserialize( get_post_meta( $post->ID, 'simplechart-debug', true ) );
 			if ( is_array( $messages ) ) {
@@ -117,17 +118,13 @@ class Simplechart_Save {
 		}
 
 		// save error messages
-		if ( empty( $this->_errors ) ) {
-			delete_post_meta( $post->ID, 'simplechart-errors' );
-		} else {
+		if ( ! empty( $this->_errors ) ) {
 			update_post_meta( $post->ID, 'simplechart-errors', $this->_errors );
 		}
 
 		// save debug messages
-		if ( $this->_show_debug_messages && ! empty( $this->_debug_messages ) ) {
+		if ( ! empty( $this->_debug_messages ) ) {
 			update_post_meta( $post->ID, 'simplechart-debug', $this->_debug_messages, true );
-		} else {
-			delete_post_meta( $post->ID, 'simplechart-debug' );
 		}
 
 	}
