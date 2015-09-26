@@ -73,18 +73,21 @@ class Simplechart_Post_Type {
 		$app_url = Simplechart::instance()->get_config( 'web_app_iframe_src' );
 		$assets_url = Simplechart::instance()->get_plugin_url() . 'app/';
 
+		// escapes without converting " to &quot
+		$validated_json_data = json_encode( json_decode( $json_data ) );
+
 		$html = sprintf( $meta_box_html,
 			__( 'Launch Simplechart App', 'simplechart' ),
 			__( 'Clear Simplechart Data', 'simplechart' ),
 			esc_url( $app_url ),
 			esc_url( $assets_url ),
 			'simplechart-data',
-			json_encode( json_decode( $json_data ) ), // escapes without converting " to &quot
+			$validated_json_data, // is printed in a script tag, so no htmlentities conversion
 			Simplechart::instance()->save->validate_template_fragment( $template_html ),
 			__( 'Close Modal', 'simplechart' ),
 			__( 'Confirming this message will proceed without saving changes. If you have made changes that you wish to save, cancel this message, proceed to the final step, and click the Save Chart button.', 'simplechart' ),
 			esc_attr( $nonce ),
-			json_encode( json_decode( $json_data ) ),
+			htmlentities( $validated_json_data, ENT_COMPAT ), // printed in a <input> value attr, so convert " to &quot
 			esc_attr( $template_html ),
 			esc_url( $chart_url ),
 			esc_attr( $chart_id )
