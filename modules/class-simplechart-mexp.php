@@ -38,7 +38,7 @@ if ( class_exists( 'MEXP_Template' ) ) {
 
 					<div class="mexp-item-main">
 						<div class="mexp-item-content">
-							<h3>{{ data.content }}</h3>
+							<h3>{{ data.content }} {{data.meta.status}}</h3>
 						</div>
 						<div class="mexp-item-date">
 							{{ data.date }}
@@ -150,13 +150,22 @@ if ( class_exists( 'MEXP_Service' ) ) {
 
 					$thumb = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), array( 150, 150 ) );
 					$thumb_url = isset( $thumb[0] ) ? $thumb[0] : '';
-
 					$item = new MEXP_Response_Item();
 					$item->set_date( intval( get_the_time( 'U' ) ) );
 					$item->set_date_format( 'g:i A - j M y' );
 					$item->set_id( absint( $post->ID ) );
 					$item->set_content( esc_html( get_the_title() ) );
 					$item->add_meta( 'img', esc_url( $thumb_url ) );
+
+					// Add status like ' - Draft' if chart is not yet published
+					$status = get_post_status( $post->ID );
+					if ( 'publish' === $status || ! $status ) {
+						$status = '';
+					} else {
+						$status = esc_attr__( '(' . ucfirst( sprintf( '%s', $status ) ) . ')', 'simplechart');
+					}
+					$item->add_meta( 'status', $status );
+
 					$response->add_item( $item );
 				endwhile;
 			} else {

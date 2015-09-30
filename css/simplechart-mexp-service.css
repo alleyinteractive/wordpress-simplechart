@@ -8,9 +8,9 @@
       display: block; }
 .mexp-content-simplechart_mexp_service .mexp-item-container {
   max-width: 150px; }
+  .mexp-content-simplechart_mexp_service .mexp-item-container h3 {
+    margin: .25em 0; }
 .mexp-content-simplechart_mexp_service li.mexp-item {
   max-height: 250px !important;
   overflow-y: hidden !important;
   border: none !important; }
-
-/*# sourceMappingURL=simplechart-mexp-service.css.map */
