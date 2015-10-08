@@ -150,11 +150,11 @@ class Simplechart {
 	 */
 	public function action_init(){
 		$this->_config['web_app_url'] = $this->_plugin_dir_url . 'app';
-		$this->_config['web_app_url'] = apply_filters( 'simplechart_web_app_url', $this->_config['web_app_url'] );
+		$this->_config['web_app_url'] = apply_filters( 'simplechart_widget_app_dir_url', $this->_config['web_app_url'] );
 
 		// get URL of loader.js for front-end chart display
 		$this->_config['loader_js_url'] = $this->_config['web_app_url'] . $this->_config['loader_js_path'];
-		$this->_config['loader_js_url'] = apply_filters( 'simplechart_loader_js_url', $this->_config['loader_js_url'] );
+		$this->_config['loader_js_url'] = apply_filters( 'simplechart_widget_loader_url', $this->_config['loader_js_url'] );
 
 		// default to root-relative path to simplechart web app
 		$this->_config['web_app_iframe_src'] = $this->post_type->get_web_app_iframe_src();

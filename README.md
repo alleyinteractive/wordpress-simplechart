@@ -47,14 +47,14 @@ The command accepts these optional arguments:
 
 ### Available WordPress filters
 
-##### simplechart_web_app_url
+##### simplechart_widget_app_dir_url
 
-URL of the Simplechart web app. This is used to locate the `assets/widget/loader.js` script (unless overridden by the `'simplechart_loader_js_url'` filter) and then by `loader.js` to find `assets/widget/js/app.js`.
+URL of the Simplechart web app. This is used to locate the `assets/widget/loader.js` script (unless overridden by the `'simplechart_widget_loader_url'` filter) and then by `loader.js` to find `assets/widget/js/app.js`.
 ````
 http://www.mysite.com/wp-content/plugins/wordpress-simplechart/app
 ````
 
-##### simplechart_loader_js_url
+##### simplechart_widget_loader_url
 
 URL of the JS file used to render charts on the front-end. Override the default location of `loader.js` by providing the full URL of the script.
 ````
