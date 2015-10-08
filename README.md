@@ -49,9 +49,9 @@ The command accepts these optional arguments:
 
 ##### simplechart_widget_app_dir_url
 
-URL of the Simplechart web app. This is used to locate the `assets/widget/loader.js` script (unless overridden by the `'simplechart_widget_loader_url'` filter) and then by `loader.js` to find `assets/widget/js/app.js`.
+URL of _directory_ containing the Simplechart front-end rendering app. This is used by `loader.js` to load `app.js`. Defaults to:
 ````
-http://www.mysite.com/wp-content/plugins/wordpress-simplechart/app
+http://www.mysite.com/wp-content/plugins/wordpress-simplechart/app/assets/widget/
 ````
 
 ##### simplechart_widget_loader_url
