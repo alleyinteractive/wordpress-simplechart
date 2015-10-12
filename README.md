@@ -6,7 +6,9 @@ Simplechart lets anyone quickly create interactive data visualizations that are 
 
 The plugin sets up a custom post type for Charts and launches the Simplechart app inside an iframe. After the user creates a chart through the JS app in the iframe, all the info needed to recreate it (data and settings/options) is sent via postMessage back to the parent page. Then it gets saved in postmeta when the WordPress post is saved.
 
-When the post is rendered on the front end, this same data is used to bootstrap redrawing the same chart.
+When the post is rendered on the front end, this same data and settings/options are used to bootstrap redrawing the same chart.
+
+Two Javascript files are required to render charts in page templates. `loader.js` goes first and sets up some configuration stuff, then it loads `app.js` which draws the chart.
 
 ### Installation for WordPress.com VIP themes
 
@@ -47,16 +49,26 @@ The command accepts these optional arguments:
 
 ### Available WordPress filters
 
-##### simplechart_web_app_url
+##### simplechart_widget_dir_url
 
-URL of the Simplechart web app. This is used to locate the `assets/widget/loader.js` script (unless overridden by the `'simplechart_loader_js_url'` filter) and then by `loader.js` to find `assets/widget/js/app.js`.
+URL of _directory_ containing the Simplechart front-end rendering widget. *Note* that this directory should contain
+
+```
+|-- loader.js
+|-- nv.d3.min.css
+|-- js
+    |-- app.js
+```
+
+Defaults to:
+
 ````
-http://www.mysite.com/wp-content/plugins/wordpress-simplechart/app
+http://www.mysite.com/wp-content/plugins/wordpress-simplechart/app/assets/widget/
 ````
 
-##### simplechart_loader_js_url
+##### simplechart_widget_loader_url
 
-URL of the JS file used to render charts on the front-end. Override the default location of `loader.js` by providing the full URL of the script.
+_Full URL_ of the `loader.js` used to render charts on the front-end. Overrides the default `loader.js` URL (see below) _and_ the `simplechart_widget_dir_url` filter. This can be useful for development if you want to load `loader.js` and `js/app.js` from two different hosts.
 ````
 http://www.mysite.com/wp-content/plugins/wordpress-simplechart/app/assets/widget/loader.js
 ````
