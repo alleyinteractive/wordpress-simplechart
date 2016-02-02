@@ -84,15 +84,15 @@ class WP_CLI_Simplechart extends WP_CLI_Command {
 	 * @subcommand migrate-single
 	 */
 	public function migrate_single_post( $args, $assoc_args = false ) {
-		// will be skipped if calling from $this->loop_batch
-		if ( $assoc_args ) {
-			$this->setup_migration_opts( $assoc_args );
-		}
+		// will be skipped if already set up, e.g. calling from $this->loop_batch
+		$this->setup_migration_opts( $assoc_args );
 
-		if ( 'WP_Post' === get_class( $args ) ) {
+		if ( is_object( $args ) && 'WP_Post' === get_class( $args ) ) {
 			$post = $args;
 		} else if ( ! empty( $args[0] ) && is_numeric( $args[0] ) ) {
 			$post = get_post( $args[0] );
+		} else if ( is_numeric( $args ) ) {
+			$post = get_post( $args );
 		} else {
 			WP_CLI::error( __( '`migrate_single_post()` requires a numeric ID or a WP_Post object', 'simplechart' ) );
 		}
