@@ -89,10 +89,10 @@ class WP_CLI_Simplechart extends WP_CLI_Command {
 			$this->setup_migration_opts( $assoc_args );
 		}
 
-		if ( ! empty( $args[0] ) && is_numeric( $args[0] ) ) {
-			$post = get_post( $args[0] );
-		} else if ( 'WP_Post' === get_class( $args ) ) {
+		if ( 'WP_Post' === get_class( $args ) ) {
 			$post = $args;
+		} else if ( ! empty( $args[0] ) && is_numeric( $args[0] ) ) {
+			$post = get_post( $args[0] );
 		} else {
 			WP_CLI::error( __( '`migrate_single_post()` requires a numeric ID or a WP_Post object', 'simplechart' ) );
 		}
