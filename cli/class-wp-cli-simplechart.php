@@ -186,14 +186,16 @@ class WP_CLI_Simplechart extends WP_CLI_Command {
 			$ids = explode( ',', $args );
 		}
 
+		$source_key = ! $this->dry_run ? $this->meta_prefix_to . '-data' : $this->meta_prefix_from . '-data';
+
 		foreach ( $ids as $id ) {
 			if ( $verbose ) {
 				WP_CLI::line( sprintf( __( 'Updating post meta for %s', 'simplechart' ), $id ) );
 			}
 
-			$value = get_post_meta( $id, $this->meta_prefix_to . '-data', true );
+			$value = get_post_meta( $id, $source_key, true );
 			if ( empty( $value ) ) {
-				WP_CLI::warning( sprintf( __( 'Post %s: post meta empty for key %s', 'simplechart' ), $id, $this->meta_prefix_to . '-data' ) );
+				WP_CLI::warning( sprintf( __( 'Post %s: post meta empty for key %s', 'simplechart' ), $id, $source_key ) );
 				continue;
 			}
 			$data = json_decode( $value, true );
@@ -201,16 +203,13 @@ class WP_CLI_Simplechart extends WP_CLI_Command {
 				WP_CLI::warning( sprintf( __( 'Post %s: could not locate data.meta object', 'simplechart' ), $id ) );
 				continue;
 			}
-			if ( $this->dry_run ) {
-				continue;
+			if ( ! $this->dry_run ) {
+				foreach ( $data['meta'] as $key => $value ) {
+					$data['meta'][ $key ] = rawurldecode( $value );
+				}
+
+				$value = update_post_meta( $id, $source_key, json_encode( $data ) );
 			}
-
-			foreach ( $data['meta'] as $key => $value ) {
-				$data['meta'][ $key ] = rawurldecode( $value );
-			}
-
-			$value = update_post_meta( $id, $this->meta_prefix_to . '-data', json_encode( $data ) );
-
 		}
 	}
 
