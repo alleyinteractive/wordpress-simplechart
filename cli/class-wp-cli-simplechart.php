@@ -128,6 +128,8 @@ class WP_CLI_Simplechart extends WP_CLI_Command {
 				WP_CLI::warning( sprintf( __( 'Error updating post %s: %s', 'simplechart' ), $post->ID, $id->get_error_message() ) );
 				return;
 			}
+		} else {
+			$id = $post->ID;
 		}
 
 		// migrate post meta
@@ -181,8 +183,6 @@ class WP_CLI_Simplechart extends WP_CLI_Command {
 		} else {
 			$ids = explode( ',', $args );
 		}
-
-		print_r( $ids );
 
 		foreach ( $ids as $id ) {
 			if ( $verbose ) {
