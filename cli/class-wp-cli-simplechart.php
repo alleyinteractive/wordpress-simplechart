@@ -141,8 +141,12 @@ class WP_CLI_Simplechart extends WP_CLI_Command {
 				continue;
 			}
 			if ( ! $this->dry_run ) {
-				update_post_meta( $id, $this->meta_prefix_to . $sub_key, $value );
-				delete_post_meta( $id, $this->meta_prefix_from . $sub_key );
+				$updated = update_post_meta( $id, $this->meta_prefix_to . $sub_key, $value );
+				if ( false === $updated ) {
+					WP_CLI::warning( sprintf( __( 'Post %s: could not update post meta key %s', 'simplechart' ), $id, $this->meta_prefix_to . $sub_key ) );
+				} else {
+					delete_post_meta( $id, $this->meta_prefix_from . $sub_key );
+				}
 			}
 			$migrated_keys[] = $this->meta_prefix_from . $sub_key;
 		}
@@ -186,7 +190,14 @@ class WP_CLI_Simplechart extends WP_CLI_Command {
 			$ids = explode( ',', $args );
 		}
 
-		$source_key = ! $this->dry_run ? $this->meta_prefix_to . '-data' : $this->meta_prefix_from . '-data';
+		if ( ! $this->revert ) {
+			// a dry run hasn't updated the target post type, so we get metadata from the original post type
+			$prefix = $this->dry_run ? $this->meta_prefix_from : $this->meta_prefix_to;
+		} else {
+			// same thing when reverting, but in the opposite direction
+			$prefix = $this->dry_run ? $this->meta_prefix_to : $this->meta_prefix_from;
+		}
+		$source_key = $prefix . '-data';
 
 		foreach ( $ids as $id ) {
 			if ( $verbose ) {
@@ -209,6 +220,9 @@ class WP_CLI_Simplechart extends WP_CLI_Command {
 				}
 
 				$value = update_post_meta( $id, $source_key, json_encode( $data ) );
+				if ( false === $value ) {
+					WP_CLI::warning( sprintf( __( 'Post %s: could not update post meta key %s', 'simplechart' ), $id, $source_key ) );
+				}
 			}
 		}
 	}
