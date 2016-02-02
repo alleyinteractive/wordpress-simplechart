@@ -114,32 +114,35 @@ class WP_CLI_Simplechart extends WP_CLI_Command {
 			return;
 		}
 
-		WP_CLI::line( sprintf( __( 'Updating post %s', 'simplechart' ), $post->ID ) );
+		WP_CLI::line( sprintf( __( 'Migrating post %s', 'simplechart' ), $post->ID ) );
 
-		if ( $this->dry_run ) {
-			return;
-		}
-		// migrate to new post type
-		$id = wp_update_post( array(
-			'ID' => $post->ID,
-			'post_type' => $this->post_type_to
-		), true );
+		if ( ! $this->dry_run ) {
+			// migrate to new post type
+			$id = wp_update_post( array(
+				'ID' => $post->ID,
+				'post_type' => $this->post_type_to
+			), true );
 
-		// check error
-		if ( is_wp_error( $id ) ) {
-			WP_CLI::warning( sprintf( __( 'Error updating post %s: %s', 'simplechart' ), $post->ID, $id->get_error_message() ) );
-			return;
+			// check error
+			if ( is_wp_error( $id ) ) {
+				WP_CLI::warning( sprintf( __( 'Error updating post %s: %s', 'simplechart' ), $post->ID, $id->get_error_message() ) );
+				return;
+			}
 		}
 
 		// migrate post meta
+		$migrated_keys = array();
 		foreach( $this->meta_sub_keys as $sub_key ) {
 			$value = get_post_meta( $id, $this->meta_prefix_from . $sub_key, true );
+			// skip empty keys
 			if ( empty( $value ) ) {
 				continue;
 			}
-			update_post_meta( $id, $this->meta_prefix_to . $sub_key, $value );
-			delete_post_meta( $id, $this->meta_prefix_from . $sub_key );
-
+			if ( ! $this->dry_run ) {
+				update_post_meta( $id, $this->meta_prefix_to . $sub_key, $value );
+				delete_post_meta( $id, $this->meta_prefix_from . $sub_key );
+			}
+			$migrated_keys[] = $this->meta_prefix_from . $sub_key;
 		}
 
 		// URL decode chart title and other metadata
@@ -149,6 +152,8 @@ class WP_CLI_Simplechart extends WP_CLI_Command {
 		// update migration metadata
 		$migration_key_prefix = ! $this->revert ? '_migrated_to_' : '_reverted_to_';
 		update_post_meta( $id, $migration_key_prefix . $this->post_type_to, current_time( 'mysql' ) );
+		$is_dry_run = $this->dry_run ? '[dry run] ' : '';
+		WP_CLI::success( sprintf( __( '%sMigrated post %s with meta keys: %s', 'simplechart' ), $is_dry_run, $id, implode( ', ', $migrated_keys ) ) );
 	}
 
 	/**
