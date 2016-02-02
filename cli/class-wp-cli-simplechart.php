@@ -147,13 +147,15 @@ class WP_CLI_Simplechart extends WP_CLI_Command {
 			$migrated_keys[] = $this->meta_prefix_from . $sub_key;
 		}
 
-		// URL decode chart title and other metadata
+		// URL decode chart title and other metadata, will respect $this->dry_run if true
 		$this->fix_metadata( $id, false, false );
 
+		if ( ! $this->dry_run ) {
+			// update migration metadata
+			$migration_key_prefix = ! $this->revert ? '_migrated_to_' : '_reverted_to_';
+			update_post_meta( $id, $migration_key_prefix . $this->post_type_to, current_time( 'mysql' ) );
+		}
 
-		// update migration metadata
-		$migration_key_prefix = ! $this->revert ? '_migrated_to_' : '_reverted_to_';
-		update_post_meta( $id, $migration_key_prefix . $this->post_type_to, current_time( 'mysql' ) );
 		$is_dry_run = $this->dry_run ? '[dry run] ' : '';
 		WP_CLI::success( sprintf( __( '%sMigrated post %s with meta keys: %s', 'simplechart' ), $is_dry_run, $id, implode( ', ', $migrated_keys ) ) );
 	}
@@ -190,9 +192,13 @@ class WP_CLI_Simplechart extends WP_CLI_Command {
 			}
 
 			$value = get_post_meta( $id, $this->meta_prefix_to . '-data', true );
+			if ( empty( $value ) ) {
+				WP_CLI::warning( sprintf( __( 'Post %s: post meta empty for key %s', 'simplechart' ), $id, $this->meta_prefix_to . '-data' ) );
+				continue;
+			}
 			$data = json_decode( $value, true );
-			if ( empty( $data['meta'] ) ) {
-				WP_CLI::warning( __( 'Could not locate data.meta object', 'simplechart' ) );
+			if ( ! empty( $data ) && empty( $data['meta'] ) ) {
+				WP_CLI::warning( sprintf( __( 'Post %s: could not locate data.meta object', 'simplechart' ), $id ) );
 				continue;
 			}
 			if ( $this->dry_run ) {
