@@ -120,7 +120,7 @@ class WP_CLI_Simplechart extends WP_CLI_Command {
 			// migrate to new post type
 			$id = wp_update_post( array(
 				'ID' => $post->ID,
-				'post_type' => $this->post_type_to
+				'post_type' => $this->post_type_to,
 			), true );
 
 			// check error
@@ -220,12 +220,10 @@ class WP_CLI_Simplechart extends WP_CLI_Command {
 
 		$finished_batch = false;
 		if ( empty( $query_args['paged'] ) ) {
-			$query_args['paged'] = 0;
+			$query_args['paged'] = 1;
 		}
 
 		while ( ! $finished_batch ) {
-			$query_args['paged']++;
-			WP_CLI::line( 'page ' . $query_args['paged'] );
 			// get batch of posts
 			$posts = get_posts( $query_args );
 			if ( empty( $posts ) ) {
@@ -240,6 +238,7 @@ class WP_CLI_Simplechart extends WP_CLI_Command {
 				call_user_func( $callback, $post );
 			}
 
+			$query_args['paged']++;
 			if ( count( $posts ) < $this->posts_per_batch ) {
 				$finished_batch = true;
 			}

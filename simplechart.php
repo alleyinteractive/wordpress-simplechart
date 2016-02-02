@@ -224,6 +224,6 @@ function simplechart_render_chart( $id ){
 /**
  * Load WP-CLI commands
  */
-if ( defined('WP_CLI') && WP_CLI ) {
+if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	require_once( Simplechart::instance()->get_plugin_dir() . 'cli/class-wp-cli-simplechart.php' );
 }
