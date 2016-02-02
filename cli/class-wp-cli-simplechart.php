@@ -139,11 +139,68 @@ class WP_CLI_Simplechart extends WP_CLI_Command {
 			}
 			update_post_meta( $id, $this->meta_prefix_to . $sub_key, $value );
 			delete_post_meta( $id, $this->meta_prefix_from . $sub_key );
+
 		}
+
+		// URL decode chart title and other metadata
+		$this->fix_metadata( $id, false, false );
+
 
 		// update migration metadata
 		$migration_key_prefix = ! $this->revert ? '_migrated_to_' : '_reverted_to_';
 		update_post_meta( $id, $migration_key_prefix . $this->post_type_to, current_time( 'mysql' ) );
+	}
+
+	/**
+	 * URL-decodes chart metadata (title,etc)
+	 *
+	 * ## OPTIONS
+	 * <ids>
+	 * : Comma-separated post ids
+	 *
+	 * [--dry-run]
+	 * : Simulate migration without updating database
+	 *
+	 * @synopsis <id> [--dry-run]
+	 *
+	 * @subcommand fix-metadata
+	 */
+	public function fix_metadata( $args, $assoc_args = false, $verbose = true ) {
+		// will be skipped if already set up, e.g. calling from $this->loop_batch
+		$this->setup_migration_opts( $assoc_args );
+
+		if ( is_int( $args ) || is_numeric( $args ) ) {
+			$ids = array( absint( $args ) );
+		} else if ( is_array( $args ) ) {
+			$ids = explode( ',', $args[0] );
+		} else {
+			$ids = explode( ',', $args );
+		}
+
+		print_r( $ids );
+
+		foreach ( $ids as $id ) {
+			if ( $verbose ) {
+				WP_CLI::line( sprintf( __( 'Updating post meta for %s', 'simplechart' ), $id ) );
+			}
+
+			$value = get_post_meta( $id, $this->meta_prefix_to . '-data', true );
+			$data = json_decode( $value, true );
+			if ( empty( $data['meta'] ) ) {
+				WP_CLI::warning( __( 'Could not locate data.meta object', 'simplechart' ) );
+				continue;
+			}
+			if ( $this->dry_run ) {
+				continue;
+			}
+
+			foreach ( $data['meta'] as $key => $value ) {
+				$data['meta'][ $key ] = rawurldecode( $value );
+			}
+
+			$value = update_post_meta( $id, $this->meta_prefix_to . '-data', json_encode( $data ) );
+
+		}
 	}
 
 	/**
