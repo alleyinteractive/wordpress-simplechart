@@ -101,7 +101,7 @@ class Simplechart_Post_Type {
 	}
 
 	public function render_iframe_page() {
-		require_once( Simplechart::instance()->get_plugin_dir() . 'app/index.php' );
+		require_once( Simplechart::instance()->get_plugin_dir() . 'templates/iframe.php' );
 	}
 
 	/**
