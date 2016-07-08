@@ -25,8 +25,12 @@ When the post is rendered on the front end, this same data and settings/options 
 1. Your WP Admin area should now have a custom post type for Charts.
 1. Click the "Launch Simplechart App" button to create a new chart.
 1. When you're happy with your new chart, click "Send to WordPress" button
-1. *Publish* the post in WordPress
+1. **Publish** the post in WordPress
 1. You can now embed the Chart in any post by selecting it from the Charts section in the Media Manager, which will drop a shortcode into the post content.
+
+### Local Development
+
+If you are working on the [Simplechart JS app](https://github.com/alleyinteractive/simplechart-react), you can load the main app and widget from `localhost:8080` instead of your WordPress site by using the query param `?sclocaldev=1`
 
 ### Available WordPress filters
 
