@@ -16,6 +16,7 @@ class Simplechart {
 	private $_plugin_dir_url = null;
 	private $_admin_notices = array( 'updated' => array(), 'error' => array() );
 	private $_plugin_id = 'wordpress-simplechart/simplechart.php';
+	private $_local_dev_query_var = 'sclocaldev';
 
 	// config vars that will eventually come from settings page
 	private $_config = array(
@@ -157,11 +158,17 @@ class Simplechart {
 	 */
 	public function action_init(){
 
-		// menu page set up by Simplechart_Post_Type module
-		$this->_config['web_app_iframe_src'] = admin_url( '/admin.php?page=' . $this->get_config( 'menu_page_slug' ) . '&noheader' );
-		$this->_config['web_app_iframe_src'] = apply_filters( 'simplechart_web_app_iframe_src', $this->_config['web_app_iframe_src'] );
+		// this would only apply on local envs, so not worried about caching
+		if ( isset( $_GET[ $this->_local_dev_query_var ] ) && 1 === absint( $_GET[ $this->_local_dev_query_var ] ) ) {
+			$this->_config['web_app_iframe_src'] = 'http://localhost:8080/';
+			$this->_config['web_app_js_url'] = 'http://localhost:8080/static/bundle.js';
+		} else {
+			// menu page set up by Simplechart_Post_Type module
+			$this->_config['web_app_iframe_src'] = admin_url( '/admin.php?page=' . $this->get_config( 'menu_page_slug' ) . '&noheader' );
+			$this->_config['web_app_js_url'] = $this->get_plugin_url( 'js/app/bundle.js' );
+		}
 
-		$this->_config['web_app_js_url'] = $this->get_plugin_url( 'js/app/bundle.js' );
+		$this->_config['web_app_iframe_src'] = apply_filters( 'simplechart_web_app_iframe_src', $this->_config['web_app_iframe_src'] );
 		$this->_config['web_app_js_url'] = apply_filters( 'simplechart_web_app_js_url', $this->_config['web_app_js_url'] );
 
 		if ( is_admin() ){
