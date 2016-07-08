@@ -49,36 +49,10 @@ The command accepts these optional arguments:
 
 ### Available WordPress filters
 
-##### simplechart_widget_dir_url
-
-URL of _directory_ containing the Simplechart front-end rendering widget. *Note* that this directory should contain
-
-```
-|-- loader.js
-|-- nv.d3.min.css
-|-- js
-    |-- app.js
-```
-
-Defaults to:
-
-````
-http://www.mysite.com/wp-content/plugins/wordpress-simplechart/app/assets/widget/
-````
-
-##### simplechart_widget_loader_url
-
-_Full URL_ of the `loader.js` used to render charts on the front-end. Overrides the default `loader.js` URL (see below) _and_ the `simplechart_widget_dir_url` filter. This can be useful for development if you want to load `loader.js` and `js/app.js` from two different hosts.
-````
-http://www.mysite.com/wp-content/plugins/wordpress-simplechart/app/assets/widget/loader.js
-````
-
 ##### simplechart_web_app_iframe_src
 
-Set the `src` attribute of the iframe for creating/editing charts in wp-admin. Defaults to root-relative for postMessage security reasons, e.g.
-````
-/wp-content/plugins/wordpress-simplechart/app/#/simplechart
-````
+Set the `src` attribute of the iframe for creating/editing charts in wp-admin. Defaults to menu page set up by `Simplechart_Post_Type::setup_iframe_page()`
+
 ##### simplechart_remove_mexp_default_services
 
 Simplechart is integrated into the WordPress media manager using the [Media Explorer](https://github.com/Automattic/media-explorer) plugin, which adds the ability to embed from services like Twitter and YouTube. By default, Simplechart removes these other services - **except** on WordPress.com VIP, where Media Explorer is part of the platform. To force your desired behavior, use the `'simplechart_remove_mexp_default_services'` filter to return `true` or `false`.
