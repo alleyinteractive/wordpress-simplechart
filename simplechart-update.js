@@ -7,6 +7,8 @@ var Git = require('nodegit');
 var fs = require('fs');
 var path = require('path');
 var rimraf = require('rimraf');
+var jsdiff = require('diff');
+var colors = require('colors');
 
 // repos needed
 mediaExplorerRepo = 'https://github.com/Automattic/media-explorer.git';
@@ -17,6 +19,7 @@ var GITHUB_TOKEN;
 var mediaExplorerPath;
 var simplechartPath = __dirname + '/app';
 var simplechartTmp = __dirname + '/_tmp_simplechart';
+var indexTmp = __dirname + '/_tmp_index';
 
 // install files to be deleted
 var installFiles = [
@@ -118,6 +121,13 @@ function githubHttpsCloneOptions() {
       return 1;
     }
   };
+
+  // check if --branch=<branch> was passed
+  // we can live with the shortcomings of typeof here
+  var branch = getNamedArg('branch');
+  if (typeof branch === 'string') {
+    cloneOptions.checkoutBranch = branch;
+  }
   return cloneOptions;
 }
 
@@ -131,6 +141,12 @@ function setupLocalSimplechart() {
     return Git.Cred.userpassPlaintextNew(GITHUB_TOKEN, 'x-oauth-basic');
   }
 
+
+  // move index files to temp folder
+  fs.mkdirSync(indexTmp);
+  fs.renameSync(simplechartPath + '/index.html', indexTmp + '/index.html');
+  fs.renameSync(simplechartPath + '/index.php', indexTmp + '/index.php');
+
   // delete existing stuff
   rimraf.sync(simplechartTmp);
   rimraf.sync(simplechartPath);
@@ -143,8 +159,41 @@ function setupLocalSimplechart() {
     fs.renameSync(simplechartTmp + '/client/pages', simplechartPath);
     console.log('Deleting temp folder');
     rimraf.sync(simplechartTmp);
+    diffIndex();
     deleteInstallFiles();
   });
+}
+
+/**
+ * test for changes in index.html, since we can't directly copy to index.php
+ */
+function diffIndex() {
+  console.log('checking for changes to index.html');
+  var newIndex = fs.readFileSync(simplechartPath + '/index.html', {encoding: 'utf8'});
+  var oldIndex = fs.readFileSync(indexTmp + '/index.html', {encoding: 'utf8'});
+  var diff = jsdiff.diffChars(oldIndex, newIndex);
+  if (diff.length > 1) {
+    var output  = '';
+    diff.forEach(function(part, index){
+      // green for additions, red for deletions, grey for common parts
+      var color = part.added ? 'green' : part.removed ? 'red' : 'grey';
+
+      // indicate newline chars in console
+      if ((part.added || part.removed) && part.value === '\n') {
+        part.value = '\\n\n';
+      }
+
+      output += part.value[color];
+    });
+    console.log(output);
+    console.log('You need to manually edit index.php to reflect these changes!');
+  } else {
+    console.log('No changes found in index.html');
+  }
+
+  // replace index.php and remove temp dir
+  fs.renameSync(indexTmp + '/index.php', simplechartPath + '/index.php');
+  rimraf.sync(indexTmp);
 }
 
 /**

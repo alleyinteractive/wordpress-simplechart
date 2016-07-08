@@ -20,10 +20,10 @@ class Simplechart {
 
 	// config vars that will eventually come from settings page
 	private $_config = array(
-		'loader_js_url' => null,
+		'widget_dir_path' => 'app/assets/widget',
+		'widget_loader_url' => null,
+		'widget_dir_url' => null,
 		'web_app_iframe_src' => null,
-		'web_app_url' => null,
-		'loader_js_path' => '/assets/widget/loader.js',
 		'version' => '0.0.1',
 	);
 
@@ -54,6 +54,12 @@ class Simplechart {
 	 * test for plugin dependencies and add error messages to admin notices as needed
 	 */
 	private function _check_dependencies() {
+
+		// skip check for Media Explorer on VIP since it's part of WPCOM platform
+		if ( defined( 'WPCOM_IS_VIP_ENV' ) && WPCOM_IS_VIP_ENV ) {
+			return true;
+		}
+
 		$deps_found = true;
 
 		// require Media Explorer
@@ -95,7 +101,7 @@ class Simplechart {
 			return plugin_dir_url( __FILE__ );
 		}
 		// if running as VIP plugin
-		elseif ( function_exists( 'wpcom_vip_get_loaded_plugins' ) && in_array( 'plugins/simplechart', wpcom_vip_get_loaded_plugins(), true ) ) {
+		elseif ( function_exists( 'wpcom_vip_get_loaded_plugins' ) && in_array( 'alley-plugins/simplechart', wpcom_vip_get_loaded_plugins(), true ) ) {
 			return plugins_url( '', __FILE__ );
 		}
 		// assume running inside theme
@@ -132,21 +138,26 @@ class Simplechart {
 		require_once( $this->_plugin_dir_path . 'modules/class-simplechart-template.php' );
 		$this->template = new Simplechart_Template;
 
+		// WP-CLI commands
+		if ( defined( 'WP_CLI' ) && WP_CLI ) {
+			require_once( $this->_plugin_dir_path . 'modules/class-simplechart-wp-cli.php' );
+		}
+
 	}
 
 	/**
 	 * on the 'init' action, do frontend or backend startup
 	 */
 	public function action_init(){
-		$this->_config['web_app_url'] = $this->_plugin_dir_url . 'app';
-		$this->_config['web_app_url'] = apply_filters( 'simplechart_web_app_url', $this->_config['web_app_url'] );
+		$this->_config['widget_dir_url'] = $this->_plugin_dir_url . $this->_config['widget_dir_path'];
+		$this->_config['widget_dir_url'] = apply_filters( 'simplechart_widget_dir_url', $this->_config['widget_dir_url'] );
 
 		// get URL of loader.js for front-end chart display
-		$this->_config['loader_js_url'] = $this->_config['web_app_url'] . $this->_config['loader_js_path'];
-		$this->_config['loader_js_url'] = apply_filters( 'simplechart_loader_js_url', $this->_config['loader_js_url'] );
+		$this->_config['widget_loader_url'] = $this->_config['widget_dir_url'] . '/loader.js';
+		$this->_config['widget_loader_url'] = apply_filters( 'simplechart_widget_loader_url', $this->_config['widget_loader_url'] );
 
 		// default to root-relative path to simplechart web app
-		$this->_config['web_app_iframe_src'] = parse_url( $this->_config['web_app_url'], PHP_URL_PATH ) . '/#/simplechart';
+		$this->_config['web_app_iframe_src'] = $this->post_type->get_web_app_iframe_src();
 		$this->_config['web_app_iframe_src'] = apply_filters( 'simplechart_web_app_iframe_src', $this->_config['web_app_iframe_src'] );
 
 		if ( is_admin() ){
@@ -208,4 +219,11 @@ Simplechart::instance();
  */
 function simplechart_render_chart( $id ){
 	return Simplechart::instance()->template->render( $id );
+}
+
+/**
+ * Load WP-CLI commands
+ */
+if ( defined( 'WP_CLI' ) && WP_CLI ) {
+	require_once( Simplechart::instance()->get_plugin_dir() . 'cli/class-wp-cli-simplechart.php' );
 }

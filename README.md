@@ -6,7 +6,9 @@ Simplechart lets anyone quickly create interactive data visualizations that are 
 
 The plugin sets up a custom post type for Charts and launches the Simplechart app inside an iframe. After the user creates a chart through the JS app in the iframe, all the info needed to recreate it (data and settings/options) is sent via postMessage back to the parent page. Then it gets saved in postmeta when the WordPress post is saved.
 
-When the post is rendered on the front end, this same data is used to bootstrap redrawing the same chart.
+When the post is rendered on the front end, this same data and settings/options are used to bootstrap redrawing the same chart.
+
+Two Javascript files are required to render charts in page templates. `loader.js` goes first and sets up some configuration stuff, then it loads `app.js` which draws the chart.
 
 ### Installation for WordPress.com VIP themes
 
@@ -34,27 +36,39 @@ In the unlikely event that you need to update the version of the app that lives 
 
 ````
 $ npm install
-$ node simplechart-update.js
+$ node simplechart-update.js [--token=<token>] [--deploy-mode=<deploy-mode>] [--branch=<branch>]
 ````
 
-The command accepts two arguments:
+The command accepts these optional arguments:
 
-`--token=<your GitHub token>` A [GitHub access token](https://github.com/settings/tokens) is **required**. You can provide it with the `--token` argument or by placing it in a text file `github_token.txt` in this directory.
+`--token=<your GitHub token>` A [GitHub access token](https://github.com/settings/tokens) is **required**. If you do not pass it with the `--token` argument, you can store it in a text file `github_token.txt` in this directory and the script will pick it up from there.
 
-`--deploy-mode` deletes Git files, Node modules, and other stuff not necessary for deploying _and updating_ the plugin. **Use with caution!** Note that `--deploy-mode` does not require a value, but you can specify `--deploy-mode=vip`. This will skip the check for the Media Explorer plugin, which is part of the platform on WordPress.com VIP.
+`--deploy-mode=<deploy-mode>` deletes Git files, Node modules, and other stuff not necessary for deploying _and updating_ the plugin. **You probably do not want to use this!** Note that `--deploy-mode` does not require a value, but you can specify `--deploy-mode=vip`. This will skip the check for the Media Explorer plugin, which is part of the platform on WordPress.com VIP.
+
+`--branch=<branch>` allows you to checkout a specific branch of the Simplechart repo before updating the WordPress plugin. Defaults to `master`.
 
 ### Available WordPress filters
 
-##### simplechart_web_app_url
+##### simplechart_widget_dir_url
 
-URL of the Simplechart web app. This is used to locate the `assets/widget/loader.js` script (unless overridden by the `'simplechart_loader_js_url'` filter) and then by `loader.js` to find `assets/widget/js/app.js`.
+URL of _directory_ containing the Simplechart front-end rendering widget. *Note* that this directory should contain
+
+```
+|-- loader.js
+|-- nv.d3.min.css
+|-- js
+    |-- app.js
+```
+
+Defaults to:
+
 ````
-http://www.mysite.com/wp-content/plugins/wordpress-simplechart/app
+http://www.mysite.com/wp-content/plugins/wordpress-simplechart/app/assets/widget/
 ````
 
-##### simplechart_loader_js_url
+##### simplechart_widget_loader_url
 
-URL of the JS file used to render charts on the front-end. Override the default location of `loader.js` by providing the full URL of the script.
+_Full URL_ of the `loader.js` used to render charts on the front-end. Overrides the default `loader.js` URL (see below) _and_ the `simplechart_widget_dir_url` filter. This can be useful for development if you want to load `loader.js` and `js/app.js` from two different hosts.
 ````
 http://www.mysite.com/wp-content/plugins/wordpress-simplechart/app/assets/widget/loader.js
 ````
@@ -70,3 +84,7 @@ Set the `src` attribute of the iframe for creating/editing charts in wp-admin. D
 Simplechart is integrated into the WordPress media manager using the [Media Explorer](https://github.com/Automattic/media-explorer) plugin, which adds the ability to embed from services like Twitter and YouTube. By default, Simplechart removes these other services - **except** on WordPress.com VIP, where Media Explorer is part of the platform. To force your desired behavior, use the `'simplechart_remove_mexp_default_services'` filter to return `true` or `false`.
 
 Note for VIP sites: Unless you use this filter to force a consistent value, the value of `'simplechart_remove_mexp_default_services'` will be `true` in your local development environment and `false` on WordPress.com VIP.
+
+##### simplechart_show_debug_messages
+
+Defaults to `false`. If `true`, the plugin will display extra debugging notices after you save a chart in WordPress admin.
