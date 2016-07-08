@@ -69,9 +69,9 @@ class Simplechart_Template {
 		return $template_html;
 	}
 
-	// automatically render chart if looking at the chart's post
+	// automatically render chart if looking at the chart's own post
 	public function add_filter_post_content(){
-		if ( is_singular( 'simplechart' ) ){
+		if ( ! is_admin() && is_singular( 'simplechart' ) ){
 			add_filter( 'the_content', array( $this, 'filter_insert_chart' ) );
 		}
 	}
@@ -87,6 +87,9 @@ class Simplechart_Template {
 
 	// print app host as JS var in head if overriding simplechart.io
 	public function print_app_host(){
+		if ( is_admin() ){
+			return;
+		}
 		// set app host URL
 		echo "\n<script> window.simplechartWidgetDirUrl = window.simplechartWidgetDirUrl || " . json_encode( Simplechart::instance()->get_config( 'widget_dir_url' ) ) . "; </script>\n";
 	}

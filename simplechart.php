@@ -4,7 +4,7 @@ Plugin Name: Simplechart
 Plugin URI: https://github.com/alleyinteractive/wordpress-simplechart
 Description: Create and render interactive charts in WordPress using Simplechart
 Author: Drew Machat, Josh Kadis, Alley Interactive
-Version: 0.0.1
+Version: 0.2.1
 Author URI: http://www.alleyinteractive.com/
 */
 
@@ -12,7 +12,6 @@ class Simplechart {
 
 	private static $instance;
 
-	// both will include trailing slash
 	private $_plugin_dir_path = null;
 	private $_plugin_dir_url = null;
 	private $_admin_notices = array( 'updated' => array(), 'error' => array() );
@@ -20,11 +19,8 @@ class Simplechart {
 
 	// config vars that will eventually come from settings page
 	private $_config = array(
-		'widget_dir_path' => 'app/assets/widget',
-		'widget_loader_url' => null,
-		'widget_dir_url' => null,
-		'web_app_iframe_src' => null,
-		'version' => '0.0.1',
+		'menu_page_slug' => 'simplechart_app',
+		'version' => '0.2.1',
 	);
 
 	// startup
@@ -34,8 +30,10 @@ class Simplechart {
 			add_action( 'admin_init', array( $this, 'deactivate' ) );
 			return;
 		}
+		// Both of these will have trailing slash
 		$this->_plugin_dir_path = plugin_dir_path( __FILE__ );
 		$this->_plugin_dir_url = $this->_set_plugin_dir_url();
+
 		$this->_init_modules();
 		add_action( 'init', array( $this, 'action_init' ) );
 	}
@@ -98,17 +96,18 @@ class Simplechart {
 
 		// if running as regular plugin (i.e. inside wp-content/plugins/)
 		if ( 0 === strpos( $this->_plugin_dir_path, WP_PLUGIN_DIR ) ){
-			return plugin_dir_url( __FILE__ );
+			$url = plugin_dir_url( __FILE__ );
 		}
-		// if running as VIP plugin
+		// if running as VIP Classic™ plugin
 		elseif ( function_exists( 'wpcom_vip_get_loaded_plugins' ) && in_array( 'alley-plugins/simplechart', wpcom_vip_get_loaded_plugins(), true ) ) {
-			return plugins_url( '', __FILE__ );
+			$url =  plugins_url( '', __FILE__ );
 		}
-		// assume running inside theme
+		// assume loaded directly by theme
 		else {
 			$path_relative_to_theme = str_replace( get_template_directory(), '', $this->_plugin_dir_path );
-			return get_template_directory_uri() . $path_relative_to_theme;
+			$url =  get_template_directory_uri() . $path_relative_to_theme;
 		}
+		return trailingslashit( $url );
 	}
 
 	/**
@@ -149,15 +148,9 @@ class Simplechart {
 	 * on the 'init' action, do frontend or backend startup
 	 */
 	public function action_init(){
-		$this->_config['widget_dir_url'] = $this->_plugin_dir_url . $this->_config['widget_dir_path'];
-		$this->_config['widget_dir_url'] = apply_filters( 'simplechart_widget_dir_url', $this->_config['widget_dir_url'] );
-
-		// get URL of loader.js for front-end chart display
-		$this->_config['widget_loader_url'] = $this->_config['widget_dir_url'] . '/loader.js';
-		$this->_config['widget_loader_url'] = apply_filters( 'simplechart_widget_loader_url', $this->_config['widget_loader_url'] );
 
 		// default to root-relative path to simplechart web app
-		$this->_config['web_app_iframe_src'] = $this->post_type->get_web_app_iframe_src();
+		$this->_config['web_app_iframe_src'] = admin_url( '/admin.php?page=' . $this->get_config( 'menu_page_slug' ) );
 		$this->_config['web_app_iframe_src'] = apply_filters( 'simplechart_web_app_iframe_src', $this->_config['web_app_iframe_src'] );
 
 		if ( is_admin() ){
