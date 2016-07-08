@@ -172,9 +172,9 @@ class Simplechart {
 		// this is used to preload stuff like color palette for charts, etc
 		if ( file_exists( get_template_directory() . '/inc/plugins/simplechart-site-options.js' ) ) {
 			wp_register_script( 'simplechart-site-options', get_template_directory_uri() . '/inc/plugins/simplechart-site-options.js' );
-			wp_register_script( 'simplechart-post-edit', $this->_plugin_dir_url . 'js/plugin/post-edit.js', array( 'jquery', 'underscore', 'simplechart-site-options' ) );
+			wp_register_script( 'simplechart-post-edit', $this->get_plugin_url( 'js/plugin/post-edit.js' ), array( 'jquery', 'underscore', 'simplechart-site-options' ) );
 		} else {
-			wp_register_script( 'simplechart-post-edit', $this->_plugin_dir_url . 'js/plugin/post-edit.js', array( 'jquery', 'underscore' ) );
+			wp_register_script( 'simplechart-post-edit', $this->get_plugin_url( 'js/plugin/post-edit.js' ), array( 'jquery', 'underscore' ) );
 		}
 		wp_register_style( 'simplechart-style', $this->_plugin_dir_url . 'css/style.css' );
 		wp_enqueue_script( 'simplechart-post-edit' );
@@ -194,9 +194,15 @@ class Simplechart {
 		);
 	}
 
-	// used by modules that need this info
-	public function get_plugin_url(){
-		return $this->_plugin_dir_url;
+	/**
+	 * Get URL of plugin directory, with optional path appended
+	 *
+	 * @param string $append Optional path to append to the plugin directory URL
+	 * @return string URL
+	 */
+	public function get_plugin_url( $append = '' ){
+		// should already have trailing slash but just to be safe...
+		return trailingslashit( $this->_plugin_dir_url ) . ltrim( $append, '/' );
 	}
 
 	// used by modules that need this info

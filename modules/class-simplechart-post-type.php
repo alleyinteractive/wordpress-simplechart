@@ -70,7 +70,7 @@ class Simplechart_Post_Type {
 		$chart_url = get_post_meta( $post->ID, 'simplechart-chart-url', true );
 		$chart_id = get_post_meta( $post->ID, 'simplechart-chart-id', true );
 		$app_url = Simplechart::instance()->get_config( 'web_app_iframe_src' );
-		$assets_url = Simplechart::instance()->get_plugin_url() . 'app/';
+		$assets_url = Simplechart::instance()->get_plugin_url( 'app/' );
 
 		// escapes without converting " to &quot
 		$validated_json_data = json_encode( json_decode( $json_data ) );

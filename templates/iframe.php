@@ -26,7 +26,7 @@
 
     <div id='app'></div>
 
-    <script src="<?php echo esc_url( Simplechart::instance()->get_plugin_url() . 'js/app/bundle.js' ); ?>"></script>
+    <script src="<?php echo esc_url( Simplechart::instance()->get_plugin_url( 'js/app/bundle.js' ) ); ?>"></script>
     <script>
       customPalette = ['#ff0000','#fa001f','#f30033','#ec0045','#e50055','#df0062','#d70071','#cf007f','#c7008c','#c00097','#b600a5','#ad00ae','#a100bc','#9600c7','#8900d1','#7b00dc','#6c00e4','#5800ee','#3e00f7','#0000ff'];
       mockPostMessageData = {

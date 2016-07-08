@@ -17,7 +17,7 @@ class Simplechart_Template {
 		if ( is_admin() ){
 			return;
 		}
-		wp_register_style( 'simplechart', Simplechart::instance()->get_plugin_url() . 'css/style.css', array(), Simplechart::instance()->get_config( 'version' ) );
+		wp_register_style( 'simplechart', Simplechart::instance()->get_plugin_url( 'css/style.css' ), array(), Simplechart::instance()->get_config( 'version' ) );
 		wp_enqueue_style( 'simplechart' );
 	}
 

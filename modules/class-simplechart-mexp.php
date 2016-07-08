@@ -178,13 +178,13 @@ if ( class_exists( 'MEXP_Service' ) ) {
 		public function enqueue_statics(){
 			wp_enqueue_script(
 				'simplechart-mexp-service',
-				Simplechart::instance()->get_plugin_url() . 'js/plugin/simplechart-mexp-service.js',
+				Simplechart::instance()->get_plugin_url( 'js/plugin/simplechart-mexp-service.js' ),
 				array( 'jquery', 'mexp' )
 			);
 
 			wp_enqueue_style(
 				'simplechart-mexp-service',
-				Simplechart::instance()->get_plugin_url() . 'css/simplechart-mexp-service.css'
+				Simplechart::instance()->get_plugin_url( 'css/simplechart-mexp-service.css' )
 			);
 		}
 
