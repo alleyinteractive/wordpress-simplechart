@@ -25,6 +25,12 @@ class Simplechart {
 
 	// startup
 	private function __construct(){
+		// Some stuff we handle different on VIP CLassic™ vs VIP Go and self-hosted sites
+		// thanks matt :)
+		if ( defined( 'WPCOM_IS_VIP_ENV' ) && WPCOM_IS_VIP_ENV && ( ! defined( 'VIP_GO_ENV' ) || ! VIP_GO_ENV ) ) {
+		    define(  'WPCOM_IS_VIP_CLASSIC_TM_ENV', true );
+		}
+
 		if ( ! $this->_check_dependencies() ){
 			add_action( 'admin_notices', array( $this, 'admin_notices' ) );
 			add_action( 'admin_init', array( $this, 'deactivate' ) );
@@ -54,7 +60,7 @@ class Simplechart {
 	private function _check_dependencies() {
 
 		// skip check for Media Explorer on VIP since it's part of WPCOM platform
-		if ( defined( 'WPCOM_IS_VIP_ENV' ) && WPCOM_IS_VIP_ENV ) {
+		if ( defined( 'WPCOM_IS_VIP_CLASSIC_TM_ENV' ) && WPCOM_IS_VIP_CLASSIC_TM_ENV ) {
 			return true;
 		}
 
