@@ -8,8 +8,6 @@ The plugin sets up a custom post type for Charts and launches the Simplechart ap
 
 When the post is rendered on the front end, this same data and settings/options are used to bootstrap redrawing the same chart.
 
-Two Javascript files are required to render charts in page templates. `loader.js` goes first and sets up some configuration stuff, then it loads `app.js` which draws the chart.
-
 ### Installation for WordPress.com VIP themes
 
 1. Install and activate [Media Explorer](https://github.com/Automattic/media-explorer) as a normal plugin in your development environment. It is loaded automatically as part of the platform on WordPress.com.
@@ -27,31 +25,18 @@ Two Javascript files are required to render charts in page templates. `loader.js
 1. Your WP Admin area should now have a custom post type for Charts.
 1. Click the "Launch Simplechart App" button to create a new chart.
 1. When you're happy with your new chart, click "Send to WordPress" button
-1. Save the post in WordPress
+1. *Publish* the post in WordPress
 1. You can now embed the Chart in any post by selecting it from the Charts section in the Media Manager, which will drop a shortcode into the post content.
-
-### Update script for Simplechart web app
-
-In the unlikely event that you need to update the version of the app that lives in the plugin, do this from the root of the `wordpress-simplechart` plugin directory, either in your theme or in `wp-plugins`:
-
-````
-$ npm install
-$ node simplechart-update.js [--token=<token>] [--deploy-mode=<deploy-mode>] [--branch=<branch>]
-````
-
-The command accepts these optional arguments:
-
-`--token=<your GitHub token>` A [GitHub access token](https://github.com/settings/tokens) is **required**. If you do not pass it with the `--token` argument, you can store it in a text file `github_token.txt` in this directory and the script will pick it up from there.
-
-`--deploy-mode=<deploy-mode>` deletes Git files, Node modules, and other stuff not necessary for deploying _and updating_ the plugin. **You probably do not want to use this!** Note that `--deploy-mode` does not require a value, but you can specify `--deploy-mode=vip`. This will skip the check for the Media Explorer plugin, which is part of the platform on WordPress.com VIP.
-
-`--branch=<branch>` allows you to checkout a specific branch of the Simplechart repo before updating the WordPress plugin. Defaults to `master`.
 
 ### Available WordPress filters
 
 ##### simplechart_web_app_iframe_src
 
 Set the `src` attribute of the iframe for creating/editing charts in wp-admin. Defaults to menu page set up by `Simplechart_Post_Type::setup_iframe_page()`
+
+##### simplechart_web_app_js_url
+
+Set the URL of the main JS app for building a chart. Defaults to the local site's `wp-content/plugins/wordpress-simplechart/js/app/bundle.js`
 
 ##### simplechart_remove_mexp_default_services
 

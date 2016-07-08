@@ -19,6 +19,8 @@ class Simplechart {
 
 	// config vars that will eventually come from settings page
 	private $_config = array(
+		'web_app_iframe_src' => null,
+		'web_app_js_url' => null,
 		'menu_page_slug' => 'simplechart_app',
 		'version' => '0.2.1',
 	);
@@ -120,7 +122,7 @@ class Simplechart {
 	 * config getter
 	 */
 	public function get_config( $key ){
-		return $this->_config[ $key ];
+		return isset( $this->_config[ $key ]) ? $this->_config[ $key ] : null;
 	}
 
 	/**
@@ -155,9 +157,12 @@ class Simplechart {
 	 */
 	public function action_init(){
 
-		// default to root-relative path to simplechart web app
+		// menu page set up by Simplechart_Post_Type module
 		$this->_config['web_app_iframe_src'] = admin_url( '/admin.php?page=' . $this->get_config( 'menu_page_slug' ) . '&noheader' );
 		$this->_config['web_app_iframe_src'] = apply_filters( 'simplechart_web_app_iframe_src', $this->_config['web_app_iframe_src'] );
+
+		$this->_config['web_app_js_url'] = $this->get_plugin_url( 'js/app/bundle.js' );
+		$this->_config['web_app_js_url'] = apply_filters( 'simplechart_web_app_js_url', $this->_config['web_app_js_url'] );
 
 		if ( is_admin() ){
 			$this->_admin_setup();
