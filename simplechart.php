@@ -150,7 +150,7 @@ class Simplechart {
 	public function action_init(){
 
 		// default to root-relative path to simplechart web app
-		$this->_config['web_app_iframe_src'] = admin_url( '/admin.php?page=' . $this->get_config( 'menu_page_slug' ) );
+		$this->_config['web_app_iframe_src'] = admin_url( '/admin.php?page=' . $this->get_config( 'menu_page_slug' ) . '&noheader' );
 		$this->_config['web_app_iframe_src'] = apply_filters( 'simplechart_web_app_iframe_src', $this->_config['web_app_iframe_src'] );
 
 		if ( is_admin() ){
