@@ -10,7 +10,6 @@ function WPSimplechartApp( $ ) {
 			backdrop : '<div id="simplechart-backdrop"></div>'
 		},
 		chartData = null,
-		childWindow = null,
 		confirmNoDataMessage = '',
 		closeModalMessage = '',
 		savedChart = false,
@@ -51,8 +50,6 @@ function WPSimplechartApp( $ ) {
 				savedChart = false;
 			}
 		} );
-
-		childWindow = document.getElementById( 'simplechart-frame' );
 	}
 
 	/**
@@ -82,8 +79,8 @@ function WPSimplechartApp( $ ) {
 	 * Extract messageType string when a postMessage is received
 	 */
 	function getMessageType(evt) {
-		// expect same-origin or localhost:8080
-		if ( evt.origin !== window.location.origin && 'localhost:8080' !== window.location.host ) {
+		// confirm same-origin or http(s)://localhost:8080
+		if ( evt.origin !== window.location.origin && !/https?:\/\/localhost:8080/.test(evt.origin )) {
 			return false;
 		}
 
@@ -104,7 +101,7 @@ function WPSimplechartApp( $ ) {
 		if ( ! messageType ) {
 			return;
 		}
-
+		console.log(messageType, evt);
 		switch (messageType) {
 			case 'appReady':
 				sendData();
@@ -120,10 +117,12 @@ function WPSimplechartApp( $ ) {
 	 * Send previously saved data to child window
 	 */
 	function sendData() {
-		childWindow.postMessage({
-			data: WPSimplechartBootstrap.data,
-			messageType: 'bootstrapAppData'
-		});
+		if( WPSimplechartBootstrap.data ) {
+			document.getElementById( 'simplechart-frame' ).contentWindow.postMessage({
+				data: WPSimplechartBootstrap.data,
+				messageType: 'bootstrapAppData'
+			}, '*' );
+		}
 	}
 
 	/**

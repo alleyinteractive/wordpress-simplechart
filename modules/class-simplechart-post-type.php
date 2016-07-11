@@ -76,10 +76,8 @@ class Simplechart_Post_Type {
 			__( 'Launch Simplechart App', 'simplechart' ),
 			__( 'Clear Simplechart Data', 'simplechart' ),
 			esc_url( $app_url ),
-			esc_url( $assets_url ),
 			'simplechart-data',
 			$validated_json_data, // is printed in a script tag, so no htmlentities conversion
-			Simplechart::instance()->save->validate_template_fragment( $template_html ),
 			__( 'Close Modal', 'simplechart' ),
 			__( 'Confirming this message will proceed without saving changes. If you have made changes that you wish to save, cancel this message, proceed to the final step, and click the Save Chart button.', 'simplechart' ),
 			esc_attr( $nonce ),
