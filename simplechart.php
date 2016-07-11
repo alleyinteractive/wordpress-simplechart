@@ -200,15 +200,12 @@ class Simplechart {
 	}
 
 	public function add_meta_box(){
-		global $post;
-		$json_data = get_post_meta( $post->ID, 'simplechart-data', true );
 		add_meta_box( 'simplechart-preview',
 			__( 'Simplechart', 'simplechart' ),
 			array( $this->post_type, 'render_meta_box' ),
 			'simplechart',
 			'normal',
-			'default',
-			array( $this->_plugin_dir_path, $json_data )
+			'default'
 		);
 	}
 
@@ -223,9 +220,14 @@ class Simplechart {
 		return trailingslashit( $this->_plugin_dir_url ) . ltrim( $append, '/' );
 	}
 
-	// used by modules that need this info
-	public function get_plugin_dir(){
-		return $this->_plugin_dir_path;
+	/**
+	 * Get absolute path to plugin directory, with optional path appended
+	 *
+	 * @param string $append Optional path to append to the plugin directory pth
+	 * @return string Path
+	 */
+	public function get_plugin_dir( $append = '' ){
+		return trailingslashit( $this->_plugin_dir_path ) . ltrim( $append, '/' );
 	}
 
 }
