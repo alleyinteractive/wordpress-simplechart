@@ -101,12 +101,6 @@ class Simplechart_Save {
 			update_post_meta( $post->ID, 'simplechart-data',  $json_data );
 		}
 
-		// validate template HTML fragment
-		$template_fragment = $this->validate_template_fragment( stripslashes( $_POST['simplechart-template'] ) );
-		if ( $template_fragment ) {
-			update_post_meta( $post->ID, 'simplechart-template',  $template_fragment );
-		}
-
 		// save error messages
 		if ( ! empty( $this->_errors ) ) {
 			update_post_meta( $post->ID, 'simplechart-errors', $this->_errors );

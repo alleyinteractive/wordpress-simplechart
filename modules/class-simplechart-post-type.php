@@ -66,7 +66,6 @@ class Simplechart_Post_Type {
 		$json_data = $args['args'][1];
 		$meta_box_html = file_get_contents( $plugin_dir_path . 'templates/meta-box.html' );
 		$nonce = wp_create_nonce( 'simplechart_save' );
-		$template_html = get_post_meta( $post->ID, 'simplechart-template', true );
 		$app_url = Simplechart::instance()->get_config( 'web_app_iframe_src' );
 		$assets_url = Simplechart::instance()->get_plugin_url( 'app/' );
 
@@ -84,10 +83,7 @@ class Simplechart_Post_Type {
 			__( 'Close Modal', 'simplechart' ),
 			__( 'Confirming this message will proceed without saving changes. If you have made changes that you wish to save, cancel this message, proceed to the final step, and click the Save Chart button.', 'simplechart' ),
 			esc_attr( $nonce ),
-			htmlentities( $validated_json_data, ENT_COMPAT ), // printed in a <input> value attr, so convert " to &quot
-			esc_attr( $template_html ),
-			esc_url( $chart_url ),
-			esc_attr( $chart_id )
+			htmlentities( $validated_json_data, ENT_COMPAT ) // printed in a <input> value attr, so convert " to &quot
 		);
 
 		echo $html;

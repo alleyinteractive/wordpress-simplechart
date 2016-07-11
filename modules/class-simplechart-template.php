@@ -48,7 +48,6 @@ class Simplechart_Template {
 
 		// support versions that predate loading by chart ID
 		$json_data = get_post_meta( $id, 'simplechart-data', true );
-		$template_html = get_post_meta( $id, 'simplechart-template', true );
 		$image_fallback = wp_get_attachment_image_src( get_post_thumbnail_id( $id ), 'large' );
 		$template_format = file_get_contents( Simplechart::instance()->get_plugin_dir() . 'templates/template-partial.html' );
 

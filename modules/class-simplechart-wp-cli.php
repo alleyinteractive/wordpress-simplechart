@@ -25,7 +25,6 @@ class Simplechart_WP_CLI extends WP_CLI_Command {
 	 */
 	private $_meta_keys = array(
 		'simplechart-data',
-		'simplechart-template',
 		'simplechart-errors',
 	);
 
