@@ -201,7 +201,7 @@ class Simplechart {
 
 	public function add_meta_box(){
 		global $post;
-		$json_data = $data = get_post_meta( $post->ID, 'simplechart-data', true );
+		$json_data = get_post_meta( $post->ID, 'simplechart-data', true );
 		add_meta_box( 'simplechart-preview',
 			__( 'Simplechart', 'simplechart' ),
 			array( $this->post_type, 'render_meta_box' ),

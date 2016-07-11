@@ -101,7 +101,6 @@ function WPSimplechartApp( $ ) {
 		if ( ! messageType ) {
 			return;
 		}
-		console.log(messageType, evt);
 		switch (messageType) {
 			case 'appReady':
 				sendData();
