@@ -6,7 +6,6 @@
 
 class Simplechart_Post_Type {
 
-	private $_iframe_slug = 'simplechart_app';
 	private $_app_cap = 'edit_posts';
 
 	public function __construct(){
@@ -71,7 +70,7 @@ class Simplechart_Post_Type {
 		$chart_url = get_post_meta( $post->ID, 'simplechart-chart-url', true );
 		$chart_id = get_post_meta( $post->ID, 'simplechart-chart-id', true );
 		$app_url = Simplechart::instance()->get_config( 'web_app_iframe_src' );
-		$assets_url = Simplechart::instance()->get_plugin_url() . 'app/';
+		$assets_url = Simplechart::instance()->get_plugin_url( 'app/' );
 
 		// escapes without converting " to &quot
 		$validated_json_data = json_encode( json_decode( $json_data ) );
@@ -101,7 +100,7 @@ class Simplechart_Post_Type {
 	}
 
 	public function render_iframe_page() {
-		require_once( Simplechart::instance()->get_plugin_dir() . 'app/index.php' );
+		require_once( Simplechart::instance()->get_plugin_dir() . 'templates/iframe.php' );
 	}
 
 	/**
@@ -120,7 +119,7 @@ class Simplechart_Post_Type {
 		global $menu;
 		if ( ! empty( $menu ) && is_array( $menu ) ) {
 			foreach ( $menu as $index => $item ) {
-				if ( ! empty( $item[2] ) && $item[2] === $this->_iframe_slug ) {
+				if ( ! empty( $item[2] ) && $item[2] === Simplechart::instance()->get_config( 'menu_page_slug' ) ) {
 					unset( $menu[ $index ] );
 					$menu = array_values( $menu );
 					break;
@@ -133,21 +132,13 @@ class Simplechart_Post_Type {
 
 	private function _remove_slug_from_menu_order( $array ) {
 		if ( ! empty( $array ) && is_array( $array ) ) {
-			$index = array_search( $this->_iframe_slug, $array, true );
+			$index = array_search( Simplechart::instance()->get_config( 'menu_page_slug' ), $array, true );
 			if ( false !== $index ) {
 				unset( $array[ $index ] );
 				$array = array_values( $array );
 			}
 		}
 		return $array;
-	}
-
-	/**
-	 * getter for iframe src
-	 * @return string path to use as src
-	 */
-	public function get_web_app_iframe_src() {
-		return '/wp-admin/admin.php?page=' . $this->_iframe_slug . '&noheader#/simplechart';
 	}
 
 	/**

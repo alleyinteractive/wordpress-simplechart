@@ -4,7 +4,7 @@ Plugin Name: Simplechart
 Plugin URI: https://github.com/alleyinteractive/wordpress-simplechart
 Description: Create and render interactive charts in WordPress using Simplechart
 Author: Drew Machat, Josh Kadis, Alley Interactive
-Version: 0.0.1
+Version: 0.2.1
 Author URI: http://www.alleyinteractive.com/
 */
 
@@ -12,30 +12,37 @@ class Simplechart {
 
 	private static $instance;
 
-	// both will include trailing slash
 	private $_plugin_dir_path = null;
 	private $_plugin_dir_url = null;
 	private $_admin_notices = array( 'updated' => array(), 'error' => array() );
 	private $_plugin_id = 'wordpress-simplechart/simplechart.php';
+	private $_local_dev_query_var = 'sclocaldev';
 
 	// config vars that will eventually come from settings page
 	private $_config = array(
-		'widget_dir_path' => 'app/assets/widget',
-		'widget_loader_url' => null,
-		'widget_dir_url' => null,
 		'web_app_iframe_src' => null,
-		'version' => '0.0.1',
+		'web_app_js_url' => null,
+		'menu_page_slug' => 'simplechart_app',
+		'version' => '0.2.1',
 	);
 
 	// startup
 	private function __construct(){
+		// Some stuff we handle different on VIP CLassic™ vs VIP Go and self-hosted sites
+		// thanks matt :)
+		if ( defined( 'WPCOM_IS_VIP_ENV' ) && WPCOM_IS_VIP_ENV && ( ! defined( 'VIP_GO_ENV' ) || ! VIP_GO_ENV ) ) {
+		    define(  'WPCOM_IS_VIP_CLASSIC_TM_ENV', true );
+		}
+
 		if ( ! $this->_check_dependencies() ){
 			add_action( 'admin_notices', array( $this, 'admin_notices' ) );
 			add_action( 'admin_init', array( $this, 'deactivate' ) );
 			return;
 		}
+		// Both of these will have trailing slash
 		$this->_plugin_dir_path = plugin_dir_path( __FILE__ );
 		$this->_plugin_dir_url = $this->_set_plugin_dir_url();
+
 		$this->_init_modules();
 		add_action( 'init', array( $this, 'action_init' ) );
 	}
@@ -56,7 +63,7 @@ class Simplechart {
 	private function _check_dependencies() {
 
 		// skip check for Media Explorer on VIP since it's part of WPCOM platform
-		if ( defined( 'WPCOM_IS_VIP_ENV' ) && WPCOM_IS_VIP_ENV ) {
+		if ( defined( 'WPCOM_IS_VIP_CLASSIC_TM_ENV' ) && WPCOM_IS_VIP_CLASSIC_TM_ENV ) {
 			return true;
 		}
 
@@ -98,24 +105,25 @@ class Simplechart {
 
 		// if running as regular plugin (i.e. inside wp-content/plugins/)
 		if ( 0 === strpos( $this->_plugin_dir_path, WP_PLUGIN_DIR ) ){
-			return plugin_dir_url( __FILE__ );
+			$url = plugin_dir_url( __FILE__ );
 		}
-		// if running as VIP plugin
+		// if running as VIP Classic™ plugin
 		elseif ( function_exists( 'wpcom_vip_get_loaded_plugins' ) && in_array( 'alley-plugins/simplechart', wpcom_vip_get_loaded_plugins(), true ) ) {
-			return plugins_url( '', __FILE__ );
+			$url =  plugins_url( '', __FILE__ );
 		}
-		// assume running inside theme
+		// assume loaded directly by theme
 		else {
 			$path_relative_to_theme = str_replace( get_template_directory(), '', $this->_plugin_dir_path );
-			return get_template_directory_uri() . $path_relative_to_theme;
+			$url =  get_template_directory_uri() . $path_relative_to_theme;
 		}
+		return trailingslashit( $url );
 	}
 
 	/**
 	 * config getter
 	 */
 	public function get_config( $key ){
-		return $this->_config[ $key ];
+		return isset( $this->_config[ $key ]) ? $this->_config[ $key ] : null;
 	}
 
 	/**
@@ -149,16 +157,19 @@ class Simplechart {
 	 * on the 'init' action, do frontend or backend startup
 	 */
 	public function action_init(){
-		$this->_config['widget_dir_url'] = $this->_plugin_dir_url . $this->_config['widget_dir_path'];
-		$this->_config['widget_dir_url'] = apply_filters( 'simplechart_widget_dir_url', $this->_config['widget_dir_url'] );
 
-		// get URL of loader.js for front-end chart display
-		$this->_config['widget_loader_url'] = $this->_config['widget_dir_url'] . '/loader.js';
-		$this->_config['widget_loader_url'] = apply_filters( 'simplechart_widget_loader_url', $this->_config['widget_loader_url'] );
+		// this would only apply on local envs, so not worried about caching
+		if ( isset( $_GET[ $this->_local_dev_query_var ] ) && 1 === absint( $_GET[ $this->_local_dev_query_var ] ) ) {
+			$this->_config['web_app_iframe_src'] = 'http://localhost:8080/';
+			$this->_config['web_app_js_url'] = 'http://localhost:8080/static/bundle.js';
+		} else {
+			// menu page set up by Simplechart_Post_Type module
+			$this->_config['web_app_iframe_src'] = admin_url( '/admin.php?page=' . $this->get_config( 'menu_page_slug' ) . '&noheader' );
+			$this->_config['web_app_js_url'] = $this->get_plugin_url( 'js/app/bundle.js' );
+		}
 
-		// default to root-relative path to simplechart web app
-		$this->_config['web_app_iframe_src'] = $this->post_type->get_web_app_iframe_src();
 		$this->_config['web_app_iframe_src'] = apply_filters( 'simplechart_web_app_iframe_src', $this->_config['web_app_iframe_src'] );
+		$this->_config['web_app_js_url'] = apply_filters( 'simplechart_web_app_js_url', $this->_config['web_app_js_url'] );
 
 		if ( is_admin() ){
 			$this->_admin_setup();
@@ -179,9 +190,9 @@ class Simplechart {
 		// this is used to preload stuff like color palette for charts, etc
 		if ( file_exists( get_template_directory() . '/inc/plugins/simplechart-site-options.js' ) ) {
 			wp_register_script( 'simplechart-site-options', get_template_directory_uri() . '/inc/plugins/simplechart-site-options.js' );
-			wp_register_script( 'simplechart-post-edit', $this->_plugin_dir_url . 'js/post-edit.js', array( 'jquery', 'underscore', 'simplechart-site-options' ) );
+			wp_register_script( 'simplechart-post-edit', $this->get_plugin_url( 'js/plugin/post-edit.js' ), array( 'jquery', 'underscore', 'simplechart-site-options' ) );
 		} else {
-			wp_register_script( 'simplechart-post-edit', $this->_plugin_dir_url . 'js/post-edit.js', array( 'jquery', 'underscore' ) );
+			wp_register_script( 'simplechart-post-edit', $this->get_plugin_url( 'js/plugin/post-edit.js' ), array( 'jquery', 'underscore' ) );
 		}
 		wp_register_style( 'simplechart-style', $this->_plugin_dir_url . 'css/style.css' );
 		wp_enqueue_script( 'simplechart-post-edit' );
@@ -201,9 +212,15 @@ class Simplechart {
 		);
 	}
 
-	// used by modules that need this info
-	public function get_plugin_url(){
-		return $this->_plugin_dir_url;
+	/**
+	 * Get URL of plugin directory, with optional path appended
+	 *
+	 * @param string $append Optional path to append to the plugin directory URL
+	 * @return string URL
+	 */
+	public function get_plugin_url( $append = '' ){
+		// should already have trailing slash but just to be safe...
+		return trailingslashit( $this->_plugin_dir_url ) . ltrim( $append, '/' );
 	}
 
 	// used by modules that need this info
