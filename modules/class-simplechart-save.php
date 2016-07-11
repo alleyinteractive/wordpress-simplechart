@@ -96,9 +96,9 @@ class Simplechart_Save {
 		}
 
 		// sanitize and validate JSON formatting of chart data
-		$json_data = $this->_validate_json( stripslashes( $_POST['simplechart-data'] ) );
+		$json_data = $this->_validate_json( stripcslashes( $_POST['simplechart-data'] ) );
 		if ( $json_data ) {
-			update_post_meta( $post->ID, 'simplechart-data',  $json_data );
+			update_post_meta( $post->ID, 'simplechart-data',  wp_slash( $json_data ) );
 		}
 
 		// save error messages
