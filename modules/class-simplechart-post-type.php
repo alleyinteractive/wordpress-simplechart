@@ -67,8 +67,6 @@ class Simplechart_Post_Type {
 		$meta_box_html = file_get_contents( $plugin_dir_path . 'templates/meta-box.html' );
 		$nonce = wp_create_nonce( 'simplechart_save' );
 		$template_html = get_post_meta( $post->ID, 'simplechart-template', true );
-		$chart_url = get_post_meta( $post->ID, 'simplechart-chart-url', true );
-		$chart_id = get_post_meta( $post->ID, 'simplechart-chart-id', true );
 		$app_url = Simplechart::instance()->get_config( 'web_app_iframe_src' );
 		$assets_url = Simplechart::instance()->get_plugin_url( 'app/' );
 

@@ -46,13 +46,6 @@ class Simplechart_Template {
 
 		$loader_url = Simplechart::instance()->get_config( 'widget_loader_url' );
 
-		// if we have a chart ID saved, use that for the embed
-		$chart_id = get_post_meta( $id, 'simplechart-chart-id', true );
-		if ( ! empty( $chart_id ) ){
-			$embed_code = sprintf( '<script async data-id="%s" src="%s"></script>', esc_attr( $chart_id ), esc_url( $loader_url ) );
-			return $embed_code;
-		}
-
 		// support versions that predate loading by chart ID
 		$json_data = get_post_meta( $id, 'simplechart-data', true );
 		$template_html = get_post_meta( $id, 'simplechart-template', true );

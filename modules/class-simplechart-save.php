@@ -107,16 +107,6 @@ class Simplechart_Save {
 			update_post_meta( $post->ID, 'simplechart-template',  $template_fragment );
 		}
 
-		// save chart URL if provided
-		if ( ! empty( $_POST['simplechart-chart-url'] ) ) {
-			update_post_meta( $post->ID, 'simplechart-chart-url',  esc_url( $_POST['simplechart-chart-url'] ) );
-		}
-
-		// save chart ID if provided
-		if ( ! empty( $_POST['simplechart-chart-id'] ) ) {
-			update_post_meta( $post->ID, 'simplechart-chart-id',  sanitize_text_field( $_POST['simplechart-chart-id'] ) );
-		}
-
 		// save error messages
 		if ( ! empty( $this->_errors ) ) {
 			update_post_meta( $post->ID, 'simplechart-errors', $this->_errors );
