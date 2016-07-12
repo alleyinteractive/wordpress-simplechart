@@ -157,9 +157,11 @@ class Simplechart {
 	 * on the 'init' action, do frontend or backend startup
 	 */
 	public function action_init(){
+		// Allow GET or filter to force using localhost for app
+		$use_localhost = isset( $_GET[ $this->_local_dev_query_var ] ) && 1 === absint( $_GET[ $this->_local_dev_query_var ] );
+		$use_localhost = apply_filters( 'simplechart_use_localhost', $use_localhost );
 
-		// this would only apply on local envs, so not worried about caching
-		if ( isset( $_GET[ $this->_local_dev_query_var ] ) && 1 === absint( $_GET[ $this->_local_dev_query_var ] ) ) {
+		if ( $use_localhost ) {
 			$this->_config['web_app_iframe_src'] = 'http://localhost:8080/';
 			$this->_config['web_app_js_url'] = 'http://localhost:8080/static/bundle.js';
 		} else {
