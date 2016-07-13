@@ -12,24 +12,16 @@ function WPSimplechartApp( $ ) {
 		chartData = null,
 		confirmNoDataMessage = '',
 		closeModalMessage = '',
-		savedChart = false,
-		inputEl,
-		imgInputEl;
+		savedChart = false;
 
 	/**
 	 * Set scope var values and build modal element
 	 */
 	function init() {
-		appUrl = WPSimplechartBootstrap.appUrl.toString();
-		confirmNoDataMessage = WPSimplechartBootstrap.confirmNoDataMessage.toString();
-		closeModalMessage = WPSimplechartBootstrap.closeModalMessage.toString();
-		inputEl = document.getElementById( WPSimplechartBootstrap.postmetaKey );
-		imgInputEl = document.getElementById( 'simplechart-png-string' );
-
+		appUrl = window.WPSimplechartContainer.appUrl.toString();
+		confirmNoDataMessage = window.WPSimplechartContainer.confirmNoDataMessage.toString();
+		closeModalMessage = window.WPSimplechartContainer.closeModalMessage.toString();
 		window.addEventListener('message', onReceiveMessage );
-		$( '#simplechart-clear' ).click( clearInputEl );
-		$( '#simplechart-launch' ).click( openModal );
-
 		renderOpenModal();
 	}
 
@@ -42,7 +34,7 @@ function WPSimplechartApp( $ ) {
 		modalElements.container = modalElements.container.replace( '{{closeModal}}', closeModalMessage);
 		$( 'body' ).append( modalElements.container + modalElements.backdrop );
 
-		// add lister to close modal now that it's in DOM
+		// add listenters to open/close modal now that it's in DOM
 		$( '#simplechart-close' ).click( function( e ) {
 			e.preventDefault();
 			if ( savedChart || confirm( confirmNoDataMessage ) ) {
@@ -50,6 +42,7 @@ function WPSimplechartApp( $ ) {
 				savedChart = false;
 			}
 		} );
+		$( '#simplechart-launch' ).click( openModal );
 	}
 
 	/**
@@ -64,15 +57,6 @@ function WPSimplechartApp( $ ) {
 	 */
 	function hideModal() {
 		$( '#simplechart-backdrop, #simplechart-modal' ).hide();
-	}
-
-	/**
-	 * Clear hidden fields that store app data after postMessage from child frame
-	 */
-	function clearInputEl( e ) {
-		e.preventDefault();
-		inputEl.setAttribute('value', '');
-		imgInputEl.setAttribute('value', '');
 	}
 
 	/**
@@ -101,14 +85,11 @@ function WPSimplechartApp( $ ) {
 		if ( ! messageType ) {
 			return;
 		}
-		switch (messageType) {
-			case 'appReady':
-				sendData();
-				break;
 
-			case 'saveData':
-				receiveData( evt.data.data );
-				break;
+		if ( 'appReady' === messageType ) {
+			sendData();
+		} else if ( 0 === messageType.indexOf( 'save-' ) ) {
+			receiveData( messageType, evt.data.data );
 		}
 	}
 
@@ -116,24 +97,24 @@ function WPSimplechartApp( $ ) {
 	 * Send previously saved data to child window
 	 */
 	function sendData() {
-		if( WPSimplechartBootstrap.data ) {
+		if( window.WPSimplechartBootstrap.rawData ) {
 			document.getElementById( 'simplechart-frame' ).contentWindow.postMessage({
-				data: WPSimplechartBootstrap.data,
-				messageType: 'bootstrapAppData'
+				data: window.WPSimplechartBootstrap.rawData,
+				messageType: 'bootstrap.rawData'
 			}, '*' );
 		}
 	}
 
 	/**
-	 * Receive new data from child window
+	 * Receive new data from child window and set value of hidden input field
 	 */
-	function receiveData( data ) {
-		if ( data.previewImg ) {
-			imgInputEl.value = data.previewImg;
-			delete data.previewImg;
+	function receiveData( messageType, data ) {
+		if ( 'string' !== typeof data ) {
+			data = JSON.stringify( data );
+		}
 		}
 
-		inputEl.value = JSON.stringify( data );
+		document.getElementById( messageType ).value = data;
 	}
 
 	// GO GO GO

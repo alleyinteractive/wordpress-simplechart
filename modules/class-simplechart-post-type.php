@@ -62,27 +62,7 @@ class Simplechart_Post_Type {
 	}
 
 	public function render_meta_box( $post, $args ) {
-		$json_data = get_post_meta( get_the_ID(), 'simplechart-data', true );;
-		$meta_box_html = file_get_contents( Simplechart::instance()->get_plugin_dir( 'templates/meta-box.html' ) );
-		$nonce = wp_create_nonce( 'simplechart_save' );
-		$app_url = Simplechart::instance()->get_config( 'web_app_iframe_src' );
-
-		// escapes without converting " to &quot
-		$validated_json_data = wp_json_encode( json_decode( $json_data ) );
-
-		$html = sprintf( $meta_box_html,
-			__( 'Launch Simplechart App', 'simplechart' ),
-			__( 'Clear Simplechart Data', 'simplechart' ),
-			esc_url( $app_url ),
-			'simplechart-data',
-			$validated_json_data, // is printed in a script tag, so no htmlentities conversion
-			__( 'Close Modal', 'simplechart' ),
-			__( 'Confirming this message will proceed without saving changes. If you have made changes that you wish to save, cancel this message, proceed to the final step, and click the Save Chart button.', 'simplechart' ),
-			esc_attr( $nonce ),
-			htmlentities( $validated_json_data, ENT_COMPAT ) // printed in a <input> value attr, so convert " to &quot
-		);
-
-		echo $html;
+		require_once( Simplechart::instance()->get_plugin_dir( 'templates/meta-box.php' ) );
 	}
 
 	public function setup_iframe_page() {

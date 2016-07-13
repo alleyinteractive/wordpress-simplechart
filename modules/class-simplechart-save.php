@@ -8,6 +8,13 @@ class Simplechart_Save {
 	private $_debug_messages = array();
 	private $_show_debug_messages = false;
 	private $_image_post_status = 'simplechart_image';
+	public $meta_field_names = array(
+		'rawData',
+		'chartData',
+		'chartMetadata',
+		'chartOptions',
+		'previewImg',
+	);
 
 	function __construct() {
 		add_action( 'save_post_simplechart', array( $this, 'save_post_action' ), 10, 1 );
@@ -91,14 +98,14 @@ class Simplechart_Save {
 		}
 
 		// handle base64 image string if provided
-		if ( ! empty( $_POST['simplechart-png-string'] ) ) {
-			$this->_save_chart_image( $post, $_POST['simplechart-png-string'], $this->_default_img_type );
+		if ( ! empty( $_POST['save-previewImg'] ) ) {
+			$this->_save_chart_image( $post, $_POST['save-previewImg'], $this->_default_img_type );
 		}
 
-		// sanitize and validate JSON formatting of chart data
-		$json_data = $this->_validate_json( stripcslashes( $_POST['simplechart-data'] ) );
-		if ( $json_data ) {
-			update_post_meta( $post->ID, 'simplechart-data',  wp_slash( $json_data ) );
+		foreach ( $this->meta_field_names as $field ) {
+			if ( ! empty( $_POST[ 'save-' . $field ] ) ) {
+				update_post_meta( $post->ID, 'save-' . $field, $_POST[ 'save-' . $field ] );
+			}
 		}
 
 		// save error messages
