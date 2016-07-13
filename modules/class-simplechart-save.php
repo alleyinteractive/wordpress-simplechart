@@ -102,16 +102,11 @@ class Simplechart_Save {
 			$this->_save_chart_image( $post, $_POST['save-previewImg'], $this->_default_img_type );
 		}
 
-		error_log( 'pre-update post' );
-		error_log( $_POST[ 'save-chartData' ] );
 		foreach ( $this->meta_field_names as $field ) {
 			if ( ! empty( $_POST[ 'save-' . $field ] ) ) {
 				update_post_meta( $post->ID, 'save-' . $field, $_POST[ 'save-' . $field ] );
 			}
 		}
-		error_log( 'after update post' );
-		$after = get_post_meta( $post->ID, 'save-chartData', true );
-		error_log( $after );
 
 		// save error messages
 		if ( ! empty( $this->_errors ) ) {
