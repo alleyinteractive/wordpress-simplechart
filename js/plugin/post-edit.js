@@ -97,10 +97,27 @@ function WPSimplechartApp( $ ) {
 	 * Send previously saved data to child window
 	 */
 	function sendData() {
-		if( window.WPSimplechartBootstrap.rawData ) {
-			document.getElementById( 'simplechart-frame' ).contentWindow.postMessage({
-				data: window.WPSimplechartBootstrap.rawData,
-				messageType: 'bootstrap.rawData'
+		if ( ! window.WPSimplechartBootstrap ) {
+			console.log( 'Missing window.WPSimplechartBootstrap' );
+			return;
+		}
+
+		var childWindow = document.getElementById( 'simplechart-frame' );
+		if ( ! childWindow || ! childWindow.contentWindow ) {
+			console.log( 'Missing iframe#simplechart-frame' );
+			return;
+		}
+
+		Object.keys( window.WPSimplechartBootstrap ).forEach( function( key ) {
+			_sendDataMessage( childWindow.contentWindow, key );
+		} );
+	}
+
+	function _sendDataMessage( toWindow, key ) {
+		if( window.WPSimplechartBootstrap[ key ] ) {
+			toWindow.postMessage({
+				data: window.WPSimplechartBootstrap[ key ],
+				messageType: 'bootstrap.' + key
 			}, '*' );
 		}
 	}
@@ -111,7 +128,6 @@ function WPSimplechartApp( $ ) {
 	function receiveData( messageType, data ) {
 		if ( 'string' !== typeof data ) {
 			data = JSON.stringify( data );
-		}
 		}
 
 		document.getElementById( messageType ).value = data;
