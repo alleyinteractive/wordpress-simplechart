@@ -24,7 +24,11 @@ class Simplechart_WP_CLI extends WP_CLI_Command {
 	 * @var array $_meta_keys List of post meta keys to set when creating a post
 	 */
 	private $_meta_keys = array(
-		'simplechart-data',
+		'save-rawData',
+		'save-chartData',
+		'save-chartOptions',
+		'save-chartMetadata',
+		'save-previewImg',
 		'simplechart-errors',
 	);
 
