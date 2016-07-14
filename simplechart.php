@@ -147,6 +147,9 @@ class Simplechart {
 		require_once( $this->_plugin_dir_path . 'modules/class-simplechart-template.php' );
 		$this->template = new Simplechart_Template;
 
+		require_once( $this->_plugin_dir_path . 'modules/class-simplechart-api.php' );
+		$this->api = new Simplechart_API;
+
 		// WP-CLI commands
 		if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			require_once( $this->_plugin_dir_path . 'modules/class-simplechart-wp-cli.php' );
