@@ -22,6 +22,7 @@ class Simplechart {
 	private $_config = array(
 		'web_app_iframe_src' => null,
 		'web_app_js_url' => null,
+		'widget_loader_url' => null,
 		'menu_page_slug' => 'simplechart_app',
 		'version' => '0.2.1',
 	);
@@ -146,6 +147,9 @@ class Simplechart {
 		require_once( $this->_plugin_dir_path . 'modules/class-simplechart-template.php' );
 		$this->template = new Simplechart_Template;
 
+		require_once( $this->_plugin_dir_path . 'modules/class-simplechart-api.php' );
+		$this->api = new Simplechart_API;
+
 		// WP-CLI commands
 		if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			require_once( $this->_plugin_dir_path . 'modules/class-simplechart-wp-cli.php' );
@@ -157,19 +161,25 @@ class Simplechart {
 	 * on the 'init' action, do frontend or backend startup
 	 */
 	public function action_init(){
+		// Allow GET or filter to force using localhost for app
+		$use_localhost = isset( $_GET[ $this->_local_dev_query_var ] ) && 1 === absint( $_GET[ $this->_local_dev_query_var ] );
+		$use_localhost = apply_filters( 'simplechart_use_localhost', $use_localhost );
 
-		// this would only apply on local envs, so not worried about caching
-		if ( isset( $_GET[ $this->_local_dev_query_var ] ) && 1 === absint( $_GET[ $this->_local_dev_query_var ] ) ) {
+		if ( $use_localhost ) {
 			$this->_config['web_app_iframe_src'] = 'http://localhost:8080/';
 			$this->_config['web_app_js_url'] = 'http://localhost:8080/static/bundle.js';
+			$this->_config['widget_loader_url'] = 'http://localhost:8080/static/widget.js';
+
 		} else {
 			// menu page set up by Simplechart_Post_Type module
 			$this->_config['web_app_iframe_src'] = admin_url( '/admin.php?page=' . $this->get_config( 'menu_page_slug' ) . '&noheader' );
 			$this->_config['web_app_js_url'] = $this->get_plugin_url( 'js/app/bundle.js' );
+			$this->_config['web_app_js_url'] = $this->get_plugin_url( 'js/app/widget.js' );
 		}
 
 		$this->_config['web_app_iframe_src'] = apply_filters( 'simplechart_web_app_iframe_src', $this->_config['web_app_iframe_src'] );
 		$this->_config['web_app_js_url'] = apply_filters( 'simplechart_web_app_js_url', $this->_config['web_app_js_url'] );
+		$this->_config['web_app_js_url'] = apply_filters( 'simplechart_widget_loader_url', $this->_config['widget_loader_url'] );
 
 		if ( is_admin() ){
 			$this->_admin_setup();
@@ -200,15 +210,12 @@ class Simplechart {
 	}
 
 	public function add_meta_box(){
-		global $post;
-		$json_data = $data = get_post_meta( $post->ID, 'simplechart-data', true );
 		add_meta_box( 'simplechart-preview',
 			__( 'Simplechart', 'simplechart' ),
 			array( $this->post_type, 'render_meta_box' ),
 			'simplechart',
 			'normal',
-			'default',
-			array( $this->_plugin_dir_path, $json_data )
+			'default'
 		);
 	}
 
@@ -223,9 +230,14 @@ class Simplechart {
 		return trailingslashit( $this->_plugin_dir_url ) . ltrim( $append, '/' );
 	}
 
-	// used by modules that need this info
-	public function get_plugin_dir(){
-		return $this->_plugin_dir_path;
+	/**
+	 * Get absolute path to plugin directory, with optional path appended
+	 *
+	 * @param string $append Optional path to append to the plugin directory pth
+	 * @return string Path
+	 */
+	public function get_plugin_dir( $append = '' ){
+		return trailingslashit( $this->_plugin_dir_path ) . ltrim( $append, '/' );
 	}
 
 }
@@ -236,11 +248,4 @@ Simplechart::instance();
  */
 function simplechart_render_chart( $id ){
 	return Simplechart::instance()->template->render( $id );
-}
-
-/**
- * Load WP-CLI commands
- */
-if ( defined( 'WP_CLI' ) && WP_CLI ) {
-	require_once( Simplechart::instance()->get_plugin_dir() . 'cli/class-wp-cli-simplechart.php' );
 }

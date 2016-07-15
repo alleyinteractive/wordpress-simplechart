@@ -8,6 +8,13 @@ class Simplechart_Save {
 	private $_debug_messages = array();
 	private $_show_debug_messages = false;
 	private $_image_post_status = 'simplechart_image';
+	public $meta_field_names = array(
+		'rawData',
+		'chartData',
+		'chartMetadata',
+		'chartOptions',
+		'previewImg',
+	);
 
 	function __construct() {
 		add_action( 'save_post_simplechart', array( $this, 'save_post_action' ), 10, 1 );
@@ -91,30 +98,15 @@ class Simplechart_Save {
 		}
 
 		// handle base64 image string if provided
-		if ( ! empty( $_POST['simplechart-png-string'] ) ) {
-			$this->_save_chart_image( $post, $_POST['simplechart-png-string'], $this->_default_img_type );
+		if ( ! empty( $_POST['save-previewImg'] ) ) {
+			$this->_save_chart_image( $post, esc_textarea( $_POST['save-previewImg'] ), $this->_default_img_type );
 		}
 
-		// sanitize and validate JSON formatting of chart data
-		$json_data = $this->_validate_json( stripslashes( $_POST['simplechart-data'] ) );
-		if ( $json_data ) {
-			update_post_meta( $post->ID, 'simplechart-data',  $json_data );
-		}
-
-		// validate template HTML fragment
-		$template_fragment = $this->validate_template_fragment( stripslashes( $_POST['simplechart-template'] ) );
-		if ( $template_fragment ) {
-			update_post_meta( $post->ID, 'simplechart-template',  $template_fragment );
-		}
-
-		// save chart URL if provided
-		if ( ! empty( $_POST['simplechart-chart-url'] ) ) {
-			update_post_meta( $post->ID, 'simplechart-chart-url',  esc_url( $_POST['simplechart-chart-url'] ) );
-		}
-
-		// save chart ID if provided
-		if ( ! empty( $_POST['simplechart-chart-id'] ) ) {
-			update_post_meta( $post->ID, 'simplechart-chart-id',  sanitize_text_field( $_POST['simplechart-chart-id'] ) );
+		foreach ( $this->meta_field_names as $field ) {
+			if ( ! empty( $_POST[ 'save-' . $field ] ) ) {
+				// sanitize field name w/ esc_attr() instead of sanitize_key() because we want to preserve uppercase letters
+				update_post_meta( $post->ID, 'save-' . esc_attr( $field ), esc_textarea( $_POST[ 'save-' . $field ] ) );
+			}
 		}
 
 		// save error messages
