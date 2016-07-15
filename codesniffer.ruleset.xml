@@ -13,6 +13,12 @@
 		<!-- <exclude name="PEAR.Functions.FunctionCallSignature.Indent" /> -->
 	</rule>
 
+	<!-- Exception for allowed media sideloading -->
+	<rule ref="WordPress.VIP.FileSystemWritesDisallow.FileWriteDetected">
+		<exclude-pattern>modules/class-simplechart-save.php</exclude-pattern>
+		<exclude-pattern>modules/class-simplechart-wp-cli.php</exclude-pattern>
+	</rule>
+
 	<!-- Tweak the VIP rules -->
 	<rule ref="WordPress.XSS.EscapeOutput.OutputNotEscaped">
 		<type>warning</type>
