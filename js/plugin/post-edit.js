@@ -29,7 +29,7 @@ function WPSimplechartApp( $ ) {
 	 * Renders the app iframe modal in its open state
 	 */
 	function renderOpenModal() {
-			// create modal elements and append to <body>
+		// create modal elements and append to <body>
 		modalElements.container = modalElements.container.replace( '{{iframeSrc}}', appUrl);
 		modalElements.container = modalElements.container.replace( '{{closeModal}}', closeModalMessage);
 		$( 'body' ).append( modalElements.container + modalElements.backdrop );
@@ -64,7 +64,7 @@ function WPSimplechartApp( $ ) {
 	 */
 	function getMessageType(evt) {
 		// confirm same-origin or http(s)://localhost:8080
-		if ( evt.origin !== window.location.origin && !/https?:\/\/localhost:8080/.test(evt.origin )) {
+		if ( evt.origin !== window.location.origin && !/https?:\/\/localhost:8080/.test( evt.origin ) ) {
 			return false;
 		}
 
@@ -109,11 +109,14 @@ function WPSimplechartApp( $ ) {
 		}
 
 		Object.keys( window.WPSimplechartBootstrap ).forEach( function( key ) {
-			_sendDataMessage( childWindow.contentWindow, key );
+			sendDataKeyMessage( childWindow.contentWindow, key );
 		} );
 	}
 
-	function _sendDataMessage( toWindow, key ) {
+	/**
+	 * Send specific value from bootstrap data via postMessage
+	 */
+	function sendDataKeyMessage( toWindow, key ) {
 		if( window.WPSimplechartBootstrap[ key ] ) {
 			toWindow.postMessage({
 				data: window.WPSimplechartBootstrap[ key ],
