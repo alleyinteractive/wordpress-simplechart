@@ -48,7 +48,7 @@ class Simplechart_Template {
 		}
 		?>
 			<div
-				id="simplechart-widget-<?php echo esc_attr( $id ); ?>"
+				id="simplechart-widget-<?php echo absint( $id ); ?>"
 				class="simplechart-widget"
 				data-url="<?php echo esc_url( home_url( '/simplechart/api/' . $id . '/' ) ); ?>"
 			></div>

@@ -22,11 +22,10 @@ class Simplechart_API {
 	}
 
 	public function handle_api_request( $query ) {
-		if (
-			empty( $query->query_vars['simplechart-api'] ) || empty( $query->query_vars['p'] ) ) {
+		if ( empty( $query->query_vars['simplechart-api'] ) || empty( $query->query_vars['p'] ) ) {
 			return;
 		}
-		$id = intval( $query->query_vars['p'] );
+		$id = absint( $query->query_vars['p'] );
 		$post = get_post( $id );
 
 		if ( empty( $post ) || 'simplechart' !== $post->post_type ) {
