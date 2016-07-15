@@ -22,6 +22,7 @@ class Simplechart {
 	private $_config = array(
 		'web_app_iframe_src' => null,
 		'web_app_js_url' => null,
+		'widget_loader_url' => null,
 		'menu_page_slug' => 'simplechart_app',
 		'version' => '0.2.1',
 	);
@@ -146,6 +147,9 @@ class Simplechart {
 		require_once( $this->_plugin_dir_path . 'modules/class-simplechart-template.php' );
 		$this->template = new Simplechart_Template;
 
+		require_once( $this->_plugin_dir_path . 'modules/class-simplechart-api.php' );
+		$this->api = new Simplechart_API;
+
 		// WP-CLI commands
 		if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			require_once( $this->_plugin_dir_path . 'modules/class-simplechart-wp-cli.php' );
@@ -164,14 +168,18 @@ class Simplechart {
 		if ( $use_localhost ) {
 			$this->_config['web_app_iframe_src'] = 'http://localhost:8080/';
 			$this->_config['web_app_js_url'] = 'http://localhost:8080/static/bundle.js';
+			$this->_config['widget_loader_url'] = 'http://localhost:8080/static/widget.js';
+
 		} else {
 			// menu page set up by Simplechart_Post_Type module
 			$this->_config['web_app_iframe_src'] = admin_url( '/admin.php?page=' . $this->get_config( 'menu_page_slug' ) . '&noheader' );
 			$this->_config['web_app_js_url'] = $this->get_plugin_url( 'js/app/bundle.js' );
+			$this->_config['web_app_js_url'] = $this->get_plugin_url( 'js/app/widget.js' );
 		}
 
 		$this->_config['web_app_iframe_src'] = apply_filters( 'simplechart_web_app_iframe_src', $this->_config['web_app_iframe_src'] );
 		$this->_config['web_app_js_url'] = apply_filters( 'simplechart_web_app_js_url', $this->_config['web_app_js_url'] );
+		$this->_config['web_app_js_url'] = apply_filters( 'simplechart_widget_loader_url', $this->_config['widget_loader_url'] );
 
 		if ( is_admin() ){
 			$this->_admin_setup();
