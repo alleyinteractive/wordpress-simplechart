@@ -8,7 +8,7 @@ class Simplechart_Post_Type {
 
 	private $_app_cap = 'edit_posts';
 
-	public function __construct(){
+	public function __construct() {
 		add_action( 'init', array( $this, 'register_post_type' ) );
 		add_action( 'after_setup_theme', array( $this, 'support_thumbnails' ) );
 		add_action( 'admin_menu', array( $this, 'setup_iframe_page' ) );
@@ -16,8 +16,8 @@ class Simplechart_Post_Type {
 		add_filter( 'menu_order', array( $this, 'remove_menu_link' ), 999 );
 	}
 
-	public function support_thumbnails(){
-		if ( ! current_theme_supports( 'post-thumbnails' ) ){
+	public function support_thumbnails() {
+		if ( ! current_theme_supports( 'post-thumbnails' ) ) {
 			add_theme_support( 'post-thumbnails', array( 'simplechart' ) );
 		}
 	}
@@ -55,7 +55,7 @@ class Simplechart_Post_Type {
 			'has_archive' => false,
 
 			'menu_icon' => 'dashicons-chart-pie',
-			'supports' => array( 'title', 'thumbnail' )
+			'supports' => array( 'title', 'thumbnail' ),
 		);
 
 		register_post_type( 'simplechart', $args );
@@ -89,7 +89,7 @@ class Simplechart_Post_Type {
 		global $menu;
 		if ( ! empty( $menu ) && is_array( $menu ) ) {
 			foreach ( $menu as $index => $item ) {
-				if ( ! empty( $item[2] ) && $item[2] === Simplechart::instance()->get_config( 'menu_page_slug' ) ) {
+				if ( ! empty( $item[2] ) && Simplechart::instance()->get_config( 'menu_page_slug' ) === $item[2] ) {
 					unset( $menu[ $index ] );
 					$menu = array_values( $menu );
 					break;
@@ -117,5 +117,4 @@ class Simplechart_Post_Type {
 	public function current_user_can() {
 		return current_user_can( $this->_app_cap );
 	}
-
 }

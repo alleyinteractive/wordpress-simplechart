@@ -155,8 +155,7 @@ class Simplechart_Save {
 		if ( is_wp_error( $temp_file ) ) {
 			$this->_errors = array_merge( $this->_errors, $temp_file->get_error_messages() ); // translation handled inside wp_upload_bits()
 			return false;
-		}
-		elseif ( false !== $temp_file['error'] ) {
+		} elseif ( false !== $temp_file['error'] ) {
 			$this->_errors[] = $temp_file['error']; // translation handled inside wp_upload_bits()
 			return false;
 		}
@@ -239,23 +238,19 @@ class Simplechart_Save {
 		if ( 'undefined' === $data ) {
 			$this->_errors[] = "JS app set value of input to 'undefined'";
 			return false;
-		}
-		// Attempt to validate JSON by decoding then re-encoding
-		elseif ( $decoded = json_decode( $data ) ) {
+		} elseif ( $decoded = json_decode( $data ) ) {
+			// Attempt to validate JSON by decoding then re-encoding
 			return json_encode( $decoded ); // returns a valid JSON string!
-		}
-		// Add error message
-		elseif ( function_exists( 'json_last_error_msg' ) ) {
+		} elseif ( function_exists( 'json_last_error_msg' ) ) {
+			// Add error message
 			$this->_errors[] = sprintf( __( 'JSON error: %s', 'simplechart' ), json_last_error_msg() );
 			return false;
-		}
-		// Or just error code
-		elseif ( function_exists( 'json_last_error' ) ) {
+		} elseif ( function_exists( 'json_last_error' ) ) {
+			// Or just error code
 			$this->_errors[] = sprintf( __( 'JSON error code: %s', 'simplechart' ), json_last_error() );
 			return false;
-		}
-		// Or catch-all error message
-		else {
+		} else {
+			// Or catch-all error message
 			$this->_errors[] = __( 'Attempted to save invalid JSON', 'simplechart' );;
 			return false;
 		}
