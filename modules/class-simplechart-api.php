@@ -34,10 +34,14 @@ class Simplechart_API {
 			) );
 		}
 
-		wp_send_json_success( array(
-			'data' => get_post_meta( $id, 'save-chartData', true ),
-			'options' => get_post_meta( $id, 'save-chartOptions', true ),
-			'metadata' => get_post_meta( $id, 'save-chartMetadata', true ),
-		) );
+		$response = array();
+		foreach ( array( 'Data', 'Options', 'Metadata' ) as $key ) {
+			$meta = get_post_meta( $id, 'save-chart' . $key, true );
+			// Fields are saved with esc_textarea() which uses htmlspecialchars(), so we decode here
+			$meta = htmlspecialchars_decode( $meta, ENT_QUOTES );
+			$response[ strtolower( $key ) ] = $meta;
+		}
+
+		wp_send_json_success( $response );
 	}
 }

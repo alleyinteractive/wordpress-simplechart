@@ -99,12 +99,13 @@ class Simplechart_Save {
 
 		// handle base64 image string if provided
 		if ( ! empty( $_POST['save-previewImg'] ) ) {
-			$this->_save_chart_image( $post, $_POST['save-previewImg'], $this->_default_img_type );
+			$this->_save_chart_image( $post, esc_textarea( $_POST['save-previewImg'] ), $this->_default_img_type );
 		}
 
 		foreach ( $this->meta_field_names as $field ) {
 			if ( ! empty( $_POST[ 'save-' . $field ] ) ) {
-				update_post_meta( $post->ID, 'save-' . $field, $_POST[ 'save-' . $field ] );
+				// sanitize field name w/ esc_attr() instead of sanitize_key() because we want to preserve uppercase letters
+				update_post_meta( $post->ID, 'save-' . esc_attr( $field ), esc_textarea( $_POST[ 'save-' . $field ] ) );
 			}
 		}
 

@@ -4,25 +4,37 @@
  */
 
 /**
- * Get JSON from post meta and escape it by decoding then re-encoding
+ * Get JSON from post meta and escape it
  *
  * @param string $key Post meta key
+ * @param bool $is_json Defaults to true, indicates field is serialized JSON
  * @return string JSON string
  */
-function simplechart_escape_json_meta( $key ) {
+function simplechart_json_encode_meta( $key, $is_json = true ) {
 	$raw_meta = get_post_meta( get_the_ID(), $key, true );
-	return wp_json_encode( json_decode( $raw_meta ) );
+
+	if ( empty( $raw_meta ) ) {
+		return wp_json_encode( null );
+	}
+
+	// Fields are saved with esc_textarea() which uses htmlspecialchars(), so we decode here
+	$raw_meta = htmlspecialchars_decode( $raw_meta, ENT_QUOTES );
+
+	// Decoding then encoding escapes and validates serialized JSON
+	if ( $is_json ) {
+		$raw_meta = json_decode( $raw_meta );
+	}
+
+	return wp_json_encode( $raw_meta );
 }
-$raw_data = get_post_meta( get_the_ID(), 'save-rawData', true );
-$png_string = get_post_meta( get_the_ID(), 'save-previewImg', true );
 ?>
 <a class="button button-primary button-large" id="simplechart-launch" href="#"><?php esc_html_e( 'Launch Simplechart App', 'simplechart' ); ?></a>
 <script>
 	window.WPSimplechartBootstrap = {
-		rawData: <?php echo wp_json_encode( $raw_data ); ?>,
-		chartData: <?php echo simplechart_escape_json_meta( 'save-chartData' ); // already used wp_json_encode() ?>,
-		chartMetadata: <?php echo simplechart_escape_json_meta( 'save-chartMetadata' ); // already used wp_json_encode() ?>,
-		chartOptions: <?php echo simplechart_escape_json_meta( 'save-chartOptions' ); // already used wp_json_encode() ?>
+		rawData: <?php echo simplechart_json_encode_meta( 'save-rawData', false ); ?>,
+		chartData: <?php echo simplechart_json_encode_meta( 'save-chartData' ); ?>,
+		chartMetadata: <?php echo simplechart_json_encode_meta( 'save-chartMetadata' ); ?>,
+		chartOptions: <?php echo simplechart_json_encode_meta( 'save-chartOptions' ); ?>
 	};
 	window.WPSimplechartContainer = {
 		appUrl: <?php echo wp_json_encode( Simplechart::instance()->get_config( 'web_app_iframe_src' ) ); ?>,
