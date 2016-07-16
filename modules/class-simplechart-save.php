@@ -71,8 +71,9 @@ class Simplechart_Save {
 		// handle raw CSV multiline data
 		if ( ! empty( $_POST['save-rawData'] ) ) {
 			add_filter( 'sanitize_text_field', array( $this, 'sanitize_raw_data' ), 99, 2 );
-			$this->_save_chart_image( $post, sanitize_text_field( wp_unslash( $_POST['save-rawData'] ) ), $this->_default_img_type );
+			$sanitized_raw_data = sanitize_text_field( wp_unslash( $_POST['save-rawData'] ) );
 			remove_filter( 'sanitize_text_field', array( $this, 'sanitize_raw_data' ), 99, 2 );
+			update_post_meta( $post->ID, 'save-rawData', $sanitized_raw_data );
 		}
 
 		// handle JSON fields
