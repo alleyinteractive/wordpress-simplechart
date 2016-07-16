@@ -24,10 +24,11 @@ class Simplechart_WP_CLI extends WP_CLI_Command {
 	 * @var array $_meta_keys List of post meta keys to set when creating a post
 	 */
 	private $_meta_keys = array(
-		'simplechart-data',
-		'simplechart-template',
-		'simplechart-chart-url',
-		'simplechart-chart-id',
+		'save-rawData',
+		'save-chartData',
+		'save-chartOptions',
+		'save-chartMetadata',
+		'save-previewImg',
 		'simplechart-errors',
 	);
 
@@ -236,9 +237,8 @@ class Simplechart_WP_CLI extends WP_CLI_Command {
 		// check for author ID
 		if ( is_numeric( $assoc_args['author'] ) ) {
 			$user = get_user_by( 'id', absint( $assoc_args['author'] ) );
-		}
-		// check for author by slug
-		else {
+		} else {
+			// check for author by slug
 			$user = get_user_by( 'slug', $assoc_args['author'] );
 		}
 

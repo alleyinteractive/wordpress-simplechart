@@ -1,12 +1,12 @@
 <?php
 
-function simplechart_mexp_init( $services ){
+function simplechart_mexp_init( $services ) {
 
 	//should we remove all other Media Explorer services?
 	$clear_defaults = ! defined( 'WPCOM_IS_VIP_ENV' ) || ! WPCOM_IS_VIP_ENV;
 	$clear_defaults = apply_filters( 'simplechart_remove_mexp_default_services', $clear_defaults );
 
-	if ( $clear_defaults ){
+	if ( $clear_defaults ) {
 		$services = array();
 	}
 
@@ -133,18 +133,18 @@ if ( class_exists( 'MEXP_Service' ) ) {
 			);
 
 			// pagination
-			if ( isset( $request['page'] ) && absint( $request['page'] ) > 1 ){
+			if ( isset( $request['page'] ) && absint( $request['page'] ) > 1 ) {
 				$query_args['paged'] = absint( $request['page'] );
 			}
 
 			// search query
-			if ( isset( $request['params']['q'] ) ){
+			if ( isset( $request['params']['q'] ) ) {
 				$query_args['s'] = sanitize_text_field( $request['params']['q'] );
 			}
 
 			$simplechart_query = new WP_Query( $query_args );
 
-			if ( $simplechart_query->have_posts() ){
+			if ( $simplechart_query->have_posts() ) {
 				while ( $simplechart_query->have_posts() ) : $simplechart_query->the_post();
 					global $post;
 
@@ -162,7 +162,7 @@ if ( class_exists( 'MEXP_Service' ) ) {
 					if ( 'publish' === $status || ! $status ) {
 						$status = '';
 					} else {
-						$status = esc_attr__( '(' . ucfirst( sprintf( '%s', $status ) ) . ')', 'simplechart');
+						$status = esc_attr__( '(' . ucfirst( sprintf( '%s', $status ) ) . ')', 'simplechart' );
 					}
 					$item->add_meta( 'status', $status );
 
@@ -175,16 +175,16 @@ if ( class_exists( 'MEXP_Service' ) ) {
 			return $response;
 		}
 
-		public function enqueue_statics(){
+		public function enqueue_statics() {
 			wp_enqueue_script(
 				'simplechart-mexp-service',
-				Simplechart::instance()->get_plugin_url() . 'js/simplechart-mexp-service.js',
+				Simplechart::instance()->get_plugin_url( 'js/plugin/simplechart-mexp-service.js' ),
 				array( 'jquery', 'mexp' )
 			);
 
 			wp_enqueue_style(
 				'simplechart-mexp-service',
-				Simplechart::instance()->get_plugin_url() . 'css/simplechart-mexp-service.css'
+				Simplechart::instance()->get_plugin_url( 'css/simplechart-mexp-service.css' )
 			);
 		}
 

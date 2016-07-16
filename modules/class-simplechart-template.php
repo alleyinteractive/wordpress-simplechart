@@ -6,30 +6,29 @@
 
 class Simplechart_Template {
 
-	function __construct(){
+	function __construct() {
 		add_shortcode( 'simplechart', array( $this, 'render_shortcode' ) );
-		add_action( 'wp', array( $this, 'add_filter_post_content') );
+		add_action( 'wp', array( $this, 'add_filter_post_content' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'frontend_enqueues' ) );
-		add_action( 'wp_head', array( $this, 'print_app_host' ) );
 	}
 
-	public function frontend_enqueues(){
-		if ( is_admin() ){
+	public function frontend_enqueues() {
+		if ( is_admin() ) {
 			return;
 		}
-		wp_register_style( 'simplechart', Simplechart::instance()->get_plugin_url() . 'css/style.css', array(), Simplechart::instance()->get_config( 'version' ) );
+		wp_register_style( 'simplechart', Simplechart::instance()->get_plugin_url( 'css/style.css' ), array(), Simplechart::instance()->get_config( 'version' ) );
 		wp_enqueue_style( 'simplechart' );
 	}
 
 	// do the shortcode
-	public function render_shortcode( $attrs ){
-		if ( empty( $attrs['id'] ) || ! is_numeric( $attrs['id'] ) ){
+	public function render_shortcode( $attrs ) {
+		if ( empty( $attrs['id'] ) || ! is_numeric( $attrs['id'] ) ) {
 			return '';
 		}
 
 		$chart = get_post( intval( $attrs['id'] ) );
 
-		if ( empty( $chart ) ){
+		if ( empty( $chart ) ) {
 			return '';
 		}
 
@@ -37,58 +36,49 @@ class Simplechart_Template {
 	}
 
 	// render the chart from template
-	public function render( $id ){
+	public function render( $id ) {
 
-		// only allow non-published charts if we're looking at a post preview
-		if ( 'publish' !== get_post_status( $id ) && ! is_preview() ){
+		// only allow non-published charts unless we're looking at a post preview
+		if ( 'publish' !== get_post_status( $id ) && ! is_preview() ) {
 			return '';
 		}
 
-		$loader_url = Simplechart::instance()->get_config( 'widget_loader_url' );
-
-		// if we have a chart ID saved, use that for the embed
-		$chart_id = get_post_meta( $id, 'simplechart-chart-id', true );
-		if ( ! empty( $chart_id ) ){
-			$embed_code = sprintf( '<script async data-id="%s" src="%s"></script>', esc_attr( $chart_id ), esc_url( $loader_url ) );
-			return $embed_code;
+		if ( 'simplechart' !== get_post_type( intval( $id ) ) ) {
+			return '';
 		}
+		?>
+			<div
+				id="simplechart-widget-<?php echo absint( $id ); ?>"
+				class="simplechart-widget"
+				data-url="<?php echo esc_url( home_url( '/simplechart/api/' . $id . '/' ) ); ?>"
+			></div>
+			<script>
+				<?php // Load Simplechart widget JS asynchronously if not already loaded ?>
+				if ( ! document.getElementById( 'simplechart-widget-js' ) ) {
+					var scriptEl = document.createElement( 'script' ),
+						chartEl = document.getElementById( 'simplechart-widget-<?php echo esc_attr( $id ); ?>' );
 
-		// support versions that predate loading by chart ID
-		$json_data = get_post_meta( $id, 'simplechart-data', true );
-		$template_html = get_post_meta( $id, 'simplechart-template', true );
-		$image_fallback = wp_get_attachment_image_src( get_post_thumbnail_id( $id ), 'large' );
-		$template_format = file_get_contents( Simplechart::instance()->get_plugin_dir() . 'templates/template-partial.html' );
-
-		$template_html = sprintf( $template_format,
-			json_encode( json_decode( $json_data ), JSON_HEX_APOS ),
-			Simplechart::instance()->save->validate_template_fragment( $template_html ),
-			esc_url( $loader_url ),
-			( ! $image_fallback ? '' : esc_url( $image_fallback[0] ) )
-		);
-
-		return $template_html;
+					scriptEl.id = 'simplechart-widget-js';
+					scriptEl.src = <?php echo wp_json_encode( Simplechart::instance()->get_config( 'widget_loader_url' ) ); ?>;
+					chartEl.parentNode.appendChild( scriptEl );
+				}
+			</script>
+		<?php
 	}
 
-	// automatically render chart if looking at the chart's post
-	public function add_filter_post_content(){
-		if ( is_singular( 'simplechart' ) ){
+	// automatically render chart if looking at the chart's own post
+	public function add_filter_post_content() {
+		if ( ! is_admin() && is_singular( 'simplechart' ) ) {
 			add_filter( 'the_content', array( $this, 'filter_insert_chart' ) );
 		}
 	}
 
 	// prepend chart to post_content
-	public function filter_insert_chart( $content ){
+	public function filter_insert_chart( $content ) {
 		global $post;
 
 		$template_html = $this->render( $post->ID );
 
 		return $template_html . $content;
 	}
-
-	// print app host as JS var in head if overriding simplechart.io
-	public function print_app_host(){
-		// set app host URL
-		echo "\n<script> window.simplechartWidgetDirUrl = window.simplechartWidgetDirUrl || " . json_encode( Simplechart::instance()->get_config( 'widget_dir_url' ) ) . "; </script>\n";
-	}
-
 }

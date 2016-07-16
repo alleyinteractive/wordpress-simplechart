@@ -4,7 +4,7 @@ Plugin Name: Simplechart
 Plugin URI: https://github.com/alleyinteractive/wordpress-simplechart
 Description: Create and render interactive charts in WordPress using Simplechart
 Author: Drew Machat, Josh Kadis, Alley Interactive
-Version: 0.0.1
+Version: 0.2.1
 Author URI: http://www.alleyinteractive.com/
 */
 
@@ -12,30 +12,41 @@ class Simplechart {
 
 	private static $instance;
 
-	// both will include trailing slash
 	private $_plugin_dir_path = null;
 	private $_plugin_dir_url = null;
 	private $_admin_notices = array( 'updated' => array(), 'error' => array() );
 	private $_plugin_id = 'wordpress-simplechart/simplechart.php';
+	private $_local_dev_query_var = 'sclocaldev';
 
 	// config vars that will eventually come from settings page
 	private $_config = array(
-		'widget_dir_path' => 'app/assets/widget',
-		'widget_loader_url' => null,
-		'widget_dir_url' => null,
 		'web_app_iframe_src' => null,
-		'version' => '0.0.1',
+		'web_app_js_url' => null,
+		'widget_loader_url' => null,
+		'menu_page_slug' => 'simplechart_app',
+		'version' => '0.2.1',
 	);
 
 	// startup
-	private function __construct(){
-		if ( ! $this->_check_dependencies() ){
+	private function __construct() {
+		// Handle check for Media Explorer differently on VIP CLassic™ vs VIP Go and self-hosted sites
+		if ( defined( 'WPCOM_IS_VIP_ENV' ) && WPCOM_IS_VIP_ENV && ( ! defined( 'VIP_GO_ENV' ) || ! VIP_GO_ENV ) ) {
+		    define( 'WPCOM_IS_VIP_CLASSIC_TM_ENV', true );
+		}
+
+		if ( ! $this->_check_dependencies() ) {
 			add_action( 'admin_notices', array( $this, 'admin_notices' ) );
 			add_action( 'admin_init', array( $this, 'deactivate' ) );
-			return;
+
+			// Continue execution if unit tests are running
+			if ( ! defined( 'SIMPLECHART_UNIT_TESTS_RUNNING' ) || ! SIMPLECHART_UNIT_TESTS_RUNNING ) {
+				return;
+			}
 		}
+		// Both of these will have trailing slash
 		$this->_plugin_dir_path = plugin_dir_path( __FILE__ );
 		$this->_plugin_dir_url = $this->_set_plugin_dir_url();
+
 		$this->_init_modules();
 		add_action( 'init', array( $this, 'action_init' ) );
 	}
@@ -56,14 +67,14 @@ class Simplechart {
 	private function _check_dependencies() {
 
 		// skip check for Media Explorer on VIP since it's part of WPCOM platform
-		if ( defined( 'WPCOM_IS_VIP_ENV' ) && WPCOM_IS_VIP_ENV ) {
+		if ( defined( 'WPCOM_IS_VIP_CLASSIC_TM_ENV' ) && WPCOM_IS_VIP_CLASSIC_TM_ENV ) {
 			return true;
 		}
 
 		$deps_found = true;
 
 		// require Media Explorer
-		if ( ! class_exists( 'Media_Explorer' ) ){
+		if ( ! class_exists( 'Media_Explorer' ) ) {
 			$this->_admin_notices['error'][] = __( 'Media Explorer is a required plugin for Simplechart', 'simplechart' );
 			$deps_found = false;
 		}
@@ -94,28 +105,27 @@ class Simplechart {
 	/**
 	 * get root url and path of plugin, whether loaded from plugins directory or in theme
 	 */
-	private function _set_plugin_dir_url(){
+	private function _set_plugin_dir_url() {
 
 		// if running as regular plugin (i.e. inside wp-content/plugins/)
-		if ( 0 === strpos( $this->_plugin_dir_path, WP_PLUGIN_DIR ) ){
-			return plugin_dir_url( __FILE__ );
-		}
-		// if running as VIP plugin
-		elseif ( function_exists( 'wpcom_vip_get_loaded_plugins' ) && in_array( 'alley-plugins/simplechart', wpcom_vip_get_loaded_plugins(), true ) ) {
-			return plugins_url( '', __FILE__ );
-		}
-		// assume running inside theme
-		else {
+		if ( 0 === strpos( $this->_plugin_dir_path, WP_PLUGIN_DIR ) ) {
+			$url = plugin_dir_url( __FILE__ );
+		} elseif ( function_exists( 'wpcom_vip_get_loaded_plugins' ) && in_array( 'alley-plugins/simplechart', wpcom_vip_get_loaded_plugins(), true ) ) {
+			// if running as VIP Classic™ plugin
+			$url = plugins_url( '', __FILE__ );
+		} else {
+			// assume loaded directly by theme
 			$path_relative_to_theme = str_replace( get_template_directory(), '', $this->_plugin_dir_path );
-			return get_template_directory_uri() . $path_relative_to_theme;
+			$url = get_template_directory_uri() . $path_relative_to_theme;
 		}
+		return trailingslashit( $url );
 	}
 
 	/**
 	 * config getter
 	 */
-	public function get_config( $key ){
-		return $this->_config[ $key ];
+	public function get_config( $key ) {
+		return isset( $this->_config[ $key ] ) ? $this->_config[ $key ] : null;
 	}
 
 	/**
@@ -138,29 +148,40 @@ class Simplechart {
 		require_once( $this->_plugin_dir_path . 'modules/class-simplechart-template.php' );
 		$this->template = new Simplechart_Template;
 
+		require_once( $this->_plugin_dir_path . 'modules/class-simplechart-api.php' );
+		$this->api = new Simplechart_API;
+
 		// WP-CLI commands
 		if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			require_once( $this->_plugin_dir_path . 'modules/class-simplechart-wp-cli.php' );
 		}
-
 	}
 
 	/**
 	 * on the 'init' action, do frontend or backend startup
 	 */
-	public function action_init(){
-		$this->_config['widget_dir_url'] = $this->_plugin_dir_url . $this->_config['widget_dir_path'];
-		$this->_config['widget_dir_url'] = apply_filters( 'simplechart_widget_dir_url', $this->_config['widget_dir_url'] );
+	public function action_init() {
+		// Allow GET or filter to force using localhost for app
+		$use_localhost = isset( $_GET[ $this->_local_dev_query_var ] ) && 1 === absint( $_GET[ $this->_local_dev_query_var ] );
+		$use_localhost = apply_filters( 'simplechart_use_localhost', $use_localhost );
 
-		// get URL of loader.js for front-end chart display
-		$this->_config['widget_loader_url'] = $this->_config['widget_dir_url'] . '/loader.js';
-		$this->_config['widget_loader_url'] = apply_filters( 'simplechart_widget_loader_url', $this->_config['widget_loader_url'] );
+		if ( $use_localhost ) {
+			$this->_config['web_app_iframe_src'] = 'http://localhost:8080/';
+			$this->_config['web_app_js_url'] = 'http://localhost:8080/static/bundle.js';
+			$this->_config['widget_loader_url'] = 'http://localhost:8080/static/widget.js';
 
-		// default to root-relative path to simplechart web app
-		$this->_config['web_app_iframe_src'] = $this->post_type->get_web_app_iframe_src();
+		} else {
+			// menu page set up by Simplechart_Post_Type module
+			$this->_config['web_app_iframe_src'] = admin_url( '/admin.php?page=' . $this->get_config( 'menu_page_slug' ) . '&noheader' );
+			$this->_config['web_app_js_url'] = $this->get_plugin_url( 'js/app/bundle.js' );
+			$this->_config['web_app_js_url'] = $this->get_plugin_url( 'js/app/widget.js' );
+		}
+
 		$this->_config['web_app_iframe_src'] = apply_filters( 'simplechart_web_app_iframe_src', $this->_config['web_app_iframe_src'] );
+		$this->_config['web_app_js_url'] = apply_filters( 'simplechart_web_app_js_url', $this->_config['web_app_js_url'] );
+		$this->_config['web_app_js_url'] = apply_filters( 'simplechart_widget_loader_url', $this->_config['widget_loader_url'] );
 
-		if ( is_admin() ){
+		if ( is_admin() ) {
 			$this->_admin_setup();
 		}
 	}
@@ -168,62 +189,62 @@ class Simplechart {
 	/*
 	 * setup /wp-admin functionality
 	 */
-	private function _admin_setup(){
+	private function _admin_setup() {
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_box' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
 		load_plugin_textdomain( 'simplechart', false, dirname( plugin_basename( __FILE__ ) ) . '/langs/' );
 	}
 
-	public function enqueue_admin_scripts(){
+	public function enqueue_admin_scripts() {
 		// check for site specific config file which can be included in theme
 		// this is used to preload stuff like color palette for charts, etc
 		if ( file_exists( get_template_directory() . '/inc/plugins/simplechart-site-options.js' ) ) {
 			wp_register_script( 'simplechart-site-options', get_template_directory_uri() . '/inc/plugins/simplechart-site-options.js' );
-			wp_register_script( 'simplechart-post-edit', $this->_plugin_dir_url . 'js/post-edit.js', array( 'jquery', 'underscore', 'simplechart-site-options' ) );
+			wp_register_script( 'simplechart-post-edit', $this->get_plugin_url( 'js/plugin/post-edit.js' ), array( 'jquery', 'underscore', 'simplechart-site-options' ) );
 		} else {
-			wp_register_script( 'simplechart-post-edit', $this->_plugin_dir_url . 'js/post-edit.js', array( 'jquery', 'underscore' ) );
+			wp_register_script( 'simplechart-post-edit', $this->get_plugin_url( 'js/plugin/post-edit.js' ), array( 'jquery', 'underscore' ) );
 		}
 		wp_register_style( 'simplechart-style', $this->_plugin_dir_url . 'css/style.css' );
 		wp_enqueue_script( 'simplechart-post-edit' );
 		wp_enqueue_style( 'simplechart-style' );
 	}
 
-	public function add_meta_box(){
-		global $post;
-		$json_data = $data = get_post_meta( $post->ID, 'simplechart-data', true );
+	public function add_meta_box() {
 		add_meta_box( 'simplechart-preview',
 			__( 'Simplechart', 'simplechart' ),
 			array( $this->post_type, 'render_meta_box' ),
 			'simplechart',
 			'normal',
-			'default',
-			array( $this->_plugin_dir_path, $json_data )
+			'default'
 		);
 	}
 
-	// used by modules that need this info
-	public function get_plugin_url(){
-		return $this->_plugin_dir_url;
+	/**
+	 * Get URL of plugin directory, with optional path appended
+	 *
+	 * @param string $append Optional path to append to the plugin directory URL
+	 * @return string URL
+	 */
+	public function get_plugin_url( $append = '' ) {
+		// should already have trailing slash but just to be safe...
+		return trailingslashit( $this->_plugin_dir_url ) . ltrim( $append, '/' );
 	}
 
-	// used by modules that need this info
-	public function get_plugin_dir(){
-		return $this->_plugin_dir_path;
+	/**
+	 * Get absolute path to plugin directory, with optional path appended
+	 *
+	 * @param string $append Optional path to append to the plugin directory pth
+	 * @return string Path
+	 */
+	public function get_plugin_dir( $append = '' ) {
+		return trailingslashit( $this->_plugin_dir_path ) . ltrim( $append, '/' );
 	}
-
 }
 Simplechart::instance();
 
 /**
  * Helper Functions
  */
-function simplechart_render_chart( $id ){
+function simplechart_render_chart( $id ) {
 	return Simplechart::instance()->template->render( $id );
-}
-
-/**
- * Load WP-CLI commands
- */
-if ( defined( 'WP_CLI' ) && WP_CLI ) {
-	require_once( Simplechart::instance()->get_plugin_dir() . 'cli/class-wp-cli-simplechart.php' );
 }
