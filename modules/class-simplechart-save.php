@@ -109,6 +109,7 @@ class Simplechart_Save {
 			return $initial;
 		} else {
 			// if anything else was removed by sanitize_text_field(), return an empty string
+			$this->_errors[] = __( 'CSV data may not include tabs or HTML tags.', 'simplechart' );
 			return '';
 		}
 	}
