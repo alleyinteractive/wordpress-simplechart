@@ -50,6 +50,9 @@ class Simplechart_Test_Save_Post_Meta extends WP_UnitTestCase {
 		$this->assertJsonStringEqualsJsonString( wp_unslash( $raw_data ), $retrieved_data );
 	}
 
+	/**
+	 * Test against different JSON inputs
+	 */
 	function test_save_json() {
 		$this->_test_save_json( '/data/testjson.txt' );
 		$this->_test_save_json( '/data/testjson2.txt' );
