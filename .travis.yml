@@ -26,6 +26,7 @@ env:
 branches:
     only:
         - master
+        - react/react-app-base
 
 before_script:
     # Setup WordPress
