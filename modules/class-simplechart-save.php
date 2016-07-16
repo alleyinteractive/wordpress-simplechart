@@ -103,7 +103,7 @@ class Simplechart_Save {
 	 */
 	public function sanitize_raw_data( $filtered, $initial ) {
 		// strip newlines from initial input
-		$initial_stripped = preg_replace( '/\n+/', ' ', $initial );
+		$initial_stripped = preg_replace( '/[\r\n]+/', ' ', $initial );
 		if ( $filtered === $initial_stripped ) {
 			// if that's the only difference, then the initial string is fine
 			return $initial;
