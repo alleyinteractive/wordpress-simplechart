@@ -9,7 +9,6 @@ function WPSimplechartApp( $ ) {
 			container : '<div id="simplechart-modal"><a id="simplechart-close" href="#">{{closeModal}}</a><iframe id="simplechart-frame" src="{{iframeSrc}}"></iframe></div>',
 			backdrop : '<div id="simplechart-backdrop"></div>'
 		},
-		chartData = null,
 		confirmNoDataMessage = '',
 		closeModalMessage = '',
 		savedChart = false;
@@ -21,7 +20,7 @@ function WPSimplechartApp( $ ) {
 		appUrl = window.WPSimplechartContainer.appUrl.toString();
 		confirmNoDataMessage = window.WPSimplechartContainer.confirmNoDataMessage.toString();
 		closeModalMessage = window.WPSimplechartContainer.closeModalMessage.toString();
-		window.addEventListener('message', onReceiveMessage );
+		window.addEventListener( 'message', onReceiveMessage );
 		renderOpenModal();
 	}
 
@@ -62,15 +61,16 @@ function WPSimplechartApp( $ ) {
 	/**
 	 * Extract messageType string when a postMessage is received
 	 */
-	function getMessageType(evt) {
+	function getMessageType( evt ) {
 		// confirm same-origin or http(s)://localhost:8080
 		if ( evt.origin !== window.location.origin && !/https?:\/\/localhost:8080/.test( evt.origin ) ) {
 			return false;
 		}
 
+		var messageType;
 		try {
-			var messageType = evt.data.messageType;
-		} catch(err) {
+			messageType = evt.data.messageType;
+		} catch( err ) {
 			throw err;
 		}
 
@@ -80,7 +80,7 @@ function WPSimplechartApp( $ ) {
 	/**
 	 * adds listeners for specific messageType from child window
 	 */
-	function onReceiveMessage(evt) {
+	function onReceiveMessage( evt ) {
 		var messageType = getMessageType( evt );
 		if ( ! messageType ) {
 			return;
@@ -98,14 +98,12 @@ function WPSimplechartApp( $ ) {
 	 */
 	function sendData() {
 		if ( ! window.WPSimplechartBootstrap ) {
-			console.log( 'Missing window.WPSimplechartBootstrap' );
-			return;
+			throw new Error( 'Missing window.WPSimplechartBootstrap' );
 		}
 
 		var childWindow = document.getElementById( 'simplechart-frame' );
 		if ( ! childWindow || ! childWindow.contentWindow ) {
-			console.log( 'Missing iframe#simplechart-frame' );
-			return;
+			throw new Error( 'Missing iframe#simplechart-frame' );
 		}
 
 		Object.keys( window.WPSimplechartBootstrap ).forEach( function( key ) {
@@ -118,7 +116,7 @@ function WPSimplechartApp( $ ) {
 	 */
 	function sendDataKeyMessage( toWindow, key ) {
 		if( window.WPSimplechartBootstrap[ key ] ) {
-			toWindow.postMessage({
+			toWindow.postMessage( {
 				data: window.WPSimplechartBootstrap[ key ],
 				messageType: 'bootstrap.' + key
 			}, '*' );
@@ -140,8 +138,8 @@ function WPSimplechartApp( $ ) {
 	init();
 }
 
-if ( typeof pagenow !== 'undefined' && pagenow === 'simplechart' ){
-	jQuery(document).ready(function(){
-		WPSimplechartApp( jQuery )
-	});
+if ( 'undefined' !== typeof pagenow && 'simplechart' === pagenow ){
+	jQuery( document ).ready( function() {
+		WPSimplechartApp( jQuery );
+	} );
 }

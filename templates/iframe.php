@@ -82,9 +82,9 @@
 			};
 
 			function toggleDefaultColors() {
-				if (document.getElementById('toggle-colors').checked) {
+				if ( document.getElementById( 'toggle-colors' ).checked ) {
 					mockPostMessageData.chartOptions.color = customPalette;
-				} else if (mockPostMessageData.chartOptions.color) {
+				} else if ( mockPostMessageData.chartOptions.color ) {
 					delete mockPostMessageData.chartOptions.color;
 				}
 			}
@@ -93,7 +93,7 @@
 			 * Mock postMessage from parent window
 			 */
 			function mockParentMessage() {
-				window.postMessage(mockPostMessageData, '*');
+				window.postMessage( mockPostMessageData, '*' );
 			}
 		</script>
 	</body>
