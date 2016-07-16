@@ -37,8 +37,6 @@ class Simplechart_API {
 		$response = array();
 		foreach ( array( 'Data', 'Options', 'Metadata' ) as $key ) {
 			$meta = get_post_meta( $id, 'save-chart' . $key, true );
-			// Fields are saved with esc_textarea() which uses htmlspecialchars(), so we decode here
-			$meta = htmlspecialchars_decode( $meta, ENT_QUOTES );
 			$response[ strtolower( $key ) ] = $meta;
 		}
 

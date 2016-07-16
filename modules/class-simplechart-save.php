@@ -34,12 +34,7 @@ class Simplechart_Save {
 	}
 
 	// use remove-add to prevent infinite loop
-	function save_post_action( $post_id ) {
-
-		// verify nonce
-		if ( empty( $_POST['simplechart-nonce'] ) || ! wp_verify_nonce( $_POST['simplechart-nonce'], 'simplechart_save' ) ) {
-			return;
-		}
+	public function save_post_action( $post_id ) {
 
 		// check user caps
 		if ( ! current_user_can( 'edit_post', $post_id ) ) {
@@ -53,8 +48,49 @@ class Simplechart_Save {
 
 		remove_action( 'save_post_simplechart', array( $this, 'save_post_action' ), 10, 1 );
 		$post = get_post( $post_id );
-		$this->do_save_post( $post );
+		$this->_do_save_post( $post );
 		add_action( 'save_post_simplechart', array( $this, 'save_post_action' ), 10, 1 );
+	}
+
+	protected function do_save_post( $post ) {
+		// verify nonce
+		if ( empty( $_POST['simplechart-nonce'] ) || ! wp_verify_nonce( sanitize_text_field( $_POST['simplechart-nonce'] ), 'simplechart_save' ) ) {
+			return;
+		}
+
+		// delete featured image if post is NOT published but has a featured image
+		if ( 'publish' !== get_post_status( $post->ID ) && has_post_thumbnail( $post->ID ) ) {
+			wp_delete_attachment( get_post_thumbnail_id( $post->ID ), true );
+		}
+
+		// handle base64 image string if provided
+		if ( ! empty( $_POST['save-previewImg'] ) ) {
+			$this->_save_chart_image( $post, sanitize_text_field( $_POST['save-previewImg'] ), $this->_default_img_type );
+		}
+
+		// handle raw CSV multiline data
+		if ( ! empty( $_POST['save-rawData'] ) ) {
+			// sanitize with esc_textarea() and strip_tags() because sanitize_text_field() would remove the newline chars
+			$this->_save_chart_image( $post, esc_textarea( strip_tags( $_POST['save-rawData'] ) ), $this->_default_img_type );
+		}
+
+		// handle JSON fields
+		foreach ( array( 'chartData', 'chartOptions', 'chartMetadata' ) as $field ) {
+			if ( ! empty( $_POST[ 'save-' . $field ] ) ) {
+				// sanitize field name w/ esc_attr() instead of sanitize_key() because we want to preserve uppercase letters
+				update_post_meta( $post->ID, 'save-' . esc_attr( $field ), sanitize_text_field( wp_unslash( $_POST[ 'save-' . $field ] ) ) );
+			}
+		}
+
+		// save error messages
+		if ( ! empty( $this->_errors ) ) {
+			update_post_meta( $post->ID, 'simplechart-errors', $this->_errors );
+		}
+
+		// save debug messages
+		if ( ! empty( $this->_debug_messages ) ) {
+			update_post_meta( $post->ID, 'simplechart-debug', $this->_debug_messages, true );
+		}
 	}
 
 	function admin_notices() {
@@ -88,37 +124,6 @@ class Simplechart_Save {
 		// clear errors and debug messages
 		delete_post_meta( $post->ID, 'simplechart-errors' );
 		delete_post_meta( $post->ID, 'simplechart-debug' );
-	}
-
-	function do_save_post( $post ) {
-
-		// delete featured image if post is NOT published but has a featured image
-		if ( 'publish' !== get_post_status( $post->ID ) && has_post_thumbnail( $post->ID ) ) {
-			wp_delete_attachment( get_post_thumbnail_id( $post->ID ), true );
-		}
-
-		// handle base64 image string if provided
-		if ( ! empty( $_POST['save-previewImg'] ) ) {
-			$this->_save_chart_image( $post, esc_textarea( $_POST['save-previewImg'] ), $this->_default_img_type );
-		}
-
-		foreach ( $this->meta_field_names as $field ) {
-			if ( ! empty( $_POST[ 'save-' . $field ] ) ) {
-				// sanitize field name w/ esc_attr() instead of sanitize_key() because we want to preserve uppercase letters
-				update_post_meta( $post->ID, 'save-' . esc_attr( $field ), esc_textarea( $_POST[ 'save-' . $field ] ) );
-			}
-		}
-
-		// save error messages
-		if ( ! empty( $this->_errors ) ) {
-			update_post_meta( $post->ID, 'simplechart-errors', $this->_errors );
-		}
-
-		// save debug messages
-		if ( ! empty( $this->_debug_messages ) ) {
-			update_post_meta( $post->ID, 'simplechart-debug', $this->_debug_messages, true );
-		}
-
 	}
 
 	private function _save_chart_image( $post, $data_uri, $img_type ) {
