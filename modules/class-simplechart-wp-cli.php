@@ -237,9 +237,8 @@ class Simplechart_WP_CLI extends WP_CLI_Command {
 		// check for author ID
 		if ( is_numeric( $assoc_args['author'] ) ) {
 			$user = get_user_by( 'id', absint( $assoc_args['author'] ) );
-		}
-		// check for author by slug
-		else {
+		} else {
+			// check for author by slug
 			$user = get_user_by( 'slug', $assoc_args['author'] );
 		}
 

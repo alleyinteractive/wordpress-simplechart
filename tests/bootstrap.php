@@ -8,6 +8,9 @@ if ( ! $_tests_dir ) {
 require_once $_tests_dir . '/includes/functions.php';
 
 function _manually_load_plugin() {
+	if ( ! defined( 'SIMPLECHART_UNIT_TESTS_RUNNING' ) ) {
+		define( 'SIMPLECHART_UNIT_TESTS_RUNNING', true );
+	}
 	require dirname( dirname( __FILE__ ) ) . '/simplechart.php';
 }
 tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );

@@ -28,17 +28,20 @@ class Simplechart {
 	);
 
 	// startup
-	private function __construct(){
-		// Some stuff we handle different on VIP CLassic™ vs VIP Go and self-hosted sites
-		// thanks matt :)
+	private function __construct() {
+		// Handle check for Media Explorer differently on VIP CLassic™ vs VIP Go and self-hosted sites
 		if ( defined( 'WPCOM_IS_VIP_ENV' ) && WPCOM_IS_VIP_ENV && ( ! defined( 'VIP_GO_ENV' ) || ! VIP_GO_ENV ) ) {
-		    define(  'WPCOM_IS_VIP_CLASSIC_TM_ENV', true );
+		    define( 'WPCOM_IS_VIP_CLASSIC_TM_ENV', true );
 		}
 
-		if ( ! $this->_check_dependencies() ){
+		if ( ! $this->_check_dependencies() ) {
 			add_action( 'admin_notices', array( $this, 'admin_notices' ) );
 			add_action( 'admin_init', array( $this, 'deactivate' ) );
-			return;
+
+			// Continue execution if unit tests are running
+			if ( ! defined( 'SIMPLECHART_UNIT_TESTS_RUNNING' ) || ! SIMPLECHART_UNIT_TESTS_RUNNING ) {
+				return;
+			}
 		}
 		// Both of these will have trailing slash
 		$this->_plugin_dir_path = plugin_dir_path( __FILE__ );
@@ -71,7 +74,7 @@ class Simplechart {
 		$deps_found = true;
 
 		// require Media Explorer
-		if ( ! class_exists( 'Media_Explorer' ) ){
+		if ( ! class_exists( 'Media_Explorer' ) ) {
 			$this->_admin_notices['error'][] = __( 'Media Explorer is a required plugin for Simplechart', 'simplechart' );
 			$deps_found = false;
 		}
@@ -102,20 +105,18 @@ class Simplechart {
 	/**
 	 * get root url and path of plugin, whether loaded from plugins directory or in theme
 	 */
-	private function _set_plugin_dir_url(){
+	private function _set_plugin_dir_url() {
 
 		// if running as regular plugin (i.e. inside wp-content/plugins/)
-		if ( 0 === strpos( $this->_plugin_dir_path, WP_PLUGIN_DIR ) ){
+		if ( 0 === strpos( $this->_plugin_dir_path, WP_PLUGIN_DIR ) ) {
 			$url = plugin_dir_url( __FILE__ );
-		}
-		// if running as VIP Classic™ plugin
-		elseif ( function_exists( 'wpcom_vip_get_loaded_plugins' ) && in_array( 'alley-plugins/simplechart', wpcom_vip_get_loaded_plugins(), true ) ) {
-			$url =  plugins_url( '', __FILE__ );
-		}
-		// assume loaded directly by theme
-		else {
+		} elseif ( function_exists( 'wpcom_vip_get_loaded_plugins' ) && in_array( 'alley-plugins/simplechart', wpcom_vip_get_loaded_plugins(), true ) ) {
+			// if running as VIP Classic™ plugin
+			$url = plugins_url( '', __FILE__ );
+		} else {
+			// assume loaded directly by theme
 			$path_relative_to_theme = str_replace( get_template_directory(), '', $this->_plugin_dir_path );
-			$url =  get_template_directory_uri() . $path_relative_to_theme;
+			$url = get_template_directory_uri() . $path_relative_to_theme;
 		}
 		return trailingslashit( $url );
 	}
@@ -123,8 +124,8 @@ class Simplechart {
 	/**
 	 * config getter
 	 */
-	public function get_config( $key ){
-		return isset( $this->_config[ $key ]) ? $this->_config[ $key ] : null;
+	public function get_config( $key ) {
+		return isset( $this->_config[ $key ] ) ? $this->_config[ $key ] : null;
 	}
 
 	/**
@@ -154,13 +155,12 @@ class Simplechart {
 		if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			require_once( $this->_plugin_dir_path . 'modules/class-simplechart-wp-cli.php' );
 		}
-
 	}
 
 	/**
 	 * on the 'init' action, do frontend or backend startup
 	 */
-	public function action_init(){
+	public function action_init() {
 		// Allow GET or filter to force using localhost for app
 		$use_localhost = isset( $_GET[ $this->_local_dev_query_var ] ) && 1 === absint( $_GET[ $this->_local_dev_query_var ] );
 		$use_localhost = apply_filters( 'simplechart_use_localhost', $use_localhost );
@@ -181,7 +181,7 @@ class Simplechart {
 		$this->_config['web_app_js_url'] = apply_filters( 'simplechart_web_app_js_url', $this->_config['web_app_js_url'] );
 		$this->_config['web_app_js_url'] = apply_filters( 'simplechart_widget_loader_url', $this->_config['widget_loader_url'] );
 
-		if ( is_admin() ){
+		if ( is_admin() ) {
 			$this->_admin_setup();
 		}
 	}
@@ -189,13 +189,13 @@ class Simplechart {
 	/*
 	 * setup /wp-admin functionality
 	 */
-	private function _admin_setup(){
+	private function _admin_setup() {
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_box' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
 		load_plugin_textdomain( 'simplechart', false, dirname( plugin_basename( __FILE__ ) ) . '/langs/' );
 	}
 
-	public function enqueue_admin_scripts(){
+	public function enqueue_admin_scripts() {
 		// check for site specific config file which can be included in theme
 		// this is used to preload stuff like color palette for charts, etc
 		if ( file_exists( get_template_directory() . '/inc/plugins/simplechart-site-options.js' ) ) {
@@ -209,7 +209,7 @@ class Simplechart {
 		wp_enqueue_style( 'simplechart-style' );
 	}
 
-	public function add_meta_box(){
+	public function add_meta_box() {
 		add_meta_box( 'simplechart-preview',
 			__( 'Simplechart', 'simplechart' ),
 			array( $this->post_type, 'render_meta_box' ),
@@ -225,7 +225,7 @@ class Simplechart {
 	 * @param string $append Optional path to append to the plugin directory URL
 	 * @return string URL
 	 */
-	public function get_plugin_url( $append = '' ){
+	public function get_plugin_url( $append = '' ) {
 		// should already have trailing slash but just to be safe...
 		return trailingslashit( $this->_plugin_dir_url ) . ltrim( $append, '/' );
 	}
@@ -236,16 +236,15 @@ class Simplechart {
 	 * @param string $append Optional path to append to the plugin directory pth
 	 * @return string Path
 	 */
-	public function get_plugin_dir( $append = '' ){
+	public function get_plugin_dir( $append = '' ) {
 		return trailingslashit( $this->_plugin_dir_path ) . ltrim( $append, '/' );
 	}
-
 }
 Simplechart::instance();
 
 /**
  * Helper Functions
  */
-function simplechart_render_chart( $id ){
+function simplechart_render_chart( $id ) {
 	return Simplechart::instance()->template->render( $id );
 }

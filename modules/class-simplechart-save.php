@@ -34,12 +34,7 @@ class Simplechart_Save {
 	}
 
 	// use remove-add to prevent infinite loop
-	function save_post_action( $post_id ) {
-
-		// verify nonce
-		if ( empty( $_POST['simplechart-nonce'] ) || ! wp_verify_nonce( $_POST['simplechart-nonce'], 'simplechart_save' ) ) {
-			return;
-		}
+	public function save_post_action( $post_id ) {
 
 		// check user caps
 		if ( ! current_user_can( 'edit_post', $post_id ) ) {
@@ -53,8 +48,70 @@ class Simplechart_Save {
 
 		remove_action( 'save_post_simplechart', array( $this, 'save_post_action' ), 10, 1 );
 		$post = get_post( $post_id );
-		$this->do_save_post( $post );
+		$this->_do_save_post( $post );
 		add_action( 'save_post_simplechart', array( $this, 'save_post_action' ), 10, 1 );
+	}
+
+	protected function _do_save_post( $post ) {
+		// verify nonce
+		if ( empty( $_POST['simplechart-nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['simplechart-nonce'] ) ), 'simplechart_save' ) ) {
+			return;
+		}
+
+		// delete featured image if post is NOT published but has a featured image
+		if ( 'publish' !== get_post_status( $post->ID ) && has_post_thumbnail( $post->ID ) ) {
+			wp_delete_attachment( get_post_thumbnail_id( $post->ID ), true );
+		}
+
+		// handle base64 image string if provided
+		if ( ! empty( $_POST['save-previewImg'] ) ) {
+			$this->_save_chart_image( $post, sanitize_text_field( wp_unslash( $_POST['save-previewImg'] ) ), $this->_default_img_type );
+		}
+
+		// handle raw CSV multiline data
+		if ( ! empty( $_POST['save-rawData'] ) ) {
+			add_filter( 'sanitize_text_field', array( $this, 'sanitize_raw_data' ), 99, 2 );
+			$this->_save_chart_image( $post, sanitize_text_field( wp_unslash( $_POST['save-rawData'] ) ), $this->_default_img_type );
+			remove_filter( 'sanitize_text_field', array( $this, 'sanitize_raw_data' ), 99, 2 );
+		}
+
+		// handle JSON fields
+		foreach ( array( 'chartData', 'chartOptions', 'chartMetadata' ) as $field ) {
+			if ( ! empty( $_POST[ 'save-' . $field ] ) ) {
+				// sanitize field name w/ esc_attr() instead of sanitize_key() because we want to preserve uppercase letters
+				update_post_meta( $post->ID, 'save-' . esc_attr( $field ), sanitize_text_field( wp_unslash( $_POST[ 'save-' . $field ] ) ) );
+			}
+		}
+
+		// save error messages
+		if ( ! empty( $this->_errors ) ) {
+			update_post_meta( $post->ID, 'simplechart-errors', $this->_errors );
+		}
+
+		// save debug messages
+		if ( ! empty( $this->_debug_messages ) ) {
+			update_post_meta( $post->ID, 'simplechart-debug', $this->_debug_messages, true );
+		}
+	}
+
+	/**
+	 * Allow sanitize_text_field() for multiline CSV without stripping "\n" chars
+	 *
+	 * @param string $filtered Filtered input
+	 * @param string $initial Unfiltered input
+	 * @return string Sanitized multiline csv or empty string
+	 */
+	public function sanitize_raw_data( $filtered, $initial ) {
+		// strip newlines from initial input
+		$initial_stripped = preg_replace( '/[\r\n]+/', ' ', $initial );
+		if ( $filtered === $initial_stripped ) {
+			// if that's the only difference, then the initial string is fine
+			return $initial;
+		} else {
+			// if anything else was removed by sanitize_text_field(), return an empty string
+			$this->_errors[] = __( 'CSV data may not include tabs or HTML tags.', 'simplechart' );
+			return '';
+		}
 	}
 
 	function admin_notices() {
@@ -88,37 +145,6 @@ class Simplechart_Save {
 		// clear errors and debug messages
 		delete_post_meta( $post->ID, 'simplechart-errors' );
 		delete_post_meta( $post->ID, 'simplechart-debug' );
-	}
-
-	function do_save_post( $post ) {
-
-		// delete featured image if post is NOT published but has a featured image
-		if ( 'publish' !== get_post_status( $post->ID ) && has_post_thumbnail( $post->ID ) ) {
-			wp_delete_attachment( get_post_thumbnail_id( $post->ID ), true );
-		}
-
-		// handle base64 image string if provided
-		if ( ! empty( $_POST['save-previewImg'] ) ) {
-			$this->_save_chart_image( $post, esc_textarea( $_POST['save-previewImg'] ), $this->_default_img_type );
-		}
-
-		foreach ( $this->meta_field_names as $field ) {
-			if ( ! empty( $_POST[ 'save-' . $field ] ) ) {
-				// sanitize field name w/ esc_attr() instead of sanitize_key() because we want to preserve uppercase letters
-				update_post_meta( $post->ID, 'save-' . esc_attr( $field ), esc_textarea( $_POST[ 'save-' . $field ] ) );
-			}
-		}
-
-		// save error messages
-		if ( ! empty( $this->_errors ) ) {
-			update_post_meta( $post->ID, 'simplechart-errors', $this->_errors );
-		}
-
-		// save debug messages
-		if ( ! empty( $this->_debug_messages ) ) {
-			update_post_meta( $post->ID, 'simplechart-debug', $this->_debug_messages, true );
-		}
-
 	}
 
 	private function _save_chart_image( $post, $data_uri, $img_type ) {
@@ -155,8 +181,7 @@ class Simplechart_Save {
 		if ( is_wp_error( $temp_file ) ) {
 			$this->_errors = array_merge( $this->_errors, $temp_file->get_error_messages() ); // translation handled inside wp_upload_bits()
 			return false;
-		}
-		elseif ( false !== $temp_file['error'] ) {
+		} elseif ( false !== $temp_file['error'] ) {
 			$this->_errors[] = $temp_file['error']; // translation handled inside wp_upload_bits()
 			return false;
 		}
@@ -239,23 +264,19 @@ class Simplechart_Save {
 		if ( 'undefined' === $data ) {
 			$this->_errors[] = "JS app set value of input to 'undefined'";
 			return false;
-		}
-		// Attempt to validate JSON by decoding then re-encoding
-		elseif ( $decoded = json_decode( $data ) ) {
+		} elseif ( $decoded = json_decode( $data ) ) {
+			// Attempt to validate JSON by decoding then re-encoding
 			return json_encode( $decoded ); // returns a valid JSON string!
-		}
-		// Add error message
-		elseif ( function_exists( 'json_last_error_msg' ) ) {
+		} elseif ( function_exists( 'json_last_error_msg' ) ) {
+			// Add error message
 			$this->_errors[] = sprintf( __( 'JSON error: %s', 'simplechart' ), json_last_error_msg() );
 			return false;
-		}
-		// Or just error code
-		elseif ( function_exists( 'json_last_error' ) ) {
+		} elseif ( function_exists( 'json_last_error' ) ) {
+			// Or just error code
 			$this->_errors[] = sprintf( __( 'JSON error code: %s', 'simplechart' ), json_last_error() );
 			return false;
-		}
-		// Or catch-all error message
-		else {
+		} else {
+			// Or catch-all error message
 			$this->_errors[] = __( 'Attempted to save invalid JSON', 'simplechart' );;
 			return false;
 		}

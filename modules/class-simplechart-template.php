@@ -6,14 +6,14 @@
 
 class Simplechart_Template {
 
-	function __construct(){
+	function __construct() {
 		add_shortcode( 'simplechart', array( $this, 'render_shortcode' ) );
-		add_action( 'wp', array( $this, 'add_filter_post_content') );
+		add_action( 'wp', array( $this, 'add_filter_post_content' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'frontend_enqueues' ) );
 	}
 
-	public function frontend_enqueues(){
-		if ( is_admin() ){
+	public function frontend_enqueues() {
+		if ( is_admin() ) {
 			return;
 		}
 		wp_register_style( 'simplechart', Simplechart::instance()->get_plugin_url( 'css/style.css' ), array(), Simplechart::instance()->get_config( 'version' ) );
@@ -21,14 +21,14 @@ class Simplechart_Template {
 	}
 
 	// do the shortcode
-	public function render_shortcode( $attrs ){
-		if ( empty( $attrs['id'] ) || ! is_numeric( $attrs['id'] ) ){
+	public function render_shortcode( $attrs ) {
+		if ( empty( $attrs['id'] ) || ! is_numeric( $attrs['id'] ) ) {
 			return '';
 		}
 
 		$chart = get_post( intval( $attrs['id'] ) );
 
-		if ( empty( $chart ) ){
+		if ( empty( $chart ) ) {
 			return '';
 		}
 
@@ -36,10 +36,10 @@ class Simplechart_Template {
 	}
 
 	// render the chart from template
-	public function render( $id ){
+	public function render( $id ) {
 
 		// only allow non-published charts unless we're looking at a post preview
-		if ( 'publish' !== get_post_status( $id ) && ! is_preview() ){
+		if ( 'publish' !== get_post_status( $id ) && ! is_preview() ) {
 			return '';
 		}
 
@@ -67,14 +67,14 @@ class Simplechart_Template {
 	}
 
 	// automatically render chart if looking at the chart's own post
-	public function add_filter_post_content(){
-		if ( ! is_admin() && is_singular( 'simplechart' ) ){
+	public function add_filter_post_content() {
+		if ( ! is_admin() && is_singular( 'simplechart' ) ) {
 			add_filter( 'the_content', array( $this, 'filter_insert_chart' ) );
 		}
 	}
 
 	// prepend chart to post_content
-	public function filter_insert_chart( $content ){
+	public function filter_insert_chart( $content ) {
 		global $post;
 
 		$template_html = $this->render( $post->ID );
