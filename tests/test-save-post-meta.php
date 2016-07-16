@@ -11,7 +11,12 @@ class Simplechart_Test_Save_Post_Meta extends WP_UnitTestCase {
 	 */
 	function test_save_rawData() {
 		$raw_data = file_get_contents( dirname( __FILE__ ) . '/data/testcsv.txt' );
-		$sanitized_data = esc_textarea( strip_tags( $raw_data ) );
+
+		// sanitize_text_field() with custom filter
+		add_filter( 'sanitize_text_field', array( Simplechart::instance()->save, 'sanitize_raw_data' ), 99, 2 );
+		$sanitized_data = sanitize_text_field( wp_unslash( $raw_data ) );
+		remove_filter( 'sanitize_text_field', array( Simplechart::instance()->save, 'sanitize_raw_data' ), 99, 2 );
+
 		update_post_meta( $this->post_id, 'save-rawData', $sanitized_data );
 		$retrieved_data = get_post_meta( $this->post_id, 'save-rawData', true );
 		$this->assertSame( $raw_data, $retrieved_data );
@@ -22,7 +27,7 @@ class Simplechart_Test_Save_Post_Meta extends WP_UnitTestCase {
 	 */
 	function test_save_previewImg() {
 		$raw_data = file_get_contents( dirname( __FILE__ ) . '/data/testpngdata.txt' );
-		update_post_meta( $this->post_id, 'save-previewImg', sanitize_text_field( $raw_data ) );
+		update_post_meta( $this->post_id, 'save-previewImg', sanitize_text_field( wp_unslash( $raw_data ) ) );
 		$retrieved_data = get_post_meta( $this->post_id, 'save-previewImg', true );
 		$this->assertSame( $raw_data, $retrieved_data );
 	}

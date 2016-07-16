@@ -54,7 +54,7 @@ class Simplechart_Save {
 
 	protected function do_save_post( $post ) {
 		// verify nonce
-		if ( empty( $_POST['simplechart-nonce'] ) || ! wp_verify_nonce( sanitize_text_field( $_POST['simplechart-nonce'] ), 'simplechart_save' ) ) {
+		if ( empty( $_POST['simplechart-nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['simplechart-nonce'] ) ), 'simplechart_save' ) ) {
 			return;
 		}
 
@@ -65,13 +65,14 @@ class Simplechart_Save {
 
 		// handle base64 image string if provided
 		if ( ! empty( $_POST['save-previewImg'] ) ) {
-			$this->_save_chart_image( $post, sanitize_text_field( $_POST['save-previewImg'] ), $this->_default_img_type );
+			$this->_save_chart_image( $post, sanitize_text_field( wp_unslash( $_POST['save-previewImg'] ) ), $this->_default_img_type );
 		}
 
 		// handle raw CSV multiline data
 		if ( ! empty( $_POST['save-rawData'] ) ) {
-			// sanitize with esc_textarea() and strip_tags() because sanitize_text_field() would remove the newline chars
-			$this->_save_chart_image( $post, esc_textarea( strip_tags( $_POST['save-rawData'] ) ), $this->_default_img_type );
+			add_filter( 'sanitize_text_field', array( $this, 'sanitize_raw_data' ), 99, 2 );
+			$this->_save_chart_image( $post, sanitize_text_field( wp_unslash( $_POST['save-rawData'] ) ), $this->_default_img_type );
+			remove_filter( 'sanitize_text_field', array( $this, 'sanitize_raw_data' ), 99, 2 );
 		}
 
 		// handle JSON fields
@@ -90,6 +91,25 @@ class Simplechart_Save {
 		// save debug messages
 		if ( ! empty( $this->_debug_messages ) ) {
 			update_post_meta( $post->ID, 'simplechart-debug', $this->_debug_messages, true );
+		}
+	}
+
+	/**
+	 * Allow sanitize_text_field() for multiline CSV without stripping "\n" chars
+	 *
+	 * @param string $filtered Filtered input
+	 * @param string $initial Unfiltered input
+	 * @return string Sanitized multiline csv or empty string
+	 */
+	public function sanitize_raw_data( $filtered, $initial ) {
+		// strip newlines from initial input
+		$initial_stripped = preg_replace( '/\n+/', ' ', $initial );
+		if ( $filtered === $initial_stripped ) {
+			// if that's the only difference, then the initial string is fine
+			return $initial;
+		} else {
+			// if anything else was removed by sanitize_text_field(), return an empty string
+			return '';
 		}
 	}
 
