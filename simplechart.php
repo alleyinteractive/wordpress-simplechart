@@ -38,7 +38,11 @@ class Simplechart {
 		if ( ! $this->_check_dependencies() ) {
 			add_action( 'admin_notices', array( $this, 'admin_notices' ) );
 			add_action( 'admin_init', array( $this, 'deactivate' ) );
-			return;
+
+			// Continue execution if unit tests are running
+			if ( ! defined( 'SIMPLECHART_UNIT_TESTS_RUNNING' ) || ! SIMPLECHART_UNIT_TESTS_RUNNING ) {
+				return;
+			}
 		}
 		// Both of these will have trailing slash
 		$this->_plugin_dir_path = plugin_dir_path( __FILE__ );
