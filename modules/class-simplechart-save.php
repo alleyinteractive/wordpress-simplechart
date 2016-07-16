@@ -52,7 +52,7 @@ class Simplechart_Save {
 		add_action( 'save_post_simplechart', array( $this, 'save_post_action' ), 10, 1 );
 	}
 
-	protected function do_save_post( $post ) {
+	protected function _do_save_post( $post ) {
 		// verify nonce
 		if ( empty( $_POST['simplechart-nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['simplechart-nonce'] ) ), 'simplechart_save' ) ) {
 			return;
