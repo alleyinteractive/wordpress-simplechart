@@ -29,8 +29,7 @@ class Simplechart {
 
 	// startup
 	private function __construct() {
-		// Some stuff we handle different on VIP CLassic™ vs VIP Go and self-hosted sites
-		// thanks matt :)
+		// Handle check for Media Explorer differently on VIP CLassic™ vs VIP Go and self-hosted sites
 		if ( defined( 'WPCOM_IS_VIP_ENV' ) && WPCOM_IS_VIP_ENV && ( ! defined( 'VIP_GO_ENV' ) || ! VIP_GO_ENV ) ) {
 		    define( 'WPCOM_IS_VIP_CLASSIC_TM_ENV', true );
 		}
