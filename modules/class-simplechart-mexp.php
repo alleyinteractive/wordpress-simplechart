@@ -162,7 +162,7 @@ if ( class_exists( 'MEXP_Service' ) ) {
 					if ( 'publish' === $status || ! $status ) {
 						$status = '';
 					} else {
-						$status = esc_attr__( '(' . ucfirst( sprintf( '%s', $status ) ) . ')', 'simplechart' );
+						$status = '(' . esc_html( ucfirst( $status ) ) . ')';
 					}
 					$item->add_meta( 'status', $status );
 

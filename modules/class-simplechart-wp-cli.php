@@ -58,7 +58,7 @@ class Simplechart_WP_CLI extends WP_CLI_Command {
 		$post_ids = array_map( 'absint', $post_ids );
 		$site_id = absint( $assoc_args['site'] );
 		$this->_set_author( $assoc_args );
-		WP_CLI::line( sprintf( __( "Starting import of %s posts from site %s\n", 'simplechart' ), count( $post_ids ), $site_id ) );
+		WP_CLI::line( sprintf( __( "Starting import of %1$d posts from site %2$s\n", 'simplechart' ), count( $post_ids ), $site_id ) );
 		foreach ( $post_ids as $post_id ) {
 			WP_CLI::line( sprintf( __( 'Processing post %s', 'simplechart' ), $post_id ) );
 			$post_object = $this->_extract_wpcom_post_object( $site_id, $post_id );
@@ -68,7 +68,7 @@ class Simplechart_WP_CLI extends WP_CLI_Command {
 			}
 			WP_CLI::line( '' );
 		}
-		WP_CLI::line( sprintf( __( 'Processed %s posts from site %s', 'simplechart' ), count( $post_ids ), $site_id ) );
+		WP_CLI::line( sprintf( __( 'Processed %1$d posts from site %2$s', 'simplechart' ), count( $post_ids ), $site_id ) );
 	}
 
 	/**
@@ -88,12 +88,12 @@ class Simplechart_WP_CLI extends WP_CLI_Command {
 
 		// validate response
 		if ( is_wp_error( $response ) ) {
-			$warning = sprintf( __( "Failed to GET post %s from site %s\n", 'simplechart' ), $post, $site );
+			$warning = sprintf( __( "Failed to GET post %1$s from site %2$s\n", 'simplechart' ), $post, $site );
 			$warning .= implode( "\n", $response->get_error_messages() );
 			WP_CLI::warning( $warning );
 			return null;
 		} elseif ( 200 !== $code = wp_remote_retrieve_response_code( $response ) ) {
-			WP_CLI::warning( sprintf( __( 'Post %s from site %s returned error code %s', 'simplechart' ), $post, $site, $code ) );
+			WP_CLI::warning( sprintf( __( 'Post %1$s from site %2$s returned error code %3$s', 'simplechart' ), $post, $site, $code ) );
 			return null;
 		}
 
@@ -107,11 +107,11 @@ class Simplechart_WP_CLI extends WP_CLI_Command {
 
 		// make sure it's the right post type
 		if ( $this->_post_type !== $post_object['type'] ) {
-			WP_CLI::warning( sprintf( __( "Post %s from site %s does not have post_type '%s'", 'simplechart' ), $post, $site, $this->_post_type ) );
+			WP_CLI::warning( sprintf( __( "Post %1$s from site %2$s does not have post_type '%3%s'", 'simplechart' ), $post, $site, $this->_post_type ) );
 			return null;
 		}
 
-		WP_CLI::success( sprintf( __( 'Retrieved post %s from site %s', 'simplechart' ), $post, $site ) );
+		WP_CLI::success( sprintf( __( 'Retrieved post %1$s from site %2$s', 'simplechart' ), $post, $site ) );
 		return $post_object;
 	}
 
@@ -215,7 +215,7 @@ class Simplechart_WP_CLI extends WP_CLI_Command {
 
 		if ( ! is_wp_error( $media_id ) ) {
 			set_post_thumbnail( $post_id, $media_id );
-			WP_CLI::success( sprintf( __( 'Set attachment %s as thumbnail for post %s', 'simplechart' ), $media_id, $post_id ) );
+			WP_CLI::success( sprintf( __( 'Set attachment %1$s as thumbnail for post %2$s', 'simplechart' ), $media_id, $post_id ) );
 		} else {
 			WP_CLI::warning( sprintf( __( 'Sideload failed: %s', 'simplechart' ), $media_id->get_error_message() ) );
 		}
