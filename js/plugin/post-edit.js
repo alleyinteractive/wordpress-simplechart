@@ -6,7 +6,7 @@ function WPSimplechartApp( $ ) {
 	// setup scoped vars
 	var appUrl,
 		modalElements = {
-			container : '<div id="simplechart-modal"><a id="simplechart-close" href="#">{{closeModal}}</a><iframe id="simplechart-frame" src="{{iframeSrc}}"></iframe></div>',
+			container : '<div id="simplechart-modal"><iframe id="simplechart-frame" src="{{iframeSrc}}"></iframe></div>',
 			backdrop : '<div id="simplechart-backdrop"></div>'
 		},
 		confirmNoDataMessage = '',
@@ -32,15 +32,6 @@ function WPSimplechartApp( $ ) {
 		modalElements.container = modalElements.container.replace( '{{iframeSrc}}', appUrl);
 		modalElements.container = modalElements.container.replace( '{{closeModal}}', closeModalMessage);
 		$( 'body' ).append( modalElements.container + modalElements.backdrop );
-
-		// add listenters to open/close modal now that it's in DOM
-		$( '#simplechart-close' ).click( function( e ) {
-			e.preventDefault();
-			if ( savedChart || confirm( confirmNoDataMessage ) ) {
-				hideModal();
-				savedChart = false;
-			}
-		} );
 		$( '#simplechart-launch' ).click( openModal );
 	}
 
@@ -86,10 +77,21 @@ function WPSimplechartApp( $ ) {
 			return;
 		}
 
-		if ( 'appReady' === messageType ) {
-			sendData();
-		} else if ( 0 === messageType.indexOf( 'save-' ) ) {
-			receiveData( messageType, evt.data.data );
+		switch( true ) {
+			case 'appReady' === messageType:
+				sendData();
+				break;
+
+			case 'closeApp' === messageType:
+				hideModal();
+				break;
+
+			case 0 === messageType.indexOf( 'save-' ):
+				receiveData( messageType, evt.data.data );
+				break;
+
+			default:
+				// nothing
 		}
 	}
 
