@@ -169,7 +169,6 @@ class Simplechart {
 			$this->_config['web_app_iframe_src'] = 'http://localhost:8080/';
 			$this->_config['web_app_js_url'] = 'http://localhost:8080/static/bundle.js';
 			$this->_config['widget_loader_url'] = 'http://localhost:8080/static/widget.js';
-
 		} else {
 			// menu page set up by Simplechart_Post_Type module
 			$this->_config['web_app_iframe_src'] = admin_url( '/admin.php?page=' . $this->get_config( 'menu_page_slug' ) . '&noheader' );
