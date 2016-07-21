@@ -46,11 +46,21 @@ class Simplechart_Template {
 		if ( 'simplechart' !== get_post_type( intval( $id ) ) ) {
 			return '';
 		}
+
+		/**
+		 * Allow custom HTTP headers for the front-end API data request, e.g. basic auth on a staging site
+		 *
+		 * @param $headers array Defaults to empty array
+		 * @param int $id Post ID of current chart being rendered
+		 * @return array
+		 */
+		$http_headers = apply_filters( 'simplechart_api_http_headers', array(), $id );
 		?>
 			<div
-				id="simplechart-widget-<?php echo absint( $id ); ?>"
-				class="simplechart-widget"
-				data-url="<?php echo esc_url( home_url( '/simplechart/api/' . $id . '/' ) ); ?>"
+				id='simplechart-widget-<?php echo absint( $id ); ?>''
+				class='simplechart-widget'
+				data-url='<?php echo esc_url( home_url( '/simplechart/api/' . $id . '/' ) ); ?>''
+				data-headers='<?php echo wp_json_encode( $http_headers ); ?>'
 			></div>
 			<script>
 				<?php // Load Simplechart widget JS asynchronously if not already loaded ?>
