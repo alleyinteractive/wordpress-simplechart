@@ -118,8 +118,16 @@ function WPSimplechartApp( $ ) {
 	 */
 	function sendDataKeyMessage( toWindow, key ) {
 		if( window.WPSimplechartBootstrap[ key ] ) {
+
+			// Convert JSON string to JSON object
+			var toSend;
+			try {
+				toSend = JSON.parse( window.WPSimplechartBootstrap[ key ] );
+			} catch( e ) {
+				toSend = window.WPSimplechartBootstrap[ key ];
+			}
 			toWindow.postMessage( {
-				data: window.WPSimplechartBootstrap[ key ],
+				data: toSend,
 				messageType: 'bootstrap.' + key
 			}, '*' );
 		}
