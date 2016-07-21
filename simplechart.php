@@ -163,6 +163,12 @@ class Simplechart {
 	public function action_init() {
 		// Allow GET or filter to force using localhost for app
 		$use_localhost = isset( $_GET[ $this->_local_dev_query_var ] ) && 1 === absint( $_GET[ $this->_local_dev_query_var ] );
+
+		/**
+		 * Determine if we should load the Simplechart JS app from localhost or the plugin's copy
+		 *
+		 * @param bool $use_localhost Defaults to false unless set to true by a query var
+		 */
 		$use_localhost = apply_filters( 'simplechart_use_localhost', $use_localhost );
 
 		if ( $use_localhost ) {
