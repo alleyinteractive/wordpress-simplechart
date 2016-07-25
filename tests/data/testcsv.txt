@@ -1,0 +1,10 @@
+Department,Head Count
+Emerging,3
+Operations,3
+Partners,5
+Project Management,5
+QA,1
+Sales/Marketing,3
+UX/Design,4
+UX Devs,6
+WP Devs,22
