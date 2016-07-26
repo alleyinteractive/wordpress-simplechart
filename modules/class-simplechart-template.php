@@ -9,15 +9,6 @@ class Simplechart_Template {
 	function __construct() {
 		add_shortcode( 'simplechart', array( $this, 'render_shortcode' ) );
 		add_action( 'wp', array( $this, 'add_filter_post_content' ) );
-		add_action( 'wp_enqueue_scripts', array( $this, 'frontend_enqueues' ) );
-	}
-
-	public function frontend_enqueues() {
-		if ( is_admin() ) {
-			return;
-		}
-		wp_register_style( 'simplechart', Simplechart::instance()->get_plugin_url( 'css/style.css' ), array(), Simplechart::instance()->get_config( 'version' ) );
-		wp_enqueue_style( 'simplechart' );
 	}
 
 	// do the shortcode
