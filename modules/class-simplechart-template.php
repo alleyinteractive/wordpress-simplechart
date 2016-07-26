@@ -88,7 +88,7 @@ class Simplechart_Template {
 	// automatically render chart if looking at the chart's own post
 	public function add_filter_post_content() {
 		if ( ! is_admin() && is_singular( 'simplechart' ) ) {
-			//add_filter( 'the_content', array( $this, 'filter_insert_chart' ) );
+			add_filter( 'the_content', array( $this, 'filter_insert_chart' ) );
 		}
 	}
 
