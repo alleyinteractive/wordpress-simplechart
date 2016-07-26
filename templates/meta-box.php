@@ -17,6 +17,22 @@ function simplechart_json_encode_meta( $key ) {
 	}
 	return wp_json_encode( $raw_meta );
 }
+
+
+// Apply custom options when creating a new chart or saved options when editing an existing chart
+$screen = get_current_screen();
+if ( 'simplechart' === $screen->id && 'add' === $screen->action ) {
+	/**
+	 * Set custom default options for NVD3
+	 *
+	 * @param array $default_options Array of NVD3 options to pre-set
+	 */
+	$default_options = apply_filters( 'simplechart_chart_options_override', array() );
+	$creating_chart = true;
+} else {
+	$default_options = null;
+	$creating_chart = false;
+}
 ?>
 <a class="button button-primary button-large" id="simplechart-launch" href="#"><?php esc_html_e( 'Launch Simplechart App', 'simplechart' ); ?></a>
 <script>
@@ -24,7 +40,11 @@ function simplechart_json_encode_meta( $key ) {
 		rawData: <?php echo simplechart_json_encode_meta( 'save-rawData' ); ?>,
 		chartData: <?php echo simplechart_json_encode_meta( 'save-chartData' ); ?>,
 		chartMetadata: <?php echo simplechart_json_encode_meta( 'save-chartMetadata' ); ?>,
-		chartOptions: <?php echo simplechart_json_encode_meta( 'save-chartOptions' ); ?>
+		<?php if ( ! $creating_chart ) : ?>
+			chartOptions: <?php echo simplechart_json_encode_meta( 'save-chartOptions' ); ?>,
+		<?php else : ?>
+			chartOptions: <?php echo wp_json_encode( $default_options ); ?>
+		<?php endif; ?>
 	};
 	window.WPSimplechartContainer = {
 		appUrl: <?php echo wp_json_encode( Simplechart::instance()->get_config( 'web_app_iframe_src' ) ); ?>,
