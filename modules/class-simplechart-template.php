@@ -32,7 +32,9 @@ class Simplechart_Template {
 			return '';
 		}
 
-		return $this->render( $chart->ID );
+		ob_start();
+		$this->render( $chart->ID );
+		return ob_get_clean();
 	}
 
 	// render the chart from template
@@ -95,7 +97,7 @@ class Simplechart_Template {
 	// automatically render chart if looking at the chart's own post
 	public function add_filter_post_content() {
 		if ( ! is_admin() && is_singular( 'simplechart' ) ) {
-			add_filter( 'the_content', array( $this, 'filter_insert_chart' ) );
+			//add_filter( 'the_content', array( $this, 'filter_insert_chart' ) );
 		}
 	}
 
