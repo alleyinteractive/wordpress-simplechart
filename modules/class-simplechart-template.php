@@ -62,10 +62,21 @@ class Simplechart_Template {
 				data-url='<?php echo esc_url( home_url( '/simplechart/api/' . $id . '/' ) ); ?>'
 				data-headers='<?php echo wp_json_encode( $http_headers ); ?>'
 			>
-				<h3 class='simplechart-title'></h3>
-				<h4 class='simplechart-caption'></h4>
-				<div class='simplechart-chart'></div>
-				<p class='simplechart-credit'></p>
+				<?php
+				/**
+				 * Use a custom template for the Simplechart widget
+				 *
+				 * @param string|null $custom_template Null or string of HTML for template
+				 * @param int $id Post ID of chart being rendered
+				 */
+				if ( $custom_template = apply_filters( 'simplechart_widget_template', null, $id ) ) : ?>
+					<?php echo wp_kses_post( $custom_template ); ?>
+				<?php else : ?>
+					<h3 class='simplechart-title'></h3>
+					<h4 class='simplechart-caption'></h4>
+					<div class='simplechart-chart'></div>
+					<p class='simplechart-credit'></p>
+				<?php endif; ?>
 			</div>
 			<script>
 				<?php // Load Simplechart widget JS asynchronously if not already loaded ?>
