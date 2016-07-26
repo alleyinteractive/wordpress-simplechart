@@ -61,7 +61,12 @@ class Simplechart_Template {
 				class='simplechart-widget'
 				data-url='<?php echo esc_url( home_url( '/simplechart/api/' . $id . '/' ) ); ?>'
 				data-headers='<?php echo wp_json_encode( $http_headers ); ?>'
-			></div>
+			>
+				<h3 class='simplechart-title'></h3>
+				<h4 class='simplechart-caption'></h4>
+				<div class='simplechart-chart'></div>
+				<p class='simplechart-credit'></p>
+			</div>
 			<script>
 				<?php // Load Simplechart widget JS asynchronously if not already loaded ?>
 				if ( ! document.getElementById( 'simplechart-widget-js' ) ) {
