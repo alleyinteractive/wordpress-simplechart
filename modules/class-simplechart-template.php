@@ -57,9 +57,9 @@ class Simplechart_Template {
 		$http_headers = apply_filters( 'simplechart_api_http_headers', array(), $id );
 		?>
 			<div
-				id='simplechart-widget-<?php echo absint( $id ); ?>''
+				id='simplechart-widget-<?php echo absint( $id ); ?>'
 				class='simplechart-widget'
-				data-url='<?php echo esc_url( home_url( '/simplechart/api/' . $id . '/' ) ); ?>''
+				data-url='<?php echo esc_url( home_url( '/simplechart/api/' . $id . '/' ) ); ?>'
 				data-headers='<?php echo wp_json_encode( $http_headers ); ?>'
 			></div>
 			<script>
