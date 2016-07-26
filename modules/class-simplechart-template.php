@@ -9,15 +9,6 @@ class Simplechart_Template {
 	function __construct() {
 		add_shortcode( 'simplechart', array( $this, 'render_shortcode' ) );
 		add_action( 'wp', array( $this, 'add_filter_post_content' ) );
-		add_action( 'wp_enqueue_scripts', array( $this, 'frontend_enqueues' ) );
-	}
-
-	public function frontend_enqueues() {
-		if ( is_admin() ) {
-			return;
-		}
-		wp_register_style( 'simplechart', Simplechart::instance()->get_plugin_url( 'css/style.css' ), array(), Simplechart::instance()->get_config( 'version' ) );
-		wp_enqueue_style( 'simplechart' );
 	}
 
 	// do the shortcode
@@ -32,7 +23,9 @@ class Simplechart_Template {
 			return '';
 		}
 
-		return $this->render( $chart->ID );
+		ob_start();
+		$this->render( $chart->ID );
+		return ob_get_clean();
 	}
 
 	// render the chart from template
@@ -57,11 +50,27 @@ class Simplechart_Template {
 		$http_headers = apply_filters( 'simplechart_api_http_headers', array(), $id );
 		?>
 			<div
-				id='simplechart-widget-<?php echo absint( $id ); ?>''
+				id='simplechart-widget-<?php echo absint( $id ); ?>'
 				class='simplechart-widget'
-				data-url='<?php echo esc_url( home_url( '/simplechart/api/' . $id . '/' ) ); ?>''
+				data-url='<?php echo esc_url( home_url( '/simplechart/api/' . $id . '/' ) ); ?>'
 				data-headers='<?php echo wp_json_encode( $http_headers ); ?>'
-			></div>
+			>
+				<?php
+				/**
+				 * Use a custom template for the Simplechart widget
+				 *
+				 * @param string|null $custom_template Null or string of HTML for template
+				 * @param int $id Post ID of chart being rendered
+				 */
+				if ( $custom_template = apply_filters( 'simplechart_widget_template', null, $id ) ) : ?>
+					<?php echo wp_kses_post( $custom_template ); ?>
+				<?php else : ?>
+					<h3 class='simplechart-title'></h3>
+					<h4 class='simplechart-caption'></h4>
+					<div class='simplechart-chart'></div>
+					<p class='simplechart-credit'></p>
+				<?php endif; ?>
+			</div>
 			<script>
 				<?php // Load Simplechart widget JS asynchronously if not already loaded ?>
 				if ( ! document.getElementById( 'simplechart-widget-js' ) ) {
