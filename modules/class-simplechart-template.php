@@ -67,7 +67,14 @@ class Simplechart_Template {
 				<?php else : ?>
 					<h3 class='simplechart-title'></h3>
 					<h4 class='simplechart-caption'></h4>
-					<div class='simplechart-chart'></div>
+					<div
+						class='simplechart-chart'
+						<?php
+						$height = get_post_meta( $id, 'height', true );
+						if ( ! empty( $height ) ) : ?>
+							style="height:<?php echo absint( $height); ?>px"
+						<?php endif; ?>
+					></div>
 					<p class='simplechart-credit'></p>
 				<?php endif; ?>
 			</figure>
