@@ -49,7 +49,7 @@ class Simplechart_Template {
 		 */
 		$http_headers = apply_filters( 'simplechart_api_http_headers', array(), $id );
 		?>
-			<div
+			<figure
 				id='simplechart-widget-<?php echo absint( $id ); ?>'
 				class='simplechart-widget'
 				data-url='<?php echo esc_url( home_url( '/simplechart/api/' . $id . '/' ) ); ?>'
@@ -70,7 +70,7 @@ class Simplechart_Template {
 					<div class='simplechart-chart'></div>
 					<p class='simplechart-credit'></p>
 				<?php endif; ?>
-			</div>
+			</figure>
 			<script>
 				<?php // Load Simplechart widget JS asynchronously if not already loaded ?>
 				if ( ! document.getElementById( 'simplechart-widget-js' ) ) {
