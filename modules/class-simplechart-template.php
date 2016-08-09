@@ -65,8 +65,8 @@ class Simplechart_Template {
 				if ( $custom_template = apply_filters( 'simplechart_widget_template', null, $id ) ) : ?>
 					<?php echo wp_kses_post( $custom_template ); ?>
 				<?php else : ?>
-					<h3 class='simplechart-title'></h3>
-					<h4 class='simplechart-caption'></h4>
+					<p class='simplechart-title'></p>
+					<p class='simplechart-caption'></p>
 					<div
 						class='simplechart-chart'
 						style='<?php echo esc_attr( $this->height_style( $id ) ); ?>'
