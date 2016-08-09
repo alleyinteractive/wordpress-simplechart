@@ -78,7 +78,7 @@ class Simplechart_Save {
 
 		// save widget height
 		if ( ! empty( $_POST['save-height'] ) ) {
-			update_post_meta( $post->ID, 'height', absint( $_POST['height'] ) );
+			update_post_meta( $post->ID, 'height', absint( $_POST['save-height'] ) );
 		}
 
 		// handle JSON fields
