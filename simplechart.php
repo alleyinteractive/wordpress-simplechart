@@ -252,3 +252,7 @@ Simplechart::instance();
 function simplechart_render_chart( $id ) {
 	return Simplechart::instance()->template->render( $id );
 }
+
+function simplechart_inline_style_height( $id ) {
+	return Simplechart::instance()->template->height_style( $id );
+}

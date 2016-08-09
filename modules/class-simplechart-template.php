@@ -69,11 +69,7 @@ class Simplechart_Template {
 					<h4 class='simplechart-caption'></h4>
 					<div
 						class='simplechart-chart'
-						<?php
-						$height = get_post_meta( $id, 'height', true );
-						if ( ! empty( $height ) ) : ?>
-							style="height:<?php echo absint( $height); ?>px"
-						<?php endif; ?>
+						style='<?php echo esc_attr( $this->height_style( $id ) ); ?>'
 					></div>
 					<p class='simplechart-credit'></p>
 				<?php endif; ?>
@@ -90,6 +86,20 @@ class Simplechart_Template {
 				}
 			</script>
 		<?php
+	}
+
+	/**
+	 * Get string for height style attribute based on post meta
+	 *
+	 * @param int $id Post ID for the chart
+	 * @return string 'height: XXXpx' or empty string if no height found
+	 */
+	public function height_style( $id ) {
+		$height = get_post_meta( $id, 'height', true );
+		if ( empty( $height ) ) {
+			return '';
+		}
+		return 'height:' . absint( $height ) . 'px;';
 	}
 
 	// automatically render chart if looking at the chart's own post
