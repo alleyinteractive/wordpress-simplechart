@@ -61,3 +61,4 @@ if ( 'simplechart' === $screen->id && 'add' === $screen->action ) {
 <?php foreach ( Simplechart::instance()->save->meta_field_names as $field ) :?>
 	<input type="hidden" id="save-<?php echo esc_attr( $field ); ?>" name="save-<?php echo esc_attr( $field ); ?>" value="" />
 <?php endforeach; ?>
+<input type="hidden" id="save-height" name="save-height" value="" />

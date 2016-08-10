@@ -93,6 +93,7 @@ function WPSimplechartApp( $ ) {
 			default:
 				// nothing
 		}
+		handleSpecialCases( messageType, evt.data.data );
 	}
 
 	/**
@@ -142,6 +143,16 @@ function WPSimplechartApp( $ ) {
 		}
 
 		document.getElementById( messageType ).value = data;
+	}
+
+	/**
+	 * Handle any special exceptions when receiving data from app
+	 */
+	function handleSpecialCases( messageType, data ) {
+		// Save height to its own custom field
+		if ( 'save-chartOptions' === messageType && data.height ) {
+			document.getElementById( 'save-height' ).value = data.height;
+		}
 	}
 
 	// GO GO GO
