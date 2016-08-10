@@ -49,7 +49,7 @@ class Simplechart_Template {
 		 */
 		$http_headers = apply_filters( 'simplechart_api_http_headers', array(), $id );
 		?>
-			<div
+			<figure
 				id='simplechart-widget-<?php echo absint( $id ); ?>'
 				class='simplechart-widget'
 				data-url='<?php echo esc_url( home_url( '/simplechart/api/' . $id . '/' ) ); ?>'
@@ -65,12 +65,15 @@ class Simplechart_Template {
 				if ( $custom_template = apply_filters( 'simplechart_widget_template', null, $id ) ) : ?>
 					<?php echo wp_kses_post( $custom_template ); ?>
 				<?php else : ?>
-					<h3 class='simplechart-title'></h3>
-					<h4 class='simplechart-caption'></h4>
-					<div class='simplechart-chart'></div>
+					<p class='simplechart-title'></p>
+					<p class='simplechart-caption'></p>
+					<div
+						class='simplechart-chart'
+						style='<?php echo esc_attr( $this->height_style( $id ) ); ?>'
+					></div>
 					<p class='simplechart-credit'></p>
 				<?php endif; ?>
-			</div>
+			</figure>
 			<script>
 				<?php // Load Simplechart widget JS asynchronously if not already loaded ?>
 				if ( ! document.getElementById( 'simplechart-widget-js' ) ) {
@@ -83,6 +86,20 @@ class Simplechart_Template {
 				}
 			</script>
 		<?php
+	}
+
+	/**
+	 * Get string for height style attribute based on post meta
+	 *
+	 * @param int $id Post ID for the chart
+	 * @return string 'height: XXXpx' or empty string if no height found
+	 */
+	public function height_style( $id ) {
+		$height = get_post_meta( $id, 'height', true );
+		if ( empty( $height ) ) {
+			return '';
+		}
+		return 'height:' . absint( $height ) . 'px;';
 	}
 
 	// automatically render chart if looking at the chart's own post
