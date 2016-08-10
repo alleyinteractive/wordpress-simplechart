@@ -6,6 +6,8 @@ Description: Create and render interactive charts in WordPress using Simplechart
 Author: Drew Machat, Josh Kadis, Alley Interactive
 Version: 0.2.1
 Author URI: http://www.alleyinteractive.com/
+License: GPLv2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
 */
 
 class Simplechart {
