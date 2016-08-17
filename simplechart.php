@@ -183,8 +183,8 @@ class Simplechart {
 		} else {
 			// menu page set up by Simplechart_Post_Type module
 			$this->_config['web_app_iframe_src'] = admin_url( '/admin.php?page=' . $this->get_config( 'menu_page_slug' ) . '&noheader' );
-			$this->_config['web_app_js_url'] = $this->get_plugin_url( 'js/app/app.27441e0.js' );
-			$this->_config['widget_loader_url'] = $this->get_plugin_url( 'js/app/widget.27441e0.js' );
+			$this->_config['web_app_js_url'] = $this->get_plugin_url( 'js/app/app.a77ffdb.js' );
+			$this->_config['widget_loader_url'] = $this->get_plugin_url( 'js/app/widget.a77ffdb.js' );
 		}
 
 		$this->_config['web_app_iframe_src'] = apply_filters( 'simplechart_web_app_iframe_src', $this->_config['web_app_iframe_src'] );
