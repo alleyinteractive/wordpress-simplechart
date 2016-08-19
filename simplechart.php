@@ -245,8 +245,23 @@ class Simplechart {
 	public function get_plugin_dir( $append = '' ) {
 		return trailingslashit( $this->_plugin_dir_path ) . ltrim( $append, '/' );
 	}
+
+	/**
+	 * Clear rewrite rules so they get rebuilt the next time 'init' fires
+	 *
+	 * @return none
+	 */
+	public function clear_rules() {
+		delete_option( 'rewrite_rules' );
+	}
 }
 Simplechart::instance();
+
+/**
+ * Rebuild rewrite rules on de/activation
+ */
+register_activation_hook( __FILE__, array( Simplechart::instance(), 'clear_rules' ) );
+register_deactivation_hook( __FILE__, array( Simplechart::instance(), 'clear_rules' ) );
 
 /**
  * Helper Functions
