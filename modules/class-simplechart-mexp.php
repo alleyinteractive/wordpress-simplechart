@@ -3,7 +3,7 @@
 function simplechart_mexp_init( $services ) {
 
 	//should we remove all other Media Explorer services?
-	$clear_defaults = ! defined( 'WPCOM_IS_VIP_ENV' ) || ! WPCOM_IS_VIP_ENV;
+	$clear_defaults = ! ( defined( 'WPCOM_IS_VIP_CLASSIC_TM_ENV' ) && WPCOM_IS_VIP_CLASSIC_TM_ENV );
 	$clear_defaults = apply_filters( 'simplechart_remove_mexp_default_services', $clear_defaults );
 
 	if ( $clear_defaults ) {
@@ -32,17 +32,17 @@ if ( class_exists( 'MEXP_Template' ) ) {
 		?>
 			<div id="mexp-item-<?php echo esc_attr( $tab ); ?>-{{ data.id }}" class="mexp-item-area mexp-item" data-id="{{ data.id }}">
 				<div class="mexp-item-container clearfix">
-					<div class="mexp-item-thumb">
-						<img style="max-width: 150px" src="{{ data.meta.img }}">
-					</div>
-
 					<div class="mexp-item-main">
 						<div class="mexp-item-content">
-							<h3>{{ data.content }} {{data.meta.status}}</h3>
+							<h3>{{ data.content }}</h3>
 						</div>
-						<div class="mexp-item-date">
+
+						<p class="mexp-item-meta">
+							<?php esc_html_e( 'Status:', 'simplechart' ); ?> {{data.meta.status}}
+						</p>
+						<p class="mexp-item-meta">
 							{{ data.date }}
-						</div>
+						</p>
 					</div>
 
 					<a href="#" id="mexp-check-{{ data.id }}" class="check" title="<?php esc_attr_e( 'Deselect', 'mexp' ); ?>">
@@ -160,9 +160,9 @@ if ( class_exists( 'MEXP_Service' ) ) {
 					// Add status like ' - Draft' if chart is not yet published
 					$status = get_post_status( $post->ID );
 					if ( 'publish' === $status || ! $status ) {
-						$status = '';
+						$status = esc_html__( 'Published', 'simplechart' );
 					} else {
-						$status = '(' . esc_html( ucfirst( $status ) ) . ')';
+						$status = esc_html( ucfirst( $status ) );
 					}
 					$item->add_meta( 'status', $status );
 
