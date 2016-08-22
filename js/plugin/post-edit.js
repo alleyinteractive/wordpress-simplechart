@@ -54,7 +54,7 @@ function WPSimplechartApp( $ ) {
 	 */
 	function getMessageType( evt ) {
 		// confirm same-origin or http(s)://localhost:8080
-		if ( evt.origin !== window.location.origin && !/https?:\/\/localhost:8080/.test( evt.origin ) ) {
+		if ( evt.origin !== window.location.origin && !isLocalhost(evt.origin) ) {
 			return false;
 		}
 
@@ -78,6 +78,10 @@ function WPSimplechartApp( $ ) {
 		}
 
 		switch( true ) {
+			case 'localhostUpdate' === messageType:
+				applyLocalhostUpdate(evt);
+				break;
+
 			case 'appReady' === messageType:
 				sendData();
 				break;
@@ -112,6 +116,20 @@ function WPSimplechartApp( $ ) {
 		Object.keys( window.WPSimplechartBootstrap ).forEach( function( key ) {
 			sendDataKeyMessage( childWindow.contentWindow, key );
 		} );
+	}
+
+	/**
+	 * Log latest action and allow inspection of app state from localhost
+	 * Gets around cross-origin iframe limitations during development
+	 */
+	function applyLocalhostUpdate(evt) {
+		if ( ! isLocalhost( evt.origin ) ) {
+			return;
+		}
+		if (window._simplechartStoreLogger) {
+			console.log( evt.data.data.action, evt.data.data.update );
+		}
+		window._simplechartStoreData = evt.data.data.store || 'missing evt.data.store';
 	}
 
 	/**
@@ -155,9 +173,23 @@ function WPSimplechartApp( $ ) {
 		}
 	}
 
+	/**
+	 * Is origin http(s)://localhost:8080?
+	 */
+	function isLocalhost( origin ) {
+		return /https?:\/\/localhost:8080/.test( origin );
+	}
+
 	// GO GO GO
 	init();
 }
+
+// Setup function to log store contents during local iframe development
+window._simplechartStore = function() {
+	console.log( window._simplechartStoreData || 'Simplechart store not initialized' );
+}
+// Set this to false to turn off logging via middleware/localhostLogger
+window._simplechartStoreLogger = true;
 
 if ( 'undefined' !== typeof pagenow && 'simplechart' === pagenow ){
 	jQuery( document ).ready( function() {
