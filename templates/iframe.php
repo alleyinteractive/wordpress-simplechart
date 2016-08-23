@@ -5,8 +5,8 @@
 <!DOCTYPE html>
 <html>
 	<head lang="en">
-	<meta charset="UTF-8">
-	<title>Simplechart</title>
+		<meta charset="UTF-8">
+		<title>Simplechart</title>
 		<style>
 			body {
 			margin: 0;
@@ -19,6 +19,11 @@
 				height: 100%;
 			}
 		</style>
+		<script>
+			if ( window.parent && window.parent.__REACT_DEVTOOLS_GLOBAL_HOOK__ ) {
+				window.__REACT_DEVTOOLS_GLOBAL_HOOK__ = window.parent.__REACT_DEVTOOLS_GLOBAL_HOOK__;
+			}
+		</script>
 	</head>
 	<body>
 	<div id='app'></div>
