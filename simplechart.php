@@ -176,17 +176,19 @@ class Simplechart {
 		 */
 		$use_localhost = apply_filters( 'simplechart_use_localhost', $use_localhost );
 
+		// Set URLs for JS app and widget
 		if ( $use_localhost ) {
-			$this->_config['web_app_iframe_src'] = 'http://localhost:8080/';
 			$this->_config['web_app_js_url'] = 'http://localhost:8080/static/app.js';
 			$this->_config['widget_loader_url'] = 'http://localhost:8080/static/widget.js';
 		} else {
-			// menu page set up by Simplechart_Post_Type module
-			$this->_config['web_app_iframe_src'] = admin_url( '/admin.php?page=' . $this->get_config( 'menu_page_slug' ) . '&noheader' );
 			$this->_config['web_app_js_url'] = $this->get_plugin_url( 'js/app/app.a77ffdb.js' );
 			$this->_config['widget_loader_url'] = $this->get_plugin_url( 'js/app/widget.a77ffdb.js' );
 		}
 
+		// URL for menu page set up by Simplechart_Post_Type module
+		$this->_config['web_app_iframe_src'] = admin_url( '/admin.php?page=' . $this->get_config( 'menu_page_slug' ) . '&noheader' );
+
+		// Filters for app page and JS URLs
 		$this->_config['web_app_iframe_src'] = apply_filters( 'simplechart_web_app_iframe_src', $this->_config['web_app_iframe_src'] );
 		$this->_config['web_app_js_url'] = apply_filters( 'simplechart_web_app_js_url', $this->_config['web_app_js_url'] );
 		$this->_config['widget_loader_url'] = apply_filters( 'simplechart_widget_loader_url', $this->_config['widget_loader_url'] );
