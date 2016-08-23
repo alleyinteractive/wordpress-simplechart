@@ -54,7 +54,7 @@ function WPSimplechartApp( $ ) {
 	 */
 	function getMessageType( evt ) {
 		// confirm same-origin or http(s)://localhost:8080
-		if ( evt.origin !== window.location.origin && !isLocalhost(evt.origin) ) {
+		if ( evt.origin !== window.location.origin && !/https?:\/\/localhost:8080/.test( evt.origin ) ) {
 			return false;
 		}
 
@@ -153,13 +153,6 @@ function WPSimplechartApp( $ ) {
 		if ( 'save-chartOptions' === messageType && data.height ) {
 			document.getElementById( 'save-height' ).value = data.height;
 		}
-	}
-
-	/**
-	 * Is origin http(s)://localhost:8080?
-	 */
-	function isLocalhost( origin ) {
-		return /https?:\/\/localhost:8080/.test( origin );
 	}
 
 	// GO GO GO

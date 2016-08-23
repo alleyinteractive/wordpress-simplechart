@@ -20,6 +20,9 @@
 			}
 		</style>
 		<script>
+			/**
+			 * Give React Dev Tools access to iframe
+			 */
 			if ( window.parent && window.parent.__REACT_DEVTOOLS_GLOBAL_HOOK__ ) {
 				window.__REACT_DEVTOOLS_GLOBAL_HOOK__ = window.parent.__REACT_DEVTOOLS_GLOBAL_HOOK__;
 			}
