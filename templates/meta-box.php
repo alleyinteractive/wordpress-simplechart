@@ -28,9 +28,17 @@ if ( 'simplechart' === $screen->id && 'add' === $screen->action ) {
 	 * @param array $default_options Array of NVD3 options to pre-set
 	 */
 	$default_options = apply_filters( 'simplechart_chart_options_override', array() );
+
+	/**
+	 * Set custom default metadata.
+	 *
+	 * @param array $default_options Array of metadata. Possible keys are title, caption, credit
+	 */
+	$default_metadata = apply_filters( 'simplechart_chart_default_metadata', array() );
 	$creating_chart = true;
 } else {
 	$default_options = null;
+	$default_metadata = null;
 	$creating_chart = false;
 }
 ?>
@@ -39,10 +47,11 @@ if ( 'simplechart' === $screen->id && 'add' === $screen->action ) {
 	window.WPSimplechartBootstrap = {
 		rawData: <?php echo simplechart_json_encode_meta( 'save-rawData' ); ?>,
 		chartData: <?php echo simplechart_json_encode_meta( 'save-chartData' ); ?>,
-		chartMetadata: <?php echo simplechart_json_encode_meta( 'save-chartMetadata' ); ?>,
 		<?php if ( ! $creating_chart ) : ?>
-			chartOptions: <?php echo simplechart_json_encode_meta( 'save-chartOptions' ); ?>,
+			chartMetadata: <?php echo simplechart_json_encode_meta( 'save-chartMetadata' ); ?>,
+			chartOptions: <?php echo simplechart_json_encode_meta( 'save-chartOptions' ); ?>
 		<?php else : ?>
+			chartMetadata: <?php echo wp_json_encode( $default_metadata ); ?>,
 			chartOptions: <?php echo wp_json_encode( $default_options ); ?>
 		<?php endif; ?>
 	};
