@@ -8,14 +8,14 @@ The plugin sets up a custom post type for Charts and launches the Simplechart ap
 
 When the post is rendered on the front end, this same data and settings/options are used to bootstrap redrawing the same chart.
 
-### Installation for WordPress.com VIP themes
+### Installation for WordPress.com VIP sites (NOT including VIP Go)
 
 1. Install and activate [Media Explorer](https://github.com/Automattic/media-explorer) as a normal plugin in your development environment. It is loaded automatically as part of the platform on WordPress.com.
 1. Request _read access_ to the `alley-plugins` VIP repository.
 1. cd into `broadway/themes/vip` and:<br>`$ svn co https://vip-svn.wordpress.com/alley-plugins alley-plugins`
 1. Add this line in your theme's `functions.php`:<br>`wpcom_vip_load_plugin( 'simplechart', 'alley-plugins' );`
 
-### Installation for non-VIP themes
+### Installation for non-VIP or VIP Go sites
 
 1. Install and activate [Media Explorer](https://github.com/Automattic/media-explorer)
 1. Install and activate the Simplechart plugin
@@ -30,7 +30,11 @@ When the post is rendered on the front end, this same data and settings/options 
 
 ### Local Development
 
-If you are working on the [Simplechart JS app](https://github.com/alleyinteractive/simplechart-react), you can load the main app and widget from `localhost:8080` instead of your WordPress site by using the query param `?sclocaldev=1`
+If you are working on the [Simplechart JS app](https://github.com/alleyinteractive/simplechart), you can load the main app and widget from `localhost:8080` instead of your WordPress site.
+
+1. Use the query param `?sclocaldev=1`
+1. Add `define( 'SIMPLECHART_USE_LOCALHOST', true );` to your `wp-config.php` file.
+1. Set the `simplechart_use_localhost` filter to `true`
 
 ### Available WordPress filters
 
@@ -40,14 +44,39 @@ Set the `src` attribute of the iframe for creating/editing charts in wp-admin. D
 
 ##### simplechart_web_app_js_url
 
-Set the URL of the main JS app for building a chart. Defaults to the local site's `wp-content/plugins/wordpress-simplechart/js/app/bundle.js`
+Set the URL of the main JS app for building a chart. Defaults to the local static file.
+
+##### simplechart_widget_loader_url
+
+Set the URL of the chart rendering widget. Defaults to the local static file.
+
 
 ##### simplechart_remove_mexp_default_services
 
-Simplechart is integrated into the WordPress media manager using the [Media Explorer](https://github.com/Automattic/media-explorer) plugin, which adds the ability to embed from services like Twitter and YouTube. By default, Simplechart removes these other services - **except** on WordPress.com VIP, where Media Explorer is part of the platform. To force your desired behavior, use the `'simplechart_remove_mexp_default_services'` filter to return `true` or `false`.
+Simplechart is integrated into the WordPress media manager using the [Media Explorer](https://github.com/Automattic/media-explorer) plugin, which adds the ability to embed from services like Twitter and YouTube. By default, Simplechart removes these other services - **except** on WordPress.com VIP (Classic™ only, not VIP Go), where Media Explorer is part of the platform. To force your desired behavior, use the `'simplechart_remove_mexp_default_services'` filter to return `true` or `false`.
 
-Note for VIP sites: Unless you use this filter to force a consistent value, the value of `'simplechart_remove_mexp_default_services'` will be `true` in your local development environment and `false` on WordPress.com VIP.
+Note for VIP Classic™ sites: Unless you use this filter to force a consistent value, the value of `'simplechart_remove_mexp_default_services'` will be `true` in your local development environment and `false` on WordPress.com VIP.
 
 ##### simplechart_show_debug_messages
 
 Defaults to `false`. If `true`, the plugin will display extra debugging notices after you save a chart in WordPress admin.
+
+##### simplechart_api_http_headers
+
+Apply any headers to the request made to Simplechart's API before rendering a chart in a front-end template. Useful for dev sites protected by `.htaccess` passwords.
+
+##### simplechart_widget_template
+
+Use different markup structure when rendering a chart in a frontend template. The `.simplechart-*` classes are required to render the chart, title, caption, and credit.
+
+##### simplechart_use_localhost
+
+Defaults to false. If true, will load the app and widget from `localhost:8080`
+
+##### simplechart_chart_options_override
+
+Set defaults for NVD3. This is where you'd set a custom palette using the `color` as an array key.
+
+##### simplechart_chart_default_metadata
+
+Set default title, caption, or credit.
