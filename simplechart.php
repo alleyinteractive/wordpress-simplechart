@@ -181,8 +181,8 @@ class Simplechart {
 			$this->_config['web_app_js_url'] = 'http://localhost:8080/static/app.js';
 			$this->_config['widget_loader_url'] = 'http://localhost:8080/static/widget.js';
 		} else {
-			$this->_config['web_app_js_url'] = $this->get_plugin_url( 'js/app/app.13df678.js' );
-			$this->_config['widget_loader_url'] = $this->get_plugin_url( 'js/app/widget.13df678.js' );
+			$this->_config['web_app_js_url'] = $this->get_plugin_url( 'js/app/app.ef52aee.js' );
+			$this->_config['widget_loader_url'] = $this->get_plugin_url( 'js/app/widget.ef52aee.js' );
 		}
 
 		// URL for menu page set up by Simplechart_Post_Type module
