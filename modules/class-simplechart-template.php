@@ -54,6 +54,9 @@ class Simplechart_Template {
 				class='simplechart-widget'
 				data-url='<?php echo esc_url( home_url( '/simplechart/api/' . $id . '/' ) ); ?>'
 				data-headers='<?php echo wp_json_encode( $http_headers ); ?>'
+				<?php if ( $placeholder = apply_filters( 'simplechart_widget_placeholder_text', null ) ) : ?>
+					data-placeholder = '<?php echo esc_attr( $placeholder ); ?>'
+				<?php endif; ?>
 			>
 				<?php
 				/**

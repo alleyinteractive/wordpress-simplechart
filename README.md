@@ -62,6 +62,10 @@ Apply any headers to the request made to Simplechart's API before rendering a ch
 
 Use different markup structure when rendering a chart in a frontend template. The `.simplechart-*` classes are required to render the chart, title, caption, and credit.
 
+##### simplechart_widget_placeholder_text
+
+Text string to use while chart data is loading. If none is provided, will use the JS app's default `Loading`.
+
 ##### simplechart_use_localhost
 
 Defaults to false. If true, will load the app and widget from `localhost:8080`
