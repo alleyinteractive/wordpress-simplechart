@@ -82,6 +82,6 @@ Set default title, caption, or credit.
 
 Set this to true for AMP pages to render as `amp-iframe`. This is handled automatically if you're using the offical [WP AMP plugin](https://wordpress.org/plugins/amp/)
 
-#### simplechart_disable_amp
+##### simplechart_disable_amp
 
 Set this to true to disable Simplechart entirely on AMP pages
