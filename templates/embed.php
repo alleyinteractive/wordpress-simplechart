@@ -5,16 +5,6 @@
 
 $id = (int) Simplechart::instance()->template->current_id();
 
-// Make sure we have a valid chart
-if ( 'simplechart' !== get_post_type( $id ) ) {
-	return '';
-}
-
-// Only allow non-published charts unless we're looking at a post preview
-if ( 'publish' !== get_post_status( $id ) && ! is_preview() ) {
-	return '';
-}
-
 /**
  * Allow custom HTTP headers for the front-end API data request, e.g. basic auth on a staging site
  *
@@ -24,7 +14,8 @@ if ( 'publish' !== get_post_status( $id ) && ! is_preview() ) {
  */
 $http_headers = apply_filters( 'simplechart_api_http_headers', array(), $id );
 
-?>
+// Chart must be published or embedded in a preview
+if ( 'simplechart' === get_post_type( $id ) && ( 'publish' === get_post_status( $id ) || is_preview() ) ) : ?>
 	<figure
 		id='simplechart-widget-<?php echo absint( $id ); ?>'
 		class='simplechart-widget'
@@ -64,3 +55,5 @@ $http_headers = apply_filters( 'simplechart_api_http_headers', array(), $id );
 			chartEl.parentNode.appendChild( scriptEl );
 		}
 	</script>
+<?php endif;
+
