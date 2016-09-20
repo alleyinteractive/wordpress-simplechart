@@ -77,3 +77,11 @@ Set defaults for NVD3. This is where you'd set a custom palette using the `color
 ##### simplechart_chart_default_metadata
 
 Set default title, caption, or credit.
+
+##### simplechart_is_amp_page
+
+Set this to true for AMP pages to render as `amp-iframe`. This is handled automatically if you're using the offical [WP AMP plugin](https://wordpress.org/plugins/amp/)
+
+#### simplechart_disable_amp
+
+Set this to true to disable Simplechart entirely on AMP pages
