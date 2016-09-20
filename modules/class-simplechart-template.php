@@ -23,11 +23,22 @@ class Simplechart_Template {
 	function __construct() {
 		add_shortcode( 'simplechart', array( $this, 'render_shortcode' ) );
 		add_action( 'wp', array( $this, 'add_filter_post_content' ) );
+		$this->_amp_actions();
+	}
 
+	private function _amp_actions() {
 		// Hook into AMP plugin action
 		add_action( 'pre_amp_render_post', function() {
 			$this->_is_amp = true;
 		} );
+
+		// Enable amp-iframe elements
+		add_action( 'amp_post_template_data', function( $data ) {
+			$data['amp_component_scripts']['amp-iframe'] = 'https://cdn.ampproject.org/v0/amp-iframe-0.1.js';
+			return $data;
+		});
+
+		do_action( 'simplechart_amp' );
 	}
 
 	// do the shortcode
