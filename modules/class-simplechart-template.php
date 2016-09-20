@@ -23,6 +23,11 @@ class Simplechart_Template {
 	function __construct() {
 		add_shortcode( 'simplechart', array( $this, 'render_shortcode' ) );
 		add_action( 'wp', array( $this, 'add_filter_post_content' ) );
+
+		// Hook into AMP plugin action
+		add_action( 'pre_amp_render_post', function() {
+			$this->_is_amp = true;
+		} );
 	}
 
 	// do the shortcode
@@ -68,7 +73,7 @@ class Simplechart_Template {
 		if ( ! $this->_is_amp ) {
 			require_once( Simplechart::instance()->get_plugin_dir( 'templates/embed.php' ) );
 		} else if ( ! $disable_amp ) {
-			echo '<p>AMP page</p>';
+			require_once( Simplechart::instance()->get_plugin_dir( 'templates/amp-iframe.php' ) );
 		}
 	}
 
