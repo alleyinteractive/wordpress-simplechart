@@ -4,16 +4,17 @@
  */
 
 $id = (int) Simplechart::instance()->template->current_id();
+$url = site_url( '/simplechart/iframe/' . $id . '/', 'https' );
+$height = get_post_meta( $id, 'height', true );
 
 // Chart must be published or embedded in a preview
 if ( 'simplechart' === get_post_type( $id ) && ( 'publish' === get_post_status( $id ) || is_preview() ) ) : ?>
 	<amp-iframe
-		width="300"
-		height="300"
+		height=<?php echo absint( $height ); ?>
 		sandbox="allow-scripts allow-same-origin"
-		layout="responsive"
+		layout="fixed-height"
 		frameborder="0"
-		src="https://brookings.alley.dev/?simplechart=test-black-group-a"
+		src="<?php echo esc_url( $url ); ?>"
 	>
 	</amp-iframe>
 <?php endif;
