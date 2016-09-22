@@ -5,7 +5,14 @@
  * @package Simplechart
  */
 
-class Simplechart_API {
+class Simplechart_Request_Handler {
+
+	/**
+	 * ID of iframe request
+	 *
+	 * @var int
+	 */
+	private $_iframe_id = 0;
 
 	public function __construct() {
 		add_action( 'init', array( $this, 'add_rewrite_rule' ) );
@@ -57,7 +64,18 @@ class Simplechart_API {
 	 * @return none
 	 */
 	private function _handle_iframe_request( $id ) {
+		$this->_iframe_id = $id;
+		require_once( Simplechart::instance()->get_plugin_dir( 'templates/amp-iframe-source.php' ) );
+		exit();
+	}
 
+	/**
+	 * Getter for current frame ID
+	 *
+	 * @return int ID
+	 */
+	public function frame_id() {
+		return $this->_iframe_id;
 	}
 
 	/**

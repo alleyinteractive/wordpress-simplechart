@@ -85,3 +85,11 @@ Set this to true for AMP pages to render as `amp-iframe`. This is handled automa
 ##### simplechart_disable_amp
 
 Set this to true to disable Simplechart entirely on AMP pages
+
+##### simplechart_iframe_head
+
+Fires inside `<head>` of AMP iframe source page. Takes chart ID as parameter.
+
+##### simplechart_iframe_footer
+
+Add any stuff before closing `</body>` tag. Takes chart ID as parameter.
