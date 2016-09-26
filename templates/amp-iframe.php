@@ -16,5 +16,8 @@ if ( 'simplechart' === get_post_type( $id ) && ( 'publish' === get_post_status( 
 		frameborder="0"
 		src="<?php echo esc_url( $url ); ?>"
 	>
+		<div placeholder>
+			<?php do_action( 'simplechart_amp_iframe_placeholder', $id ); ?>
+		</div>
 	</amp-iframe>
 <?php endif;
