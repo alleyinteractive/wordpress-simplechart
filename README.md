@@ -31,7 +31,7 @@ If you are working on the [Simplechart JS app](https://github.com/alleyinteracti
 
 ### AMP Considerations
 
-The plugin is compatible [AMP](https://www.ampproject.org/) pages using the `amp-iframe` [element](https://github.com/ampproject/amphtml/blob/master/extensions/amp-iframe/amp-iframe.md).
+The plugin is compatible with [AMP](https://www.ampproject.org/) pages using the `amp-iframe` [element](https://github.com/ampproject/amphtml/blob/master/extensions/amp-iframe/amp-iframe.md).
 
 Determining when to render the AMP version is handled automatically if you're using the offical [WP AMP plugin](https://wordpress.org/plugins/amp/). If not, you'll need to use the `simplechart_is_amp_page` filter, like:
 

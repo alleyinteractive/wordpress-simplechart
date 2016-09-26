@@ -36,7 +36,7 @@ class Simplechart_Template {
 		add_action( 'amp_post_template_data', function( $data ) {
 			$data['amp_component_scripts']['amp-iframe'] = 'https://cdn.ampproject.org/v0/amp-iframe-0.1.js';
 			return $data;
-		});
+		} );
 
 		do_action( 'simplechart_amp' );
 	}
