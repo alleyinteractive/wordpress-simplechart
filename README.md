@@ -29,7 +29,31 @@ If you are working on the [Simplechart JS app](https://github.com/alleyinteracti
 1. Add `define( 'SIMPLECHART_USE_LOCALHOST', true );` to your `wp-config.php` file.
 1. Set the `simplechart_use_localhost` filter to `true`
 
-### Available WordPress filters
+### AMP Considerations
+
+The plugin is compatible with [AMP](https://www.ampproject.org/) pages using the `amp-iframe` [element](https://github.com/ampproject/amphtml/blob/master/extensions/amp-iframe/amp-iframe.md).
+
+Determining when to render the AMP version is handled automatically if you're using the offical [WP AMP plugin](https://wordpress.org/plugins/amp/). If not, you'll need to use the `simplechart_is_amp_page` filter, like:
+
+```
+add_action( 'wp', function() {
+	if ( my_check_if_this_is_an_amp_page() ) {
+		add_filter( 'simplechart_is_amp_page', '__return_true' );
+	}
+} );
+```
+
+You can also disable the plugin entirely on AMP pages with:
+
+```
+add_filter( 'simplechart_disable_amp', '__return_true' );
+```
+
+Additionally, two actions fire while rendering the simple page that sits inside the `<amp-iframe>`.
+
+`simplechart_iframe_head` and `simplechart_iframe_footer` fire inside the `<head>` and before the closing `</body>` tag, and take the chart's WordPress ID as their only parameter. You can use these actions to add your own custom CSS or JS to the AMP embed.
+
+### Available WordPress actions and filters
 
 ##### simplechart_web_app_iframe_src
 
@@ -77,3 +101,19 @@ Set defaults for NVD3. This is where you'd set a custom palette using the `color
 ##### simplechart_chart_default_metadata
 
 Set default title, caption, or credit.
+
+##### simplechart_is_amp_page
+
+See [AMP considerations](#amp-considerations).
+
+##### simplechart_disable_amp
+
+See [AMP considerations](#amp-considerations).
+
+##### simplechart_iframe_head
+
+See [AMP considerations](#amp-considerations).
+
+##### simplechart_iframe_footer
+
+See [AMP considerations](#amp-considerations).
