@@ -53,6 +53,8 @@ Additionally, two actions fire while rendering the simple page that sits inside 
 
 `simplechart_iframe_head` and `simplechart_iframe_footer` fire inside the `<head>` and before the closing `</body>` tag, and take the chart's WordPress ID as their only parameter. You can use these actions to add your own custom CSS or JS to the AMP embed.
 
+Use the `simplechart_amp_iframe_placeholder` action to render any markup you need inside the `placeholder` [element](https://github.com/ampproject/amphtml/blob/master/extensions/amp-iframe/amp-iframe.md#iframe-with-placeholder).
+
 ### Available WordPress actions and filters
 
 ##### simplechart_web_app_iframe_src
@@ -115,5 +117,9 @@ See [AMP considerations](#amp-considerations).
 See [AMP considerations](#amp-considerations).
 
 ##### simplechart_iframe_footer
+
+See [AMP considerations](#amp-considerations).
+
+##### simplechart_amp_iframe_placeholder
 
 See [AMP considerations](#amp-considerations).
