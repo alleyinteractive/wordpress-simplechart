@@ -85,6 +85,9 @@ class Simplechart_Request_Handler {
 	 * @return none
 	 */
 	private function _handle_api_request( $id ) {
+		// Allows same-origin https CORS requests
+		header( 'Access-Control-Allow-Origin: *' );
+
 		// Validate post type
 		if ( empty( $id ) || 'simplechart' !== get_post_type( $id ) ) {
 			wp_send_json_error( array(
@@ -92,6 +95,7 @@ class Simplechart_Request_Handler {
 			) );
 		}
 
+		// Build array of save-chartData, etc. from post meta
 		$response = array();
 		foreach ( array( 'Data', 'Options', 'Metadata' ) as $key ) {
 			$response[ strtolower( $key ) ] = get_post_meta( $id, 'save-chart' . $key, true );
