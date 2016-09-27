@@ -11,7 +11,7 @@ $height = get_post_meta( $id, 'height', true );
 if ( 'simplechart' === get_post_type( $id ) && ( 'publish' === get_post_status( $id ) || is_preview() ) ) : ?>
 	<amp-iframe
 		height=<?php echo absint( $height ); ?>
-		sandbox="allow-scripts allow-same-origin"
+		sandbox="allow-scripts"
 		layout="fixed-height"
 		frameborder="0"
 		src="<?php echo esc_url( $url ); ?>"
