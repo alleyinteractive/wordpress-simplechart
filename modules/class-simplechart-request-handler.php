@@ -85,6 +85,10 @@ class Simplechart_Request_Handler {
 	 * @return none
 	 */
 	private function _handle_api_request( $id ) {
+		// https + iframe can cause 'null' request origin that we need to accept
+		// Safe to accept all reqs because this method can *only* output JSON then die
+		header( 'Access-Control-Allow-Origin: *' );
+
 		// Validate post type
 		if ( empty( $id ) || 'simplechart' !== get_post_type( $id ) ) {
 			wp_send_json_error( array(
@@ -92,6 +96,7 @@ class Simplechart_Request_Handler {
 			) );
 		}
 
+		// Build array of save-chartData, etc. from post meta
 		$response = array();
 		foreach ( array( 'Data', 'Options', 'Metadata' ) as $key ) {
 			$response[ strtolower( $key ) ] = get_post_meta( $id, 'save-chart' . $key, true );
