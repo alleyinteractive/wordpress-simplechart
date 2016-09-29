@@ -85,7 +85,8 @@ class Simplechart_Request_Handler {
 	 * @return none
 	 */
 	private function _handle_api_request( $id ) {
-		// Allows same-origin https CORS requests
+		// https + iframe can cause 'null' request origin that we need to accept
+		// Safe to accept all reqs because this method can *only* output JSON then die
 		header( 'Access-Control-Allow-Origin: *' );
 
 		// Validate post type
