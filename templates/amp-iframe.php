@@ -7,8 +7,7 @@ $id = (int) Simplechart::instance()->template->current_id();
 $url = site_url( '/simplechart/iframe/' . $id . '/', 'https' );
 $height = get_post_meta( $id, 'height', true );
 
-// Chart must be published or embedded in a preview
-if ( 'simplechart' === get_post_type( $id ) && ( 'publish' === get_post_status( $id ) || is_preview() ) ) : ?>
+if ( simplechart_can_render( $id ) ) : ?>
 	<amp-iframe
 		height=<?php echo absint( $height ); ?>
 		sandbox="allow-scripts"

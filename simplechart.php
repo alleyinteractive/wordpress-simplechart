@@ -272,6 +272,16 @@ function simplechart_render_chart( $id ) {
 	return Simplechart::instance()->template->render( $id );
 }
 
+/**
+ * Confirm post type and that chart is either published or embedded in a preview
+ *
+ * @var int $id Post ID of chart
+ * @return bool
+ */
+function simplechart_can_render( $id ) {
+	return 'simplechart' === get_post_type( $id ) && ( 'publish' === get_post_status( $id ) || is_preview() );
+}
+
 function simplechart_inline_style_height( $id ) {
 	return Simplechart::instance()->template->height_style( $id );
 }
