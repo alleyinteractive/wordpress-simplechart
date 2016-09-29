@@ -43,17 +43,17 @@ add_action( 'wp', function() {
 } );
 ```
 
-You can also disable the plugin entirely on AMP pages with:
+AMP requires that the source document of the `amp-iframe` be served over https. _If your site does not support https_, you should disable Simplechart embeds on AMP pages with this snippet:
 
 ```
 add_filter( 'simplechart_disable_amp', '__return_true' );
 ```
 
-Additionally, two actions fire while rendering the simple page that sits inside the `<amp-iframe>`.
+Additionally, two actions fire while rendering the source document of the `<amp-iframe>`.
 
 `simplechart_iframe_head` and `simplechart_iframe_footer` fire inside the `<head>` and before the closing `</body>` tag, and take the chart's WordPress ID as their only parameter. You can use these actions to add your own custom CSS or JS to the AMP embed.
 
-Use the `simplechart_amp_iframe_placeholder` action to render any markup you need inside the `placeholder` [element](https://github.com/ampproject/amphtml/blob/master/extensions/amp-iframe/amp-iframe.md#iframe-with-placeholder).
+Use the `simplechart_amp_iframe_placeholder` action to render any markup you need inside the AMP `placeholder` [element](https://github.com/ampproject/amphtml/blob/master/extensions/amp-iframe/amp-iframe.md#iframe-with-placeholder).
 
 ### Available WordPress actions and filters
 
