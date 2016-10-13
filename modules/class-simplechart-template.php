@@ -82,9 +82,9 @@ class Simplechart_Template {
 		$disable_amp = apply_filters( 'simplechart_disable_amp', false );
 
 		if ( ! $this->_is_amp ) {
-			require_once( Simplechart::instance()->get_plugin_dir( 'templates/embed.php' ) );
+			require( Simplechart::instance()->get_plugin_dir( 'templates/embed.php' ) );
 		} else if ( ! $disable_amp ) {
-			require_once( Simplechart::instance()->get_plugin_dir( 'templates/amp-iframe.php' ) );
+			require( Simplechart::instance()->get_plugin_dir( 'templates/amp-iframe.php' ) );
 		}
 	}
 
