@@ -11,7 +11,9 @@ When the post is rendered on the front end, this same data and settings/options 
 ### Installation
 
 1. Install and activate [Media Explorer](https://github.com/Automattic/media-explorer)
+  1. See [`simplechart_remove_mexp_default_services`](#simplechart_remove_mexp_default_services) hook
 1. Install and activate the Simplechart plugin
+	1. See [theme setup](https://github.com/alleyinteractive/wordpress-simplechart/wiki/Theme-Setup) tips
 
 ### Usage
 
@@ -24,6 +26,8 @@ When the post is rendered on the front end, this same data and settings/options 
 ### Local Development
 
 If you are working on the [Simplechart JS app](https://github.com/alleyinteractive/simplechart), you can load the main app and widget from `localhost:8080` instead of your WordPress site.
+
+There are three different ways to do this:
 
 1. Use the query param `?sclocaldev=1`
 1. Add `define( 'SIMPLECHART_USE_LOCALHOST', true );` to your `wp-config.php` file.
