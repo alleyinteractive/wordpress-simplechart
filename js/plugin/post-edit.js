@@ -106,7 +106,7 @@ function WPSimplechartApp( $ ) {
 		}
 
 		childWindow.contentWindow.postMessage( {
-			messageType: 'bootstrapEditor',
+			messageType: 'bootstrap.editor',
 			data: parseBootstrapData()
 		}, '*' );
 	}
