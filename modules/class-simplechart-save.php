@@ -11,6 +11,7 @@ class Simplechart_Save {
 	public $meta_field_names = array(
 		'rawData',
 		'chartData',
+		'chartType',
 		'chartMetadata',
 		'chartOptions',
 		'previewImg',
