@@ -77,6 +77,11 @@ class Simplechart_Save {
 			update_post_meta( $post->ID, 'save-rawData', $sanitized_raw_data );
 		}
 
+		// handle chart type string
+		if ( ! empty( $_POST['save-chartType'] ) ) {
+			update_post_meta( $post->ID, 'save-chartType', sanitize_text_field( wp_unslash( $_POST['save-chartType'] ) ) );
+		}
+
 		// save widget height
 		if ( ! empty( $_POST['save-height'] ) ) {
 			update_post_meta( $post->ID, 'height', absint( $_POST['save-height'] ) );
