@@ -100,38 +100,35 @@ function WPSimplechartApp( $ ) {
 	 * Send previously saved data to child window
 	 */
 	function sendData() {
-		if ( ! window.WPSimplechartBootstrap ) {
-			throw new Error( 'Missing window.WPSimplechartBootstrap' );
-		}
-
 		var childWindow = document.getElementById( 'simplechart-frame' );
 		if ( ! childWindow || ! childWindow.contentWindow ) {
 			throw new Error( 'Missing iframe#simplechart-frame' );
 		}
 
-		Object.keys( window.WPSimplechartBootstrap ).forEach( function( key ) {
-			sendDataKeyMessage( childWindow.contentWindow, key );
-		} );
+		childWindow.contentWindow.postMessage( {
+			messageType: 'bootstrap.editor',
+			data: parseBootstrapData()
+		}, '*' );
 	}
 
 	/**
-	 * Send specific value from bootstrap data via postMessage
+	 * Build data object to send to chart editor window, parsing stringified JSON as needed
 	 */
-	function sendDataKeyMessage( toWindow, key ) {
-		if( window.WPSimplechartBootstrap[ key ] ) {
+	function parseBootstrapData() {
+		if ( ! window.WPSimplechartBootstrap ) {
+			throw new Error( 'Missing window.WPSimplechartBootstrap' );
+		}
 
-			// Convert JSON string to JSON object
+		return Object.keys( window.WPSimplechartBootstrap ).reduce(function(data, key) {
 			var toSend;
 			try {
 				toSend = JSON.parse( window.WPSimplechartBootstrap[ key ] );
 			} catch( e ) {
 				toSend = window.WPSimplechartBootstrap[ key ];
 			}
-			toWindow.postMessage( {
-				data: toSend,
-				messageType: 'bootstrap.' + key
-			}, '*' );
-		}
+			data[ key ] = toSend;
+			return data;
+		}, {} )
 	}
 
 	/**
