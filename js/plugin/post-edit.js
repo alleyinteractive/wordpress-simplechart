@@ -106,8 +106,8 @@ function WPSimplechartApp( $ ) {
 		}
 
 		childWindow.contentWindow.postMessage( {
-			messageType: 'bootstrap.editor',
-			data: parseBootstrapData()
+			data: parseBootstrapData(),
+			messageType: WPSimplechartBootstrap.isNewChart ? 'bootstrap.new' : 'bootstrap.edit'
 		}, '*' );
 	}
 
@@ -115,6 +115,7 @@ function WPSimplechartApp( $ ) {
 	 * Build data object to send to chart editor window, parsing stringified JSON as needed
 	 */
 	function parseBootstrapData() {
+		// WPSimplechartBootstrap defined in meta-box.php
 		if ( ! window.WPSimplechartBootstrap ) {
 			throw new Error( 'Missing window.WPSimplechartBootstrap' );
 		}
