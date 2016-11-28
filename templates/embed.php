@@ -52,6 +52,8 @@ if ( 'simplechart' === get_post_type( $id ) && ( 'publish' === get_post_status( 
 
 			scriptEl.id = 'simplechart-widget-js';
 			scriptEl.src = <?php echo wp_json_encode( Simplechart::instance()->get_config( 'widget_loader_url' ) ); ?>;
+			window.__simplechart_public_path__ = window.__simplechart_public_path__ ||
+				<?php echo wp_json_encode( Simplechart::instance()->get_config( 'webpack_public_path' ) ); ?>;
 			chartEl.parentNode.appendChild( scriptEl );
 		}
 	</script>
