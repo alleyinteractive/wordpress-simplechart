@@ -47,6 +47,8 @@ if ( 'simplechart' === $screen->id && 'add' === $screen->action ) {
 	window.WPSimplechartBootstrap = {
 		rawData: <?php echo simplechart_json_encode_meta( 'save-rawData' ); ?>,
 		chartData: <?php echo simplechart_json_encode_meta( 'save-chartData' ); ?>,
+		chartType: <?php echo simplechart_json_encode_meta( 'save-chartType' ); ?>,
+		isNewChart: <?php echo wp_json_encode( $creating_chart ); ?>,
 		<?php if ( ! $creating_chart ) : ?>
 			chartMetadata: <?php echo simplechart_json_encode_meta( 'save-chartMetadata' ); ?>,
 			chartOptions: <?php echo simplechart_json_encode_meta( 'save-chartOptions' ); ?>

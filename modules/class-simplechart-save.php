@@ -11,6 +11,7 @@ class Simplechart_Save {
 	public $meta_field_names = array(
 		'rawData',
 		'chartData',
+		'chartType',
 		'chartMetadata',
 		'chartOptions',
 		'previewImg',
@@ -74,6 +75,11 @@ class Simplechart_Save {
 			$sanitized_raw_data = sanitize_text_field( wp_unslash( $_POST['save-rawData'] ) );
 			remove_filter( 'sanitize_text_field', array( $this, 'sanitize_raw_data' ), 99, 2 );
 			update_post_meta( $post->ID, 'save-rawData', $sanitized_raw_data );
+		}
+
+		// handle chart type string
+		if ( ! empty( $_POST['save-chartType'] ) ) {
+			update_post_meta( $post->ID, 'save-chartType', sanitize_text_field( wp_unslash( $_POST['save-chartType'] ) ) );
 		}
 
 		// save widget height
