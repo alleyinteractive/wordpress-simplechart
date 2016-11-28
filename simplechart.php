@@ -24,6 +24,7 @@ class Simplechart {
 	private $_config = array(
 		'web_app_iframe_src' => null,
 		'web_app_js_url' => null,
+		'webpack_public_path' => null,
 		'widget_loader_url' => null,
 		'menu_page_slug' => 'simplechart_app',
 		'version' => '0.3.2',
@@ -178,17 +179,20 @@ class Simplechart {
 
 		// Set URLs for JS app and widget
 		if ( $use_localhost ) {
-			$this->_config['web_app_js_url'] = 'http://localhost:8080/static/app.js';
-			$this->_config['widget_loader_url'] = 'http://localhost:8080/static/widget.js';
+			$this->_config['webpack_public_path'] = 'http://localhost:8080/static/';
+			$this->_config['web_app_js_url'] = $this->_config['webpack_public_path'] . 'app.js';
+			$this->_config['widget_loader_url'] = $this->_config['webpack_public_path'] . 'widget.js';
 		} else {
-			$this->_config['web_app_js_url'] = $this->get_plugin_url( 'js/app/app.2a8631f.js' );
-			$this->_config['widget_loader_url'] = $this->get_plugin_url( 'js/app/widget.2a8631f.js' );
+			$this->_config['webpack_public_path'] = $this->get_plugin_url( 'js/app/' );
+			$this->_config['web_app_js_url'] = $this->_config['webpack_public_path'] . 'app.cf7ecac.js';
+			$this->_config['widget_loader_url'] = $this->_config['webpack_public_path'] . 'widget.cf7ecac.js';
 		}
 
 		// URL for menu page set up by Simplechart_Post_Type module
 		$this->_config['web_app_iframe_src'] = admin_url( '/admin.php?page=' . $this->get_config( 'menu_page_slug' ) . '&noheader' );
 
 		// Filters for app page and JS URLs
+		$this->_config['webpack_public_path'] = apply_filters( 'simplechart_webpack_public_path', $this->_config['webpack_public_path'] );
 		$this->_config['web_app_iframe_src'] = apply_filters( 'simplechart_web_app_iframe_src', $this->_config['web_app_iframe_src'] );
 		$this->_config['web_app_js_url'] = apply_filters( 'simplechart_web_app_js_url', $this->_config['web_app_js_url'] );
 		$this->_config['widget_loader_url'] = apply_filters( 'simplechart_widget_loader_url', $this->_config['widget_loader_url'] );
