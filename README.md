@@ -65,6 +65,10 @@ Use the `simplechart_amp_iframe_placeholder` action to render any markup you nee
 
 Set the `src` attribute of the iframe for creating/editing charts in wp-admin. Defaults to menu page set up by `Simplechart_Post_Type::setup_iframe_page()`
 
+##### simplechart_webpack_public_path
+
+URL of the directory where Webpack assets live. Used for loading chunks and other assets. [More info](https://webpack.github.io/docs/configuration.html#output-publicpath).
+
 ##### simplechart_web_app_js_url
 
 Set the URL of the main JS app for building a chart. Defaults to the local static file.

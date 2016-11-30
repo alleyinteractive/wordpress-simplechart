@@ -26,6 +26,10 @@
 			if ( window.parent && window.parent.__REACT_DEVTOOLS_GLOBAL_HOOK__ ) {
 				window.__REACT_DEVTOOLS_GLOBAL_HOOK__ = window.parent.__REACT_DEVTOOLS_GLOBAL_HOOK__;
 			}
+			/**
+			 * Webpack public path for asset loading
+			 */
+			 window.__simplechart_public_path__ = <?php echo wp_json_encode( Simplechart::instance()->get_config( 'webpack_public_path' ) ); ?>;
 		</script>
 	</head>
 	<body>
