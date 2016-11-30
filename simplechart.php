@@ -4,7 +4,7 @@ Plugin Name: Simplechart
 Plugin URI: https://github.com/alleyinteractive/wordpress-simplechart
 Description: Create and render interactive charts in WordPress using Simplechart
 Author: Drew Machat, Josh Kadis, Alley Interactive
-Version: 0.3.2
+Version: 0.4.1
 Author URI: http://www.alleyinteractive.com/
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -27,7 +27,8 @@ class Simplechart {
 		'webpack_public_path' => null,
 		'widget_loader_url' => null,
 		'menu_page_slug' => 'simplechart_app',
-		'version' => '0.3.2',
+		'version' => '0.4.1',
+		'app_version' => '18a3769',
 	);
 
 	// startup
@@ -177,6 +178,9 @@ class Simplechart {
 		 */
 		$use_localhost = apply_filters( 'simplechart_use_localhost', $use_localhost );
 
+		// Git commit that the app was bundled from
+		$commit_version = $this->get_config( 'app_version' );
+
 		// Set URLs for JS app and widget
 		if ( $use_localhost ) {
 			$this->_config['webpack_public_path'] = 'http://localhost:8080/static/';
@@ -184,8 +188,8 @@ class Simplechart {
 			$this->_config['widget_loader_url'] = $this->_config['webpack_public_path'] . 'widget.js';
 		} else {
 			$this->_config['webpack_public_path'] = $this->get_plugin_url( 'js/app/' );
-			$this->_config['web_app_js_url'] = $this->_config['webpack_public_path'] . 'app/app.18a3769.js';
-			$this->_config['widget_loader_url'] = $this->_config['webpack_public_path'] . 'app/widget.18a3769.js';
+			$this->_config['web_app_js_url'] = $this->get_plugin_url( sprintf( 'js/app/app.%s.js', $commit_version ) );
+			$this->_config['widget_loader_url'] = $this->get_plugin_url( sprintf( 'js/app/widget.%s.js', $commit_version ) );
 		}
 
 		// URL for menu page set up by Simplechart_Post_Type module
