@@ -184,8 +184,8 @@ class Simplechart {
 			$this->_config['widget_loader_url'] = $this->_config['webpack_public_path'] . 'widget.js';
 		} else {
 			$this->_config['webpack_public_path'] = $this->get_plugin_url( 'js/app/' );
-			$this->_config['web_app_js_url'] = $this->_config['webpack_public_path'] . 'app.ca0d317.js';
-			$this->_config['widget_loader_url'] = $this->_config['webpack_public_path'] . 'widget.ca0d317.js';
+			$this->_config['web_app_js_url'] = $this->_config['webpack_public_path'] . 'app/app.18a3769.js';
+			$this->_config['widget_loader_url'] = $this->_config['webpack_public_path'] . 'app/widget.18a3769.js';
 		}
 
 		// URL for menu page set up by Simplechart_Post_Type module
