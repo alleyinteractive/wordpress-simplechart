@@ -105,7 +105,10 @@ function WPSimplechartApp( $ ) {
 
 		switch( messageType ) {
 			case 'appReady':
-				sendData();
+				sendToApp(
+					WPSimplechartBootstrap.isNewChart ? 'bootstrap.new' : 'bootstrap.edit',
+					parseBootstrapData()
+				);
 				break;
 
 			case 'closeApp':
@@ -124,15 +127,15 @@ function WPSimplechartApp( $ ) {
 	/**
 	 * Send previously saved data to child window
 	 */
-	function sendData() {
+	function sendToApp( messageType, messageData ) {
 		var childWindow = document.getElementById( 'simplechart-frame' );
 		if ( ! childWindow || ! childWindow.contentWindow ) {
 			throw new Error( 'Missing iframe#simplechart-frame' );
 		}
 
 		childWindow.contentWindow.postMessage( {
-			data: parseBootstrapData(),
-			messageType: WPSimplechartBootstrap.isNewChart ? 'bootstrap.new' : 'bootstrap.edit'
+			messageType: messageType,
+			data: messageData
 		}, '*' );
 	}
 
@@ -236,6 +239,7 @@ function WPSimplechartApp( $ ) {
 			var publishButton = document.querySelector( '#publishing-action input#publish' );
 			if ( publishButton ) {
 				$( publishButton ).click();
+				sendToApp( 'cms.isSaving', null );
 			}
 		} else {
 			// Only hide the modal if publishing is blocked for some reason,
