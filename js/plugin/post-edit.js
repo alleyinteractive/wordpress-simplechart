@@ -77,23 +77,23 @@ function WPSimplechartApp( $ ) {
 			return;
 		}
 
-		switch( true ) {
-			case 'appReady' === messageType:
+		switch( messageType ) {
+			case 'appReady':
 				sendData();
 				break;
 
-			case 'closeApp' === messageType:
+			case 'closeApp':
 				hideModal();
 				break;
 
-			case 0 === messageType.indexOf( 'save-' ):
-				receiveData( messageType, evt.data.data );
+			case 'saveChart':
+				hideModal();
+				saveChart( evt.data.data );
 				break;
 
 			default:
 				// nothing
 		}
-		handleSpecialCases( messageType, evt.data.data );
 	}
 
 	/**
@@ -133,23 +133,45 @@ function WPSimplechartApp( $ ) {
 	}
 
 	/**
+	 * save individual elements of data from chart editor
+	 */
+	function saveChart( data ) {
+		Object.keys( data ).forEach( function( key ) {
+			saveToField( 'save-' + key, data[key] );
+		} );
+		handleSpecialCases( data );
+		publishPost();
+	}
+
+	/**
 	 * Receive new data from child window and set value of hidden input field
 	 */
-	function receiveData( messageType, data ) {
+	function saveToField( fieldId, data ) {
 		if ( 'string' !== typeof data ) {
 			data = JSON.stringify( data );
 		}
 
-		document.getElementById( messageType ).value = data;
+		document.getElementById( fieldId ).value = data;
 	}
 
 	/**
 	 * Handle any special exceptions when receiving data from app
 	 */
-	function handleSpecialCases( messageType, data ) {
+	function handleSpecialCases( data ) {
 		// Save height to its own custom field
-		if ( 'save-chartOptions' === messageType && data.height ) {
-			document.getElementById( 'save-height' ).value = data.height;
+		document.getElementById( 'save-height' ).value = data.chartOptions.height;
+	}
+
+	/**
+	 * Trigger publishing when data is received for a new post
+	 */
+	function publishPost() {
+		if ( 'post-new.php' === window.location.pathname.split( '/' ).pop() ) {
+			// make sure publish button exists in case user doesn't have publish capability
+			var publishButton = document.getElementById( 'publish' );
+			if ( publishButton ) {
+				jQuery( publishButton ).click();
+			}
 		}
 	}
 
