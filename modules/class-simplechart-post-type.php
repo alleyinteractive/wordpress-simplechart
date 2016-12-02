@@ -15,6 +15,7 @@ class Simplechart_Post_Type {
 		add_filter( 'menu_order', array( $this, 'remove_menu_link' ), 999 );
 		add_filter( 'enter_title_here', array( $this, 'enter_title_here' ) );
 		add_action( 'admin_notices', array( $this, 'admin_notices_placeholder' ) );
+		add_action( 'add_meta_boxes', array( $this, 'action_add_meta_boxes' ) );
 	}
 
 	public function enter_title_here( $text ) {
@@ -28,6 +29,36 @@ class Simplechart_Post_Type {
 		if ( 'simplechart' === get_post_type() ) {
 			echo '<div id="simplechart-admin-notices"></div>';
 		}
+	}
+
+	public function action_add_meta_boxes() {
+		remove_meta_box( 'submitdiv', 'simplechart', 'side' );
+
+		add_meta_box( 'simplechart-save',
+			__( 'Save Chart', 'simplechart' ),
+			array( $this, 'render_submit_button' ),
+			'simplechart',
+			'side',
+			'default'
+		);
+
+		add_meta_box( 'simplechart-preview',
+			__( 'Simplechart', 'simplechart' ),
+			array( $this, 'render_meta_box' ),
+			'simplechart',
+			'normal',
+			'default'
+		);
+	}
+
+	public function render_submit_button() {
+		global $post;
+		if ( in_array( $post->post_status, array( 'pending', 'publish', 'draft' ) ) ) {
+			$button_text = __( 'Update', 'simplechart' );
+		} else {
+			$button_text = __( 'Publish', 'simplechart' );
+		}
+		submit_button( $button_text, 'primary', 'publish', false );
 	}
 
 	public function register_post_type() {

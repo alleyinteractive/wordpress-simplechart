@@ -210,7 +210,6 @@ class Simplechart {
 	 * setup /wp-admin functionality
 	 */
 	private function _admin_setup() {
-		add_action( 'add_meta_boxes', array( $this, 'add_meta_box' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
 		load_plugin_textdomain( 'simplechart', false, dirname( plugin_basename( __FILE__ ) ) . '/langs/' );
 	}
@@ -223,16 +222,6 @@ class Simplechart {
 		wp_register_style( 'simplechart-style', $this->_plugin_dir_url . 'css/style.css' );
 		wp_enqueue_script( 'simplechart-post-edit' );
 		wp_enqueue_style( 'simplechart-style' );
-	}
-
-	public function add_meta_box() {
-		add_meta_box( 'simplechart-preview',
-			__( 'Simplechart', 'simplechart' ),
-			array( $this->post_type, 'render_meta_box' ),
-			'simplechart',
-			'normal',
-			'default'
-		);
 	}
 
 	/**
