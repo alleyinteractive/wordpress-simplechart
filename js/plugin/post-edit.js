@@ -113,7 +113,6 @@ function WPSimplechartApp( $ ) {
 				break;
 
 			case 'saveChart':
-				hideModal();
 				saveChart( evt.data.data );
 				break;
 
@@ -171,6 +170,9 @@ function WPSimplechartApp( $ ) {
 		// auto-publish if we are creating a new chart
 		if ( addingNewChart() ) {
 			publishPost();
+		} else {
+			updateWidget( data );
+			hideModal();
 		}
 	}
 
@@ -195,6 +197,8 @@ function WPSimplechartApp( $ ) {
 		var postTitleField = document.querySelector( 'input[name="post_title"]' );
 		if ( data.chartMetadata.title ) {
 			postTitleField.value = data.chartMetadata.title;
+			// hides placeholder text
+			document.getElementById( 'title-prompt-text' ).className = 'screen-reader-text';
 		} else if ( ! postTitleField.value ) {
 			addNotice( 'error', 'Please enter a WordPress internal identifier.' );
 			setPostShouldPublish( false );
@@ -227,13 +231,41 @@ function WPSimplechartApp( $ ) {
 	 * Trigger publishing when data is received for a new post
 	 */
 	function publishPost() {
-		if ( postShouldPublish() ) {
+		if ( shouldPostPublish() ) {
 			// make extra super sure publish button exists as expected
 			var publishButton = document.querySelector( '#publishing-action input#publish' );
 			if ( publishButton ) {
 				$( publishButton ).click();
 			}
+		} else {
+			// Only hide the modal if publishing is blocked for some reason,
+			// e.g. a missing post_title
+			hideModal();
 		}
+	}
+
+	/**
+	 * Trigger an update on the embedded chart widget
+	 *
+	 * @param obj data Data received from app
+	 */
+	function updateWidget( data ) {
+		var widgetUpdate = new CustomEvent( 'widgetData', {
+			detail: {
+				data: data.chartData,
+				options: data.chartOptions,
+				metadata: data.chartMetadata
+			}
+		} );
+		document.getElementById( getWidgetId() ).dispatchEvent( widgetUpdate );
+	}
+
+	/**
+	 * Get expected widget ID
+	 */
+	function getWidgetId() {
+		var postId = /post=(\d+)/.exec(window.location.search)[1];
+		return 'simplechart-widget-' + postId;
 	}
 
 	// GO GO GO
