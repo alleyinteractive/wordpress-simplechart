@@ -16,6 +16,17 @@ class Simplechart_Post_Type {
 		add_filter( 'enter_title_here', array( $this, 'enter_title_here' ) );
 		add_action( 'admin_notices', array( $this, 'admin_notices_placeholder' ) );
 		add_action( 'add_meta_boxes', array( $this, 'action_add_meta_boxes' ) );
+		add_action( 'wp_print_scripts', array( $this, 'disable_autosave' ) );
+	}
+
+	/**
+	 * Prevent autosaving since it doesn't save any of the chart data need
+	 * and blocks our custom Publish/Update button
+	 */
+	public function disable_autosave() {
+		if ( 'simplechart' === get_post_type() ) {
+			wp_deregister_script( 'autosave' );
+		}
 	}
 
 	public function enter_title_here( $text ) {
