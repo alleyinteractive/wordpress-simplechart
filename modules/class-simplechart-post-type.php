@@ -59,6 +59,7 @@ class Simplechart_Post_Type {
 			$button_text = __( 'Publish', 'simplechart' );
 		}
 		submit_button( $button_text, 'primary', 'publish', false );
+		wp_nonce_field( 'simplechart_save', 'simplechart-nonce' );
 	}
 
 	public function register_post_type() {

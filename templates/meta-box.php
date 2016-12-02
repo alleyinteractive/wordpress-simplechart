@@ -70,12 +70,6 @@ if ( 'simplechart' === $screen->id && 'add' === $screen->action ) {
 <?php endif; ?>
 
 <!-- hidden form fields for saving data received from Simplechart app -->
-<input
-	type="hidden"
-	id="simplechart-nonce"
-	name="simplechart-nonce"
-	value="<?php echo esc_attr( wp_create_nonce( 'simplechart_save' ) ); ?>"
-/>
 <?php foreach ( Simplechart::instance()->save->meta_field_names as $field ) : ?>
 	<input
 		id="save-<?php echo esc_attr( $field ); ?>"
