@@ -13,6 +13,25 @@ function WPSimplechartApp( $ ) {
 		closeModalMessage = '',
 		savedChart = false;
 
+	// do not update directly!
+	var __postShouldPublish = true;
+
+	function setPostShouldPublish( newValue ) {
+		__postShouldPublish = newValue;
+	}
+
+	function shouldPostPublish() {
+		// use !! to always return boolean
+		return !! __postShouldPublish;
+	}
+
+	/**
+	 * True if adding a new chart; false if editing a chart
+	 */
+	function addingNewChart() {
+		return 'post-new.php' === window.location.pathname.split( '/' ).pop();
+	}
+
 	/**
 	 * Set scope var values and build modal element
 	 */
@@ -21,18 +40,25 @@ function WPSimplechartApp( $ ) {
 		confirmNoDataMessage = window.WPSimplechartContainer.confirmNoDataMessage.toString();
 		closeModalMessage = window.WPSimplechartContainer.closeModalMessage.toString();
 		window.addEventListener( 'message', onReceiveMessage );
-		renderOpenModal();
+		renderModal();
 	}
 
 	/**
 	 * Renders the app iframe modal in its open state
 	 */
-	function renderOpenModal() {
+	function renderModal() {
 		// create modal elements and append to <body>
 		modalElements.container = modalElements.container.replace( '{{iframeSrc}}', appUrl);
 		modalElements.container = modalElements.container.replace( '{{closeModal}}', closeModalMessage);
 		$( 'body' ).append( modalElements.container + modalElements.backdrop );
+
+		// Listen for click to open modal
 		$( '#simplechart-launch' ).click( openModal );
+
+		// Open modal if creating new chart
+		if ( addingNewChart() ) {
+			openModal();
+		}
 	}
 
 	/**
@@ -139,8 +165,13 @@ function WPSimplechartApp( $ ) {
 		Object.keys( data ).forEach( function( key ) {
 			saveToField( 'save-' + key, data[key] );
 		} );
+
 		handleSpecialCases( data );
-		publishPost();
+
+		// auto-publish if we are creating a new chart
+		if ( addingNewChart() ) {
+			publishPost();
+		}
 	}
 
 	/**
@@ -150,7 +181,6 @@ function WPSimplechartApp( $ ) {
 		if ( 'string' !== typeof data ) {
 			data = JSON.stringify( data );
 		}
-
 		document.getElementById( fieldId ).value = data;
 	}
 
@@ -160,17 +190,48 @@ function WPSimplechartApp( $ ) {
 	function handleSpecialCases( data ) {
 		// Save height to its own custom field
 		document.getElementById( 'save-height' ).value = data.chartOptions.height;
+
+		// Update post_title field if needed
+		var postTitleField = document.querySelector( 'input[name="post_title"]' );
+		if ( data.chartMetadata.title ) {
+			postTitleField.value = data.chartMetadata.title;
+		} else if ( ! postTitleField.value ) {
+			addNotice( 'error', 'Please enter a WordPress internal identifier.' );
+			setPostShouldPublish( false );
+		}
+	}
+
+	/**
+	 * Add a notification in side the container created during the admin_notices hook
+	 * https://codex.wordpress.org/Plugin_API/Action_Reference/admin_notices
+	 *
+	 * @param string noticeType Should notice-error, notice-warning, notice-success, or notice-info
+	 * @param string message Text-only, no HTML
+	 * @return none
+	 */
+	function addNotice( noticeType, message ) {
+		var container = document.getElementById( 'simplechart-admin-notices' );
+		if ( ! container ) {
+			return;
+		}
+
+		var notice = document.createElement( 'div' );
+		notice.className = 'notice is-dismissable notice-' + noticeType;
+		var content = document.createElement( 'p' );
+		content.innerText = message;
+		notice.appendChild( content );
+		container.appendChild( notice );
 	}
 
 	/**
 	 * Trigger publishing when data is received for a new post
 	 */
 	function publishPost() {
-		if ( 'post-new.php' === window.location.pathname.split( '/' ).pop() ) {
+		if ( postShouldPublish() ) {
 			// make sure publish button exists in case user doesn't have publish capability
 			var publishButton = document.getElementById( 'publish' );
 			if ( publishButton ) {
-				jQuery( publishButton ).click();
+				$( publishButton ).click();
 			}
 		}
 	}

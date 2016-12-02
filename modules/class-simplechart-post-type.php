@@ -13,6 +13,21 @@ class Simplechart_Post_Type {
 		add_action( 'admin_menu', array( $this, 'setup_iframe_page' ) );
 		add_filter( 'custom_menu_order', '__return_true' );
 		add_filter( 'menu_order', array( $this, 'remove_menu_link' ), 999 );
+		add_filter( 'enter_title_here', array( $this, 'enter_title_here' ) );
+		add_action( 'admin_notices', array( $this, 'admin_notices_placeholder' ) );
+	}
+
+	public function enter_title_here( $text ) {
+		if ( 'simplechart' === get_post_type() ) {
+			$text = __( 'Enter WordPress internal identifier', 'simplechart' );
+		}
+		return $text;
+	}
+
+	public function admin_notices_placeholder() {
+		if ( 'simplechart' === get_post_type() ) {
+			echo '<div id="simplechart-admin-notices"></div>';
+		}
 	}
 
 	public function register_post_type() {

@@ -6,7 +6,8 @@
   bottom: 30px;
   z-index: 160000;
   background: white;
-  overflow-y: scroll; }
+  overflow-y: scroll;
+  display: none; }
   #simplechart-modal #simplechart-close {
     position: absolute;
     text-decoration: none;
@@ -28,6 +29,12 @@
   min-height: 360px;
   background: #000;
   opacity: .7;
-  z-index: 159900; }
+  z-index: 159900;
+  display: none; }
+
+.simplechart-preview-heading {
+  padding-bottom: 10px;
+  border-bottom: 1px solid black;
+  margin-bottom: 10px; }
 
 /*# sourceMappingURL=style.css.map */
