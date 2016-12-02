@@ -228,8 +228,8 @@ function WPSimplechartApp( $ ) {
 	 */
 	function publishPost() {
 		if ( postShouldPublish() ) {
-			// make sure publish button exists in case user doesn't have publish capability
-			var publishButton = document.getElementById( 'publish' );
+			// make extra super sure publish button exists as expected
+			var publishButton = document.querySelector( '#publishing-action input#publish' );
 			if ( publishButton ) {
 				$( publishButton ).click();
 			}
