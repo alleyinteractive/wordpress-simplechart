@@ -13,6 +13,25 @@ function WPSimplechartApp( $ ) {
 		closeModalMessage = '',
 		savedChart = false;
 
+	// do not update directly!
+	var __postShouldPublish = true;
+
+	function setPostShouldPublish( newValue ) {
+		__postShouldPublish = newValue;
+	}
+
+	function shouldPostPublish() {
+		// use !! to always return boolean
+		return !! __postShouldPublish;
+	}
+
+	/**
+	 * True if adding a new chart; false if editing a chart
+	 */
+	function addingNewChart() {
+		return 'post-new.php' === window.location.pathname.split( '/' ).pop();
+	}
+
 	/**
 	 * Set scope var values and build modal element
 	 */
@@ -21,18 +40,25 @@ function WPSimplechartApp( $ ) {
 		confirmNoDataMessage = window.WPSimplechartContainer.confirmNoDataMessage.toString();
 		closeModalMessage = window.WPSimplechartContainer.closeModalMessage.toString();
 		window.addEventListener( 'message', onReceiveMessage );
-		renderOpenModal();
+		renderModal();
 	}
 
 	/**
 	 * Renders the app iframe modal in its open state
 	 */
-	function renderOpenModal() {
+	function renderModal() {
 		// create modal elements and append to <body>
 		modalElements.container = modalElements.container.replace( '{{iframeSrc}}', appUrl);
 		modalElements.container = modalElements.container.replace( '{{closeModal}}', closeModalMessage);
 		$( 'body' ).append( modalElements.container + modalElements.backdrop );
+
+		// Listen for click to open modal
 		$( '#simplechart-launch' ).click( openModal );
+
+		// Open modal if creating new chart
+		if ( addingNewChart() ) {
+			openModal();
+		}
 	}
 
 	/**
@@ -77,37 +103,39 @@ function WPSimplechartApp( $ ) {
 			return;
 		}
 
-		switch( true ) {
-			case 'appReady' === messageType:
-				sendData();
+		switch( messageType ) {
+			case 'appReady':
+				sendToApp(
+					WPSimplechartBootstrap.isNewChart ? 'bootstrap.new' : 'bootstrap.edit',
+					parseBootstrapData()
+				);
 				break;
 
-			case 'closeApp' === messageType:
+			case 'closeApp':
 				hideModal();
 				break;
 
-			case 0 === messageType.indexOf( 'save-' ):
-				receiveData( messageType, evt.data.data );
+			case 'saveChart':
+				saveChart( evt.data.data );
 				break;
 
 			default:
 				// nothing
 		}
-		handleSpecialCases( messageType, evt.data.data );
 	}
 
 	/**
 	 * Send previously saved data to child window
 	 */
-	function sendData() {
+	function sendToApp( messageType, messageData ) {
 		var childWindow = document.getElementById( 'simplechart-frame' );
 		if ( ! childWindow || ! childWindow.contentWindow ) {
 			throw new Error( 'Missing iframe#simplechart-frame' );
 		}
 
 		childWindow.contentWindow.postMessage( {
-			data: parseBootstrapData(),
-			messageType: WPSimplechartBootstrap.isNewChart ? 'bootstrap.new' : 'bootstrap.edit'
+			messageType: messageType,
+			data: messageData
 		}, '*' );
 	}
 
@@ -133,24 +161,115 @@ function WPSimplechartApp( $ ) {
 	}
 
 	/**
+	 * save individual elements of data from chart editor
+	 */
+	function saveChart( data ) {
+		Object.keys( data ).forEach( function( key ) {
+			saveToField( 'save-' + key, data[key] );
+		} );
+
+		handleSpecialCases( data );
+
+		// auto-publish if we are creating a new chart
+		if ( addingNewChart() ) {
+			publishPost();
+		} else {
+			updateWidget( data );
+			hideModal();
+		}
+	}
+
+	/**
 	 * Receive new data from child window and set value of hidden input field
 	 */
-	function receiveData( messageType, data ) {
+	function saveToField( fieldId, data ) {
 		if ( 'string' !== typeof data ) {
 			data = JSON.stringify( data );
 		}
-
-		document.getElementById( messageType ).value = data;
+		document.getElementById( fieldId ).value = data;
 	}
 
 	/**
 	 * Handle any special exceptions when receiving data from app
 	 */
-	function handleSpecialCases( messageType, data ) {
+	function handleSpecialCases( data ) {
 		// Save height to its own custom field
-		if ( 'save-chartOptions' === messageType && data.height ) {
-			document.getElementById( 'save-height' ).value = data.height;
+		document.getElementById( 'save-height' ).value = data.chartOptions.height;
+
+		// Update post_title field if needed
+		var postTitleField = document.querySelector( 'input[name="post_title"]' );
+		if ( data.chartMetadata.title ) {
+			postTitleField.value = data.chartMetadata.title;
+			// hides placeholder text
+			document.getElementById( 'title-prompt-text' ).className = 'screen-reader-text';
+		} else if ( ! postTitleField.value ) {
+			addNotice( 'error', 'Please enter a WordPress internal identifier.' );
+			setPostShouldPublish( false );
 		}
+	}
+
+	/**
+	 * Add a notification in side the container created during the admin_notices hook
+	 * https://codex.wordpress.org/Plugin_API/Action_Reference/admin_notices
+	 *
+	 * @param string noticeType Should notice-error, notice-warning, notice-success, or notice-info
+	 * @param string message Text-only, no HTML
+	 * @return none
+	 */
+	function addNotice( noticeType, message ) {
+		var container = document.getElementById( 'simplechart-admin-notices' );
+		if ( ! container ) {
+			return;
+		}
+
+		var notice = document.createElement( 'div' );
+		notice.className = 'notice is-dismissable notice-' + noticeType;
+		var content = document.createElement( 'p' );
+		content.innerText = message;
+		notice.appendChild( content );
+		container.appendChild( notice );
+	}
+
+	/**
+	 * Trigger publishing when data is received for a new post
+	 */
+	function publishPost() {
+		if ( shouldPostPublish() ) {
+			// make extra super sure publish button exists as expected
+			var publishButton = document.querySelector( '#publishing-action input#publish' );
+			if ( publishButton ) {
+				$( publishButton ).click();
+				sendToApp( 'cms.isSaving', null );
+			}
+		} else {
+			// Only hide the modal if publishing is blocked for some reason,
+			// e.g. a missing post_title
+			hideModal();
+		}
+	}
+
+	/**
+	 * Trigger an update on the embedded chart widget
+	 *
+	 * @param obj data Data received from app
+	 */
+	function updateWidget( data ) {
+		var widgetUpdate = new CustomEvent( 'widgetData', {
+			detail: {
+				data: data.chartData,
+				options: data.chartOptions,
+				metadata: data.chartMetadata
+			}
+		} );
+		document.getElementById( getWidgetId() ).dispatchEvent( widgetUpdate );
+	}
+
+	/**
+	 * Get expected widget ID
+	 */
+	function getWidgetId() {
+		var postId = /post=(\d+)/.exec(window.location.search)[1];
+		return 'simplechart-widget-' + postId;
 	}
 
 	// GO GO GO

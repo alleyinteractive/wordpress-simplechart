@@ -63,13 +63,20 @@ if ( 'simplechart' === $screen->id && 'add' === $screen->action ) {
 		confirmNoDataMessage:  <?php echo wp_json_encode( __( 'Confirming this message will proceed without saving changes. If you have made changes that you wish to save, cancel this message, proceed to the final step, and click the Save Chart button.', 'simplechart' ) ); ?>
 	}
 </script>
-<input
-	type="hidden"
-	id="simplechart-nonce"
-	name="simplechart-nonce"
-	value="<?php echo esc_attr( wp_create_nonce( 'simplechart_save' ) ); ?>"
-/>
-<?php foreach ( Simplechart::instance()->save->meta_field_names as $field ) :?>
-	<input type="hidden" id="save-<?php echo esc_attr( $field ); ?>" name="save-<?php echo esc_attr( $field ); ?>" value="" />
+
+<?php if ( ! $creating_chart ) : ?>
+	<h4 class="simplechart-preview-heading"><?php esc_html_e( 'Preview Embedded Chart', 'simplechart' ); ?></h4>
+	<?php simplechart_render_chart( get_the_ID() ); ?>
+<?php endif; ?>
+
+<!-- hidden form fields for saving data received from Simplechart app -->
+<?php foreach ( Simplechart::instance()->save->meta_field_names as $field ) : ?>
+	<input
+		id="save-<?php echo esc_attr( $field ); ?>"
+		name="save-<?php echo esc_attr( $field ); ?>"
+		type="hidden"
+		value=""
+	/>
 <?php endforeach; ?>
 <input type="hidden" id="save-height" name="save-height" value="" />
+<!-- /Simplechart form fields -->

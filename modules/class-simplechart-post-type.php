@@ -10,16 +10,67 @@ class Simplechart_Post_Type {
 
 	public function __construct() {
 		add_action( 'init', array( $this, 'register_post_type' ) );
-		add_action( 'after_setup_theme', array( $this, 'support_thumbnails' ) );
 		add_action( 'admin_menu', array( $this, 'setup_iframe_page' ) );
 		add_filter( 'custom_menu_order', '__return_true' );
 		add_filter( 'menu_order', array( $this, 'remove_menu_link' ), 999 );
+		add_filter( 'enter_title_here', array( $this, 'enter_title_here' ) );
+		add_action( 'admin_notices', array( $this, 'admin_notices_placeholder' ) );
+		add_action( 'add_meta_boxes', array( $this, 'action_add_meta_boxes' ) );
+		add_action( 'wp_print_scripts', array( $this, 'disable_autosave' ) );
 	}
 
-	public function support_thumbnails() {
-		if ( ! current_theme_supports( 'post-thumbnails' ) ) {
-			add_theme_support( 'post-thumbnails', array( 'simplechart' ) );
+	/**
+	 * Prevent autosaving since it doesn't save any of the chart data need
+	 * and blocks our custom Publish/Update button
+	 */
+	public function disable_autosave() {
+		if ( 'simplechart' === get_post_type() ) {
+			wp_deregister_script( 'autosave' );
 		}
+	}
+
+	public function enter_title_here( $text ) {
+		if ( 'simplechart' === get_post_type() ) {
+			$text = __( 'Enter WordPress internal identifier', 'simplechart' );
+		}
+		return $text;
+	}
+
+	public function admin_notices_placeholder() {
+		if ( 'simplechart' === get_post_type() ) {
+			echo '<div id="simplechart-admin-notices"></div>';
+		}
+	}
+
+	public function action_add_meta_boxes() {
+		remove_meta_box( 'submitdiv', 'simplechart', 'side' );
+
+		add_meta_box( 'simplechart-save',
+			__( 'Save Chart', 'simplechart' ),
+			array( $this, 'render_submit_button' ),
+			'simplechart',
+			'side',
+			'default'
+		);
+
+		add_meta_box( 'simplechart-preview',
+			__( 'Simplechart', 'simplechart' ),
+			array( $this, 'render_meta_box' ),
+			'simplechart',
+			'normal',
+			'default'
+		);
+	}
+
+	public function render_submit_button() {
+		global $post;
+		if ( in_array( $post->post_status, array( 'pending', 'publish', 'draft' ) ) ) {
+			$button_text = __( 'Update', 'simplechart' );
+		} else {
+			$button_text = __( 'Publish', 'simplechart' );
+		}
+		submit_button( $button_text, 'primary', 'publish', false );
+		wp_nonce_field( 'simplechart_save', 'simplechart-nonce' );
 	}
 
 	public function register_post_type() {
@@ -55,7 +106,7 @@ class Simplechart_Post_Type {
 			'has_archive' => false,
 
 			'menu_icon' => 'dashicons-chart-pie',
-			'supports' => array( 'title', 'thumbnail' ),
+			'supports' => array( 'title' ),
 		);
 
 		register_post_type( 'simplechart', $args );
