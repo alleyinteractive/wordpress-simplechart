@@ -236,10 +236,13 @@ function WPSimplechartApp( $ ) {
 	function publishPost() {
 		if ( shouldPostPublish() ) {
 			// make extra super sure publish button exists as expected
-			var publishButton = document.querySelector( '#publishing-action input#publish' );
+			var publishButton = document.querySelector( '#simplechart-save input#publish' );
 			if ( publishButton ) {
 				$( publishButton ).click();
 				sendToApp( 'cms.isSaving', null );
+			} else {
+				hideModal();
+				addNotice( 'success', 'Your chart is ready! Click Publish to continue.' );
 			}
 		} else {
 			// Only hide the modal if publishing is blocked for some reason,
