@@ -12,6 +12,7 @@ When the post is rendered on the front end, this same data and settings/options 
 
 1. Install and activate [Media Explorer](https://github.com/Automattic/media-explorer)
   1. See [`simplechart_remove_mexp_default_services`](#simplechart_remove_mexp_default_services) hook
+  1. The two plugins (MEXP Keyring Credentials and MEXP oAuth Credentials) that are bundled with Media Explorer are not required to use the Simplechart plugin.
 1. Install and activate the Simplechart plugin
 	1. See [theme setup](https://github.com/alleyinteractive/wordpress-simplechart/wiki/Theme-Setup) tips
 
