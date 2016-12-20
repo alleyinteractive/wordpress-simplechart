@@ -14,6 +14,10 @@ class Simplechart_Plugin_Versions {
 	}
 
 	public function simplechart_check_for_new_version() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
 		if ( false === ( $value = get_transient( 'simplechart_plugin_version_remote' ) ) ) {
 			$this->update_simplechart_remote_version();
 			return;
