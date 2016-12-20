@@ -17,10 +17,9 @@ class Simplechart_Plugin_Versions {
 		if ( false === ( $value = get_transient( 'simplechart_plugin_version_remote' ) ) ) {
 			$this->update_simplechart_remote_version();
 			return;
-		} else {
-			$simplechart_remote_version = $value;
 		}
-		if ( version_compare( Simplechart::instance()->get_config( 'version' ), $simplechart_remote_version, '<' ) ) {
+
+		if ( version_compare( Simplechart::instance()->get_config( 'version' ), $value, '<' ) ) {
 			add_action( 'admin_notices', array( $this, 'show_simplechart_version_nag' ) );
 		}
 	}
@@ -37,7 +36,7 @@ class Simplechart_Plugin_Versions {
 
 	public function update_simplechart_remote_version() {
 		if ( function_exists( 'vip_safe_wp_remote_get' ) ) {
-			$response = wp_remote_get( $this->_simplechart_releases_url );
+			$response = vip_safe_wp_remote_get( $this->_simplechart_releases_url );
 		} else {
 			$response = wp_remote_get( $this->_simplechart_releases_url );
 		}
