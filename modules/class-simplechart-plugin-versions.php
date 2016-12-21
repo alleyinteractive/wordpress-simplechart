@@ -49,7 +49,7 @@ class Simplechart_Plugin_Versions {
 	}
 
 	public function simplechart_extend_filter_update_plugins( $update_plugins ) {
-		if ( ! is_object( $update_plugins ) ){
+		if ( ! is_object( $update_plugins ) ) {
 			return $update_plugins;
 		}
 
@@ -61,7 +61,7 @@ class Simplechart_Plugin_Versions {
 			'slug'         => 'wordpress-simplechart',
 			'new_version'  => $this->_latest_plugin_version,
 			'url'          => $this->_simplechart_url,
-			'package'      => $this->_latest_plugin_zip_url
+			'package'      => $this->_latest_plugin_zip_url,
 		);
 		return $update_plugins;
 	}
@@ -80,9 +80,9 @@ class Simplechart_Plugin_Versions {
 			'external'   => $this->_simplechart_url,
 			'homepage'   => $this->_simplechart_url,
 			'slug'       => 'wordpress-simplechart',
-			'sections'   => array (
+			'sections'   => array(
 				'changelog' => $description,
-			)
+			),
 		);
 		return $fake_response;
 	}
