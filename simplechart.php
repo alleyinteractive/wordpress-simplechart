@@ -221,11 +221,9 @@ class Simplechart {
 		if ( ! is_admin() ) {
 			return;
 		}
-		wp_register_script( 'simplechart-update-nag', $this->get_plugin_url( 'js/plugin/update-nag.js' ), array( 'jquery' ) );
 		wp_register_script( 'simplechart-post-edit', $this->get_plugin_url( 'js/plugin/post-edit.js' ), array( 'jquery', 'underscore' ) );
 		wp_register_style( 'simplechart-style', $this->_plugin_dir_url . 'css/style.css' );
 		wp_enqueue_script( 'simplechart-post-edit' );
-		wp_enqueue_script( 'simplechart-update-nag' );
 		wp_enqueue_style( 'simplechart-style' );
 	}
 
