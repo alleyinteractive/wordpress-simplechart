@@ -14,6 +14,7 @@ class Simplechart_Plugin_Versions {
 	private $_latest_plugin_zip_url;
 	private $_latest_plugin_update_name;
 	private $_latest_plugin_update_description;
+	private $_latest_plugin_last_updated;
 
 	public function __construct() {
 		add_action( 'admin_init', array( $this, 'simplechart_check_for_new_version' ) );
@@ -42,6 +43,8 @@ class Simplechart_Plugin_Versions {
 			$this->_latest_plugin_update_description = __( 'See more on Github.', 'simplechart' );
 		}
 
+		$this->_latest_plugin_last_updated = get_transient( 'simplechart_plugin_update_last_updated' );
+
 		if ( version_compare( Simplechart::instance()->get_config( 'version' ), $this->_latest_plugin_version, '<' ) ) {
 			add_filter( 'site_transient_update_plugins', array( $this, 'simplechart_extend_filter_update_plugins' ) );
 			add_filter( 'transient_update_plugins', array( $this, 'simplechart_extend_filter_update_plugins' ) );
@@ -61,7 +64,6 @@ class Simplechart_Plugin_Versions {
 			'slug'         => 'wordpress-simplechart',
 			'new_version'  => $this->_latest_plugin_version,
 			'url'          => $this->_simplechart_url,
-			'package'      => $this->_latest_plugin_zip_url,
 		);
 		return $update_plugins;
 	}
@@ -70,18 +72,33 @@ class Simplechart_Plugin_Versions {
 		if ( 'plugin-information' !== $action && 'wordpress-simplechart' !== $args->slug ) {
 			return $res;
 		}
-		$description = '<h1>'
+		$copy_generated = sprintf(
+			__( 'Ask an administrator to replace your existing Simplechart folder with <a href="%1$s">the ZIP of %2$s via Github</a>', 'simplechart' ),
+			esc_url( $this->_latest_plugin_zip_url ),
+			$this->_latest_plugin_version
+		);
+		$description =
+			'<small>'
+			. $copy_generated
+			. '</small>'
+			. '<h1>'
 			. $this->_latest_plugin_update_name
 			. '</h1>'
 			. $this->_latest_plugin_update_description;
 
 		$fake_response = (object) array(
-			'name'       => __( 'Simplechart', 'simplechart' ),
-			'external'   => $this->_simplechart_url,
-			'homepage'   => $this->_simplechart_url,
-			'slug'       => 'wordpress-simplechart',
-			'sections'   => array(
-				'changelog' => $description,
+			'name'         => __( 'Simplechart', 'simplechart' ),
+			'banners'      => array(
+				'high'       => null,
+				'low'        => null,
+			),
+			'external'     => $this->_simplechart_url,
+			'homepage'     => $this->_simplechart_url,
+			'slug'         => 'wordpress-simplechart',
+			'version'      => $this->_latest_plugin_version,
+			'last_updated' => $this->_latest_plugin_last_updated,
+			'sections'     => array(
+				'changelog'  => $description,
 			),
 		);
 		return $fake_response;
@@ -107,7 +124,7 @@ class Simplechart_Plugin_Versions {
 			set_transient( 'simplechart_plugin_version_remote', $json[0]['tag_name'], DAY_IN_SECONDS );
 			set_transient( 'simplechart_plugin_zip_url_remote', $json[0]['zipball_url'], DAY_IN_SECONDS );
 			set_transient( 'simplechart_plugin_update_name', $json[0]['name'], DAY_IN_SECONDS );
-
+			set_transient( 'simplechart_plugin_update_last_updated', $json[0]['published_at'], DAY_IN_SECONDS );
 			set_transient( 'simplechart_plugin_update_body', $json[0]['body'], DAY_IN_SECONDS );
 		}
 	}
