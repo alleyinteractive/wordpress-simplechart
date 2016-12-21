@@ -227,7 +227,7 @@ class Simplechart {
 		wp_enqueue_script( 'simplechart-post-edit' );
 		wp_enqueue_style( 'simplechart-style' );
 		wp_enqueue_script( 'simplechart-plugin' );
-}
+	}
 
 	/**
 	 * Get URL of plugin directory, with optional path appended
