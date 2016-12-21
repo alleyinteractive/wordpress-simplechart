@@ -73,7 +73,7 @@ class Simplechart_Plugin_Versions {
 			return $res;
 		}
 		$copy_generated = sprintf(
-			__( 'Ask an administrator to replace your existing Simplechart folder with <a href="%1$s">the ZIP of %2$s via Github</a>', 'simplechart' ),
+			__( 'Ask an administrator to replace your existing Simplechart plugin directory with <a href="%1$s">the ZIP of %2$s via Github</a>', 'simplechart' ),
 			esc_url( $this->_latest_plugin_zip_url ),
 			$this->_latest_plugin_version
 		);
