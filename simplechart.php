@@ -222,9 +222,9 @@ class Simplechart {
 		if ( ! is_admin() ) {
 			return;
 		}
-		wp_register_script( 'simplechart-plugin', $this->get_plugin_url( 'js/plugin/plugin.js' ), array( 'jquery' ) );
-		wp_register_script( 'simplechart-post-edit', $this->get_plugin_url( 'js/plugin/post-edit.js' ), array( 'jquery', 'underscore' ) );
-		wp_register_style( 'simplechart-style', $this->_plugin_dir_url . 'css/style.css' );
+		wp_register_script( 'simplechart-plugin', $this->get_plugin_url( 'js/plugin/plugin.js' ), array( 'jquery' ), $this->_config['version'] );
+		wp_register_script( 'simplechart-post-edit', $this->get_plugin_url( 'js/plugin/post-edit.js' ), array( 'jquery', 'underscore' ), $this->_config['version'] );
+		wp_register_style( 'simplechart-style', $this->_plugin_dir_url . 'css/style.css', array(), $this->_config['version'] );
 		wp_enqueue_script( 'simplechart-post-edit' );
 		wp_enqueue_style( 'simplechart-style' );
 		wp_enqueue_script( 'simplechart-plugin' );
