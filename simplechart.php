@@ -155,6 +155,7 @@ class Simplechart {
 		require_once( $this->_plugin_dir_path . 'modules/class-simplechart-request-handler.php' );
 		$this->request_handler = new Simplechart_Request_Handler;
 
+		// Handles checking for updates on Github
 		require_once( $this->_plugin_dir_path . 'modules/class-simplechart-plugin-versions.php' );
 		$this->plugin_versions = new Simplechart_Plugin_Versions;
 

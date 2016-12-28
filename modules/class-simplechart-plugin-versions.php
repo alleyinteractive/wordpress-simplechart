@@ -21,6 +21,9 @@ class Simplechart_Plugin_Versions {
 		add_filter( 'plugins_api_result', array( $this, 'simplechart_mock_plugins_api' ), 10, 3 );
 	}
 
+	/**
+	 * Compares remote version transient to current version checking for update
+	 */
 	public function simplechart_check_for_new_version() {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			return;
@@ -51,6 +54,10 @@ class Simplechart_Plugin_Versions {
 		}
 	}
 
+	/**
+	 * Add Simplechart to the plugin updates transient when appropraite
+	 * @param object          $update_plugins Contains plugin update info
+	 */
 	public function simplechart_extend_filter_update_plugins( $update_plugins ) {
 		if ( ! is_object( $update_plugins ) ) {
 			return $update_plugins;
@@ -68,6 +75,12 @@ class Simplechart_Plugin_Versions {
 		return $update_plugins;
 	}
 
+	/**
+	 * Intercept the plugins API result and return Simplechart remote information
+	 * @param object|WP_Error $res    Response object or WP_Error.
+	 * @param string          $action The type of information being requested from the Plugin Install API.
+	 * @param object          $args   Plugin API arguments.
+	 */
 	public function simplechart_mock_plugins_api( $res, $action, $args ) {
 		if ( 'plugin-information' !== $action && 'wordpress-simplechart' !== $args->slug ) {
 			return $res;
@@ -86,7 +99,7 @@ class Simplechart_Plugin_Versions {
 			. '</h1>'
 			. $this->_latest_plugin_update_description;
 
-		$fake_response = (object) array(
+		return (object) array(
 			'name'         => __( 'Simplechart', 'simplechart' ),
 			'banners'      => array(
 				'high'       => null,
@@ -101,10 +114,11 @@ class Simplechart_Plugin_Versions {
 				'changelog'  => $description,
 			),
 		);
-		return $fake_response;
 	}
 
-
+	/**
+	 * Update the transients for Simple Chart remote version
+	 */
 	public function update_simplechart_remote_version() {
 		if ( function_exists( 'vip_safe_wp_remote_get' ) ) {
 			$response = vip_safe_wp_remote_get( $this->_simplechart_releases_url );
