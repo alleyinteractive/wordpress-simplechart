@@ -50,7 +50,6 @@ class Simplechart_Plugin_Versions {
 
 		if ( version_compare( Simplechart::instance()->get_config( 'version' ), $this->_latest_plugin_version, '<' ) ) {
 			add_filter( 'site_transient_update_plugins', array( $this, 'simplechart_extend_filter_update_plugins' ) );
-			add_filter( 'transient_update_plugins', array( $this, 'simplechart_extend_filter_update_plugins' ) );
 		}
 	}
 
