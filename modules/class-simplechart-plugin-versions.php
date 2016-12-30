@@ -103,11 +103,13 @@ class Simplechart_Plugin_Versions {
 			$update_plugins->response = array();
 		}
 
-		return $update_plugins->response['wordpress-simplechart/simplechart.php'] = (object) array(
+		$update_plugins->response['wordpress-simplechart/simplechart.php'] = (object) array(
 			'slug'         => 'wordpress-simplechart',
 			'new_version'  => $this->_latest_plugin_version,
 			'url'          => $this->_simplechart_repository_url,
 		);
+
+		return $update_plugins;
 	}
 
 	/**
@@ -164,7 +166,7 @@ class Simplechart_Plugin_Versions {
 			return;
 		}
 
-		if( 200 !== wp_remote_retrieve_response_code( $response ) ) {
+		if ( 200 !== wp_remote_retrieve_response_code( $response ) ) {
 			return;
 		}
 
