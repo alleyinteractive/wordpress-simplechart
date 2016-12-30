@@ -50,7 +50,11 @@ class Simplechart_Plugin_Versions {
 	 * @return boolean True/false whether a Simplechart update is avaialble
 	 */
 	private function update_available() {
-		return version_compare( Simplechart::instance()->get_config( 'version' ), $this->_latest_plugin_version, '<' );
+		return version_compare(
+			Simplechart::instance()->get_config( 'version' ),
+			$this->_latest_plugin_version,
+			'<'
+		);
 	}
 
 	/**
