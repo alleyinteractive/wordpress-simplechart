@@ -42,7 +42,7 @@ class Simplechart_Plugin_Versions {
 	private $_latest_plugin_last_updated;
 
 	public function __construct() {
-		add_action( 'admin_init', array( $this, 'check_for_new_version' ) );
+		add_action( 'init', array( $this, 'check_for_new_version' ), 1 );
 		add_filter( 'plugins_api_result', array( $this, 'mock_plugins_api' ), 10, 3 );
 	}
 
@@ -61,7 +61,7 @@ class Simplechart_Plugin_Versions {
 	 * Compares remote version transient to current version checking for update
 	 */
 	public function check_for_new_version() {
-		if ( ! current_user_can( 'manage_options' ) ) {
+		if ( ! current_user_can( 'update_plugins' ) ) {
 			return;
 		}
 
