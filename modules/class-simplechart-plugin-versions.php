@@ -191,7 +191,7 @@ class Simplechart_Plugin_Versions {
 			'update_body' => 'body',
 		);
 
-		foreach( $transients as $wp_key => $gh_key ) {
+		foreach ( $transients as $wp_key => $gh_key ) {
 			if ( ! empty( $json[0][ $gh_key ] ) ) {
 				set_transient( 'simplechart_plugin_' . $wp_key, $json[0][ $gh_key ], DAY_IN_SECONDS );
 			}
