@@ -12,7 +12,7 @@ class Simplechart_Plugin_Versions {
 	private $_simplechart_releases_url = 'https://api.github.com/repos/alleyinteractive/wordpress-simplechart/releases';
 
 	/**
-	 * @var string URL for Sumplechart repo
+	 * @var string URL for Simplechart repo
 	 */
 	private $_simplechart_repository_url = 'https://github.com/alleyinteractive/wordpress-simplechart/';
 
@@ -59,9 +59,10 @@ class Simplechart_Plugin_Versions {
 
 	/**
 	 * Compares remote version transient to current version checking for update
+	 * Called on 'init' instead of 'admin_init' because the check needs to run before 'admin_menu'
 	 */
 	public function check_for_new_version() {
-		if ( ! current_user_can( 'update_plugins' ) ) {
+		if ( ! current_user_can( 'update_plugins' ) || ! is_admin() ) {
 			return;
 		}
 
@@ -172,7 +173,7 @@ class Simplechart_Plugin_Versions {
 
 		$body = wp_remote_retrieve_body( $response );
 
-		if ( is_wp_error( $response ) || ! isset( $response['body'] ) ) {
+		if ( empty( $body ) ) {
 			return;
 		}
 
@@ -182,12 +183,18 @@ class Simplechart_Plugin_Versions {
 			return;
 		}
 
-		if ( ! empty( $json[0]['tag_name'] ) ) {
-			set_transient( 'simplechart_plugin_version_remote', $json[0]['tag_name'], DAY_IN_SECONDS );
-			set_transient( 'simplechart_plugin_zip_url_remote', $json[0]['zipball_url'], DAY_IN_SECONDS );
-			set_transient( 'simplechart_plugin_update_name', $json[0]['name'], DAY_IN_SECONDS );
-			set_transient( 'simplechart_plugin_update_last_updated', $json[0]['published_at'], DAY_IN_SECONDS );
-			set_transient( 'simplechart_plugin_update_body', $json[0]['body'], DAY_IN_SECONDS );
+		$transients = array(
+			'version_remote' => 'tag_name',
+			'zip_url_remote' => 'zipball_url',
+			'update_name' => 'name',
+			'update_last_updated' => 'published_at',
+			'update_body' => 'body',
+		);
+
+		foreach( $transients as $wp_key => $gh_key ) {
+			if ( ! empty( $json[0][ $gh_key ] ) ) {
+				set_transient( 'simplechart_plugin_' . $wp_key, $json[0][ $gh_key ], DAY_IN_SECONDS );
+			}
 		}
 	}
 
