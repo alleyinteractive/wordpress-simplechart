@@ -3,7 +3,8 @@
  * Template partial for source inside amp-iframe
  */
 
-if ( $id = (int) Simplechart::instance()->request_handler->frame_id() ) : ?>
+$id = (int) Simplechart::instance()->request_handler->frame_id();
+if ( $id ) : ?>
 <!DOCTYPE html>
 <html>
 	<head>

@@ -66,20 +66,24 @@ class Simplechart_Plugin_Versions {
 			return;
 		}
 
-		if ( false === ( $this->_latest_plugin_version = get_transient( 'simplechart_plugin_version_remote' ) ) ) {
+		$this->_latest_plugin_version = get_transient( 'simplechart_plugin_version_remote' );
+		if ( false === $this->_latest_plugin_version ) {
 			$this->update_simplechart_remote_metadata();
 			return;
 		}
 
-		if ( false === ( $this->_latest_plugin_zip_url = get_transient( 'simplechart_plugin_zip_url_remote' ) ) ) {
+		$this->_latest_plugin_zip_url = get_transient( 'simplechart_plugin_zip_url_remote' );
+		if ( false === $this->_latest_plugin_zip_url ) {
 			$this->_latest_plugin_zip_url = $this->_simplechart_repository_url;
 		}
 
-		if ( false === ( $this->_latest_plugin_update_name = get_transient( 'simplechart_plugin_update_name' ) ) ) {
+		$this->_latest_plugin_update_name = get_transient( 'simplechart_plugin_update_name' );
+		if ( false === $this->_latest_plugin_update_name ) {
 			$this->_latest_plugin_update_name = __( 'Latest Update', 'simplechart' );
 		}
 
-		if ( false === ( $this->_latest_plugin_update_description = get_transient( 'simplechart_plugin_update_body' ) ) ) {
+		$this->_latest_plugin_update_description = get_transient( 'simplechart_plugin_update_body' );
+		if ( false === $this->_latest_plugin_update_description ) {
 			$this->_latest_plugin_update_description = __( 'See more on Github.', 'simplechart' );
 		}
 
@@ -197,5 +201,4 @@ class Simplechart_Plugin_Versions {
 			}
 		}
 	}
-
 }

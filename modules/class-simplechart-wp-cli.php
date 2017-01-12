@@ -92,7 +92,10 @@ class Simplechart_WP_CLI extends WP_CLI_Command {
 			$warning .= implode( "\n", $response->get_error_messages() );
 			WP_CLI::warning( $warning );
 			return null;
-		} elseif ( 200 !== $code = wp_remote_retrieve_response_code( $response ) ) {
+		}
+
+		$code = wp_remote_retrieve_response_code( $response );
+		if ( 200 !== $code ) {
 			WP_CLI::warning( sprintf( 'Post %1$s from site %2$s returned error code %3$s', $post, $site, $code ) );
 			return null;
 		}
