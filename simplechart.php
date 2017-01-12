@@ -27,7 +27,7 @@ class Simplechart {
 		'webpack_public_path' => null,
 		'widget_loader_url' => null,
 		'menu_page_slug' => 'simplechart_app',
-		'version' => '0.4.4',
+		'version' => '0.4.5',
 		'app_version' => 'a77965f',
 	);
 
