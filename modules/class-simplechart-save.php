@@ -276,7 +276,10 @@ class Simplechart_Save {
 		if ( 'undefined' === $data ) {
 			$this->_errors[] = "JS app set value of input to 'undefined'";
 			return false;
-		} elseif ( $decoded = json_decode( $data ) ) {
+		}
+
+		$decoded = json_decode( $data );
+		if ( $decoded ) {
 			// Attempt to validate JSON by decoding then re-encoding
 			return json_encode( $decoded ); // returns a valid JSON string!
 		} elseif ( function_exists( 'json_last_error_msg' ) ) {
@@ -287,10 +290,10 @@ class Simplechart_Save {
 			// Or just error code
 			$this->_errors[] = sprintf( __( 'JSON error code: %s', 'simplechart' ), json_last_error() );
 			return false;
-		} else {
-			// Or catch-all error message
-			$this->_errors[] = __( 'Attempted to save invalid JSON', 'simplechart' );;
-			return false;
 		}
+
+		// Or catch-all error message if for some reason we get all the way to the end
+		$this->_errors[] = __( 'Attempted to save invalid JSON', 'simplechart' );
+		return false;
 	}
 }

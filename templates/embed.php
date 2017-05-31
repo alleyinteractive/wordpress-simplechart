@@ -14,6 +14,25 @@ $id = (int) Simplechart::instance()->template->current_id();
  */
 $http_headers = apply_filters( 'simplechart_api_http_headers', array(), $id );
 
+/**
+ * Text string to use while chart data is loading.
+ * If none is provided, will use the JS app's default: "Loading"
+ *
+ * @param string|null $placeholder_text
+ * @param int $id Post ID of chart being rendered
+ * @return string|null
+ */
+$placeholder = apply_filters( 'simplechart_widget_placeholder_text', null, $id );
+
+/**
+ * Use a custom template for the Simplechart widget
+ *
+ * @param string|null $custom_template Null or string of HTML for template
+ * @param int $id Post ID of chart being rendered
+ * @return string|null
+ */
+$custom_template = apply_filters( 'simplechart_widget_template', null, $id );
+
 // Chart must be published or embedded in a preview
 if ( 'simplechart' === get_post_type( $id ) && ( 'publish' === get_post_status( $id ) || is_preview() ) ) : ?>
 	<figure
@@ -21,18 +40,11 @@ if ( 'simplechart' === get_post_type( $id ) && ( 'publish' === get_post_status( 
 		class='simplechart-widget'
 		data-url='<?php echo esc_url( home_url( '/simplechart/api/' . $id . '/' ) ); ?>'
 		data-headers='<?php echo wp_json_encode( $http_headers ); ?>'
-		<?php if ( $placeholder = apply_filters( 'simplechart_widget_placeholder_text', null ) ) : ?>
+		<?php if ( $placeholder ) : ?>
 			data-placeholder = '<?php echo esc_attr( $placeholder ); ?>'
 		<?php endif; ?>
 	>
-		<?php
-		/**
-		 * Use a custom template for the Simplechart widget
-		 *
-		 * @param string|null $custom_template Null or string of HTML for template
-		 * @param int $id Post ID of chart being rendered
-		 */
-		if ( $custom_template = apply_filters( 'simplechart_widget_template', null, $id ) ) : ?>
+		<?php if ( $custom_template ) : ?>
 			<?php echo wp_kses_post( $custom_template ); ?>
 		<?php else : ?>
 			<p class='simplechart-title'></p>
