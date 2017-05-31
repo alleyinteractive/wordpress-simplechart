@@ -3,7 +3,7 @@
  * try to update Simplechart as if it was hosted on WP.org
  */
 jQuery( document ).ready( function( $ ) {
-	if ( 'plugins' !== pagenow ) {
+	if ( 'plugins' !== window.pagenow ) {
 		return;
 	}
 
