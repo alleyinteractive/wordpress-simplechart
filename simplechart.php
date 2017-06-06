@@ -23,6 +23,7 @@ class Simplechart {
 	// config vars that will eventually come from settings page
 	private $_config = array(
 		'web_app_iframe_src' => null,
+		'vendor_js_url' => null,
 		'web_app_js_url' => null,
 		'webpack_public_path' => null,
 		'widget_loader_url' => null,
@@ -188,10 +189,12 @@ class Simplechart {
 		// Set URLs for JS app and widget
 		if ( $use_localhost ) {
 			$this->_config['webpack_public_path'] = 'http://localhost:8080/static/';
+			$this->_config['vendor_js_url'] = $this->_config['webpack_public_path'] . 'vendor.js';
 			$this->_config['web_app_js_url'] = $this->_config['webpack_public_path'] . 'app.js';
 			$this->_config['widget_loader_url'] = $this->_config['webpack_public_path'] . 'widget.js';
 		} else {
 			$this->_config['webpack_public_path'] = $this->get_plugin_url( 'js/app/' );
+			$this->_config['vendor_js_url'] = $this->get_plugin_url( sprintf( 'js/app/vendor.%s.js', $commit_version ) );
 			$this->_config['web_app_js_url'] = $this->get_plugin_url( sprintf( 'js/app/app.%s.js', $commit_version ) );
 			$this->_config['widget_loader_url'] = $this->get_plugin_url( sprintf( 'js/app/widget.%s.js', $commit_version ) );
 		}
@@ -202,6 +205,7 @@ class Simplechart {
 		// Filters for app page and JS URLs
 		$this->_config['webpack_public_path'] = apply_filters( 'simplechart_webpack_public_path', $this->_config['webpack_public_path'] );
 		$this->_config['web_app_iframe_src'] = apply_filters( 'simplechart_web_app_iframe_src', $this->_config['web_app_iframe_src'] );
+		$this->_config['vendor_js_url'] = apply_filters( 'simplechart_vendor_js_url', $this->_config['vendor_js_url'] );
 		$this->_config['web_app_js_url'] = apply_filters( 'simplechart_web_app_js_url', $this->_config['web_app_js_url'] );
 		$this->_config['widget_loader_url'] = apply_filters( 'simplechart_widget_loader_url', $this->_config['widget_loader_url'] );
 
