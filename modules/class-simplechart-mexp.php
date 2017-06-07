@@ -189,6 +189,12 @@ if ( class_exists( 'MEXP_Service' ) ) {
 				array(),
 				Simplechart::instance()->get_config( 'version' )
 			);
+			wp_enqueue_script(
+				'simplechart-insert',
+				Simplechart::instance()->get_plugin_url( 'js/plugin/simplechart-insert.js' ),
+				array( 'jquery' ),
+				Simplechart::instance()->get_config( 'version' )
+			);
 		}
 
 		/**
