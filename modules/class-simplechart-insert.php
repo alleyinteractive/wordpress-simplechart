@@ -29,7 +29,7 @@ class Simplechart_Insert_Template {
           </div>
 
           <p class="simplechart-item-meta">
-            <?php esc_html_e( 'Status:', 'simplechart' ); ?> {{data.meta.status}}
+            <?php esc_html_e( 'Status:', 'simplechart' ); ?> {{data.status}}
           </p>
           <p class="simplechart-item-meta">
             {{ data.date }}
@@ -113,7 +113,7 @@ class Simplechart_Insert {
   /**
    * Process an AJAX request and output the resulting JSON.
    *
-   * @action wp_ajax_mexp_request
+   * @action wp_ajax_simplechart_request
    * @return null
    */
   public function ajax_request() {
@@ -162,6 +162,7 @@ class Simplechart_Insert {
 
     // Create the response for the API
     $response = array();
+    $items = array();
 
     $query_args = array(
       'post_type' => 'simplechart',
@@ -185,7 +186,7 @@ class Simplechart_Insert {
 
         $thumb = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), array( 150, 150 ) );
         $thumb_url = isset( $thumb[0] ) ? $thumb[0] : '';
-        $item = array()
+        $item = array();
         $item['date'] = date( 'g:i A - j M y', intval( get_the_time( 'U' ) ) );
         $item['id'] = absint( $post->ID );
         $item['content'] = esc_html( get_the_title() );
@@ -200,11 +201,16 @@ class Simplechart_Insert {
         }
         $item['status'] = $status;
 
-        $response[] = $item;
+        $items[] = $item;
       endwhile;
     } else {
       return false;
     }
+
+    $response['items'] = $items;
+    $response['meta'] = array(
+      'min_id' => reset( $items )['id']
+    );
 
     return $response;
   }
@@ -229,7 +235,7 @@ class Simplechart_Insert {
       call_user_func( array( $template, $t ), $id, 'all' );
     }
 
-    $id = sprintf( 'simplechart-insert-thumbnail';
+    $id = sprintf( 'simplechart-insert-thumbnail' );
 
     $template->before_template( $id );
     call_user_func( array( $template, 'thumbnail' ), $id );
@@ -242,17 +248,16 @@ class Simplechart_Insert {
    * @return null
    */
   public function action_enqueue_media() {
-
     $simplechart = array(
       '_nonce'    => wp_create_nonce( 'simplechart_request' ),
-      'base_url'  => untrailingslashit( $this->plugin_url() ),
+      'base_url'  => untrailingslashit( Simplechart::instance()->get_plugin_url() ),
       'admin_url' => untrailingslashit( admin_url() ),
     );
 
     wp_enqueue_script(
       'simplechart-insert',
       Simplechart::instance()->get_plugin_url( 'js/plugin/simplechart-insert.js' ),
-      array( 'jquery', 'mexp' ),
+      array( 'jquery' ),
       Simplechart::instance()->get_config( 'version' )
     );
 
@@ -268,6 +273,29 @@ class Simplechart_Insert {
       'simplechart',
       $simplechart
     );
+  }
+
+  /**
+   * Sets the template object.
+   *
+   * @return null
+   */
+  final public function set_template( Simplechart_Insert_Template $template ) {
+
+    $this->template = $template;
+
+  }
+
+  /**
+   * Returns the template object for this service.
+   *
+   * @return Template|null A Template object,
+   * or null if a template isn't set.
+   */
+  final public function get_template() {
+
+    return $this->template;
+
   }
 }
 ?>

@@ -10,7 +10,7 @@ wp.media.view.MediaFrame.Post = postFrame.extend({
       id: id,
       toolbar: `${id}-toolbar`,
       menu: 'default',
-      title: 'Insert Chart',
+      title: 'Insert Chart - Simplechart',
       priority: 100,
       content: 'simplechart-content-all',
     };
