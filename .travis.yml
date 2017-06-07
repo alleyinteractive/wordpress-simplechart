@@ -11,22 +11,16 @@ notifications:
 language: php
 
 php:
-    - 5.3
-    - 5.4
-    - 5.5
     - 5.6
     - 7.0
 
 env:
     - WP_VERSION=master WP_MULTISITE=0
     - WP_VERSION=master WP_MULTISITE=1
-    - WP_VERSION=4.4 WP_MULTISITE=0
-    - WP_VERSION=4.4 WP_MULTISITE=0
 
 branches:
     only:
         - master
-        - react/react-app-base
 
 before_script:
     # Setup WordPress
