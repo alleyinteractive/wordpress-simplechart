@@ -10,9 +10,6 @@ When the post is rendered on the front end, this same data and settings/options 
 
 ### Installation
 
-1. Install and activate [Media Explorer](https://github.com/Automattic/media-explorer)
-  1. See [`simplechart_remove_mexp_default_services`](#simplechart_remove_mexp_default_services) hook
-  1. The two plugins (MEXP Keyring Credentials and MEXP oAuth Credentials) that are bundled with Media Explorer are not required to use the Simplechart plugin.
 1. Install and activate the Simplechart plugin
 	1. See [theme setup](https://github.com/alleyinteractive/wordpress-simplechart/wiki/Theme-Setup) tips
 
@@ -77,13 +74,6 @@ Set the URL of the main JS app for building a chart. Defaults to the local stati
 ##### simplechart_widget_loader_url
 
 Set the URL of the chart rendering widget. Defaults to the local static file.
-
-
-##### simplechart_remove_mexp_default_services
-
-Simplechart is integrated into the WordPress media manager using the [Media Explorer](https://github.com/Automattic/media-explorer) plugin, which adds the ability to embed from services like Twitter and YouTube. By default, Simplechart removes these other services - **except** on WordPress.com VIP (Classic™ only, not VIP Go), where Media Explorer is part of the platform. To force your desired behavior, use the `'simplechart_remove_mexp_default_services'` filter to return `true` or `false`.
-
-Note for VIP Classic™ sites: Unless you use this filter to force a consistent value, the value of `'simplechart_remove_mexp_default_services'` will be `true` in your local development environment and `false` on WordPress.com VIP.
 
 ##### simplechart_show_debug_messages
 

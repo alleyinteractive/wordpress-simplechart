@@ -144,10 +144,6 @@ class Simplechart {
 		require_once( $this->_plugin_dir_path . 'modules/class-simplechart-save.php' );
 		$this->save = new Simplechart_Save;
 
-		// load Media Explorer extension and initialize
-		// require_once( $this->_plugin_dir_path . 'modules/class-simplechart-mexp.php' );
-		// add_filter( 'mexp_services', 'simplechart_mexp_init' );
-
 		// load WP Media extension and initialize
 		require_once( $this->_plugin_dir_path . 'modules/class-simplechart-insert.php' );
 		$this->insert = new Simplechart_Insert;

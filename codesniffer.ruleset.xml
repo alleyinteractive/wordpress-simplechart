@@ -19,11 +19,6 @@
 		<exclude-pattern>modules/class-simplechart-wp-cli.php</exclude-pattern>
 	</rule>
 
-	<!-- Class declarations that require MEXP -->
-	<rule ref="Squiz.Commenting.LongConditionClosingComment.Missing">
-		<exclude-pattern>modules/class-simplechart-mexp.php</exclude-pattern>
-	</rule>
-
 	<!-- Tweak the VIP rules -->
 	<rule ref="WordPress.XSS.EscapeOutput.OutputNotEscaped">
 		<type>warning</type>
