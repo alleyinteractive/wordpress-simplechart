@@ -40,7 +40,7 @@ class Simplechart_Request_Handler {
 	/**
 	 * Parse requests for JSON or HTML page for iframe
 	 *
-	 * @var WP_Query $query	Current query
+	 * @var WP_Query $query Current query
 	 * @return none
 	 */
 	public function parse_request( $query ) {

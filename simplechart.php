@@ -4,7 +4,7 @@ Plugin Name: Simplechart
 Plugin URI: https://github.com/alleyinteractive/wordpress-simplechart
 Description: Create and render interactive charts in WordPress using Simplechart
 Author: Drew Machat, Josh Kadis, Alley Interactive
-Version: 0.4.5
+Version: 0.5.1-beta
 Author URI: http://www.alleyinteractive.com/
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -16,26 +16,30 @@ class Simplechart {
 
 	private $_plugin_dir_path = null;
 	private $_plugin_dir_url = null;
-	private $_admin_notices = array( 'updated' => array(), 'error' => array() );
+	private $_admin_notices = array(
+		'updated' => array(),
+		'error' => array(),
+	);
 	private $_plugin_id = 'wordpress-simplechart/simplechart.php';
 	private $_local_dev_query_var = 'sclocaldev';
 
 	// config vars that will eventually come from settings page
 	private $_config = array(
 		'web_app_iframe_src' => null,
+		'vendor_js_url' => null,
 		'web_app_js_url' => null,
 		'webpack_public_path' => null,
 		'widget_loader_url' => null,
 		'menu_page_slug' => 'simplechart_app',
-		'version' => '0.4.5',
-		'app_version' => 'a77965f',
+		'version' => '0.5.1-beta',
+		'app_version' => '87d4e39',
 	);
 
 	// startup
 	private function __construct() {
 		// Handle check for Media Explorer differently on VIP CLassic™ vs VIP Go and self-hosted sites
 		if ( defined( 'WPCOM_IS_VIP_ENV' ) && WPCOM_IS_VIP_ENV && ( ! defined( 'VIP_GO_ENV' ) || ! VIP_GO_ENV ) ) {
-		    define( 'WPCOM_IS_VIP_CLASSIC_TM_ENV', true );
+			define( 'WPCOM_IS_VIP_CLASSIC_TM_ENV', true );
 		}
 
 		if ( ! $this->_check_dependencies() ) {
@@ -188,10 +192,12 @@ class Simplechart {
 		// Set URLs for JS app and widget
 		if ( $use_localhost ) {
 			$this->_config['webpack_public_path'] = 'http://localhost:8080/static/';
+			$this->_config['vendor_js_url'] = $this->_config['webpack_public_path'] . 'vendor.js';
 			$this->_config['web_app_js_url'] = $this->_config['webpack_public_path'] . 'app.js';
 			$this->_config['widget_loader_url'] = $this->_config['webpack_public_path'] . 'widget.js';
 		} else {
 			$this->_config['webpack_public_path'] = $this->get_plugin_url( 'js/app/' );
+			$this->_config['vendor_js_url'] = $this->get_plugin_url( sprintf( 'js/app/vendor.%s.js', $commit_version ) );
 			$this->_config['web_app_js_url'] = $this->get_plugin_url( sprintf( 'js/app/app.%s.js', $commit_version ) );
 			$this->_config['widget_loader_url'] = $this->get_plugin_url( sprintf( 'js/app/widget.%s.js', $commit_version ) );
 		}
@@ -202,6 +208,7 @@ class Simplechart {
 		// Filters for app page and JS URLs
 		$this->_config['webpack_public_path'] = apply_filters( 'simplechart_webpack_public_path', $this->_config['webpack_public_path'] );
 		$this->_config['web_app_iframe_src'] = apply_filters( 'simplechart_web_app_iframe_src', $this->_config['web_app_iframe_src'] );
+		$this->_config['vendor_js_url'] = apply_filters( 'simplechart_vendor_js_url', $this->_config['vendor_js_url'] );
 		$this->_config['web_app_js_url'] = apply_filters( 'simplechart_web_app_js_url', $this->_config['web_app_js_url'] );
 		$this->_config['widget_loader_url'] = apply_filters( 'simplechart_widget_loader_url', $this->_config['widget_loader_url'] );
 
