@@ -1,4 +1,6 @@
-document.addEventListener("DOMContentLoaded", function(event) {
+/* globals simplechart, tinymce */
+
+document.addEventListener('DOMContentLoaded', function() {
   // Post Frame
 
   const postFrame = wp.media.view.MediaFrame.Post;
@@ -12,7 +14,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
         id: id,
         toolbar: `${id}-toolbar`,
         menu: 'default',
-        title: 'Insert Chart - Simplechart',
+        title: 'Insert Chart',
         priority: 100,
         content: 'simplechart-content-all',
       };
@@ -67,7 +69,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     initialize: function() {
       /* fired when you switch router tabs */
       
-      var _this = this;
+      const _this = this;
 
       this.collection = new Backbone.Collection();
 
@@ -105,12 +107,12 @@ document.addEventListener("DOMContentLoaded", function(event) {
     render: function() {
       /* fired when you switch router tabs */
 
-      var selection = this.getSelection();
+      const selection = this.getSelection();
 
       if (this.collection && this.collection.models.length) {
         this.clearItems();
 
-        var container = document.createDocumentFragment();
+        const container = document.createDocumentFragment();
 
         this.collection.each(function(model) {
           container.appendChild(this.renderItem(model));
@@ -120,7 +122,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
       }
 
       selection.each(function(model) {
-        var id = '#simplechart-item-simplechart-all-' + model.get('id');
+        const id = '#simplechart-item-simplechart-all-' + model.get('id');
         this.$el.find(id).closest('.simplechart-item').addClass('selected details');
       }, this);
 
@@ -130,7 +132,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     },
 
     renderItem : function(model) {
-      var view = new wp.media.view.SimplechartItem({
+      const view = new wp.media.view.SimplechartItem({
         model   : model,
       });
 
@@ -138,6 +140,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     },
 
     createToolbar: function() {
+      let html;
       // @TODO this could be a separate view:
       html = '<div class="simplechart-error attachments"></div>';
       this.$el.prepend(html);
@@ -151,14 +154,14 @@ document.addEventListener("DOMContentLoaded", function(event) {
       this.$el.append(html);
 
       // @TODO this could be a separate view:
-      var toolbar_template = wp.media.template('simplechart-insert-search-all');
+      const toolbar_template = wp.media.template('simplechart-insert-search-all');
       html = '<div class="simplechart-toolbar media-toolbar clearfix">' + toolbar_template(this.model.toJSON()) + '</div>';
       this.$el.prepend(html);
     },
 
     removeSelectionHandler: function(event) {
-      var target = jQuery('#' + event.currentTarget.id);
-      var id     = target.attr('data-id');
+      const target = jQuery('#' + event.currentTarget.id);
+      const id     = target.attr('data-id');
 
       this.removeFromSelection(target, id);
 
@@ -170,8 +173,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
         return;
       }
 
-      var target = jQuery('#' + event.currentTarget.id);
-      var id     = target.attr('data-id');
+      const target = jQuery('#' + event.currentTarget.id);
+      const id     = target.attr('data-id');
 
       if (this.getSelection().get(id)) {
         this.removeFromSelection(target, id);
@@ -224,7 +227,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
       jQuery('#simplechart-loadmore').attr('disabled', true);
     },
 
-    loaded: function(response) {
+    loaded: function() {
       // hide spinner
       this.$el.find('.spinner').removeClass('is-active');
     },
@@ -232,7 +235,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     fetchItems: function() {
       this.trigger('loading');
 
-      var data = {
+      const data = {
         _nonce  : simplechart._nonce,
         service : 'simplechart',
         tab     : 'all',
@@ -268,8 +271,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
         this.model.set('items', this.model.get('items').concat(response.items));
 
-        var collection = new Backbone.Collection(response.items);
-        var container  = document.createDocumentFragment();
+        const collection = new Backbone.Collection(response.items);
+        const container  = document.createDocumentFragment();
 
         this.collection.add(collection.models);
 
@@ -308,9 +311,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
     updateInput: function(event) {
       // triggered when a search is submitted
 
-      var params = this.model.get('params');
-      var els = this.$el.find('.simplechart-toolbar').find(':input').each(function(k, el) {
-        var n = jQuery(this).attr('name');
+      const params = this.model.get('params');
+      this.$el.find('.simplechart-toolbar').find(':input').each(function() {
+        const n = jQuery(this).attr('name');
         if (n) {
           params[n] = jQuery(this).val();
         }
@@ -325,11 +328,11 @@ document.addEventListener("DOMContentLoaded", function(event) {
     },
 
     paginate : function(event) {
-      if(0 == this.collection.length) {
+      if(0 === this.collection.length) {
         return;
       }
 
-      var page = this.model.get('page') || 1;
+      const page = this.model.get('page') || 1;
 
       this.model.set('page', page + 1);
       this.trigger('change:page');
@@ -357,7 +360,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
   const {
     initialize: parentInitialize,
-    refresh: parentRefresh,
   } = wp.media.view.Toolbar.prototype;
 
   wp.media.view.Toolbar.Simplechart = wp.media.view.Toolbar.extend({
@@ -385,7 +387,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
         tagName: 'button',
         classes: 'simplechart-pagination button button-secondary',
         id: 'simplechart-loadmore',
-        text: "Load More",
+        text: 'Load More',
         priority: -20,
       }));
     },
@@ -439,9 +441,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
       }, this);
 
       if ('undefined' === typeof(tinymce) || null === tinymce.activeEditor || tinymce.activeEditor.isHidden()) {
-        wp.media.editor.insert(_.toArray(shortcodes).join("\n\n"));
+        wp.media.editor.insert(_.toArray(shortcodes).join('\n\n'));
       } else {
-        wp.media.editor.insert(`<p>${_.toArray(shortcodes).join("</p><p>")}</p>`);
+        wp.media.editor.insert(`<p>${_.toArray(shortcodes).join('</p><p>')}</p>`);
       }
 
       selection.reset();

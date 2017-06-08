@@ -16,7 +16,10 @@ class Simplechart {
 
 	private $_plugin_dir_path = null;
 	private $_plugin_dir_url = null;
-	private $_admin_notices = array( 'updated' => array(), 'error' => array() );
+	private $_admin_notices = array(
+		'updated' => array(),
+		'error' => array(),
+	);
 	private $_plugin_id = 'wordpress-simplechart/simplechart.php';
 	private $_local_dev_query_var = 'sclocaldev';
 
@@ -33,11 +36,6 @@ class Simplechart {
 
 	// startup
 	private function __construct() {
-		// Handle check for Media Explorer differently on VIP CLassic™ vs VIP Go and self-hosted sites
-		if ( defined( 'WPCOM_IS_VIP_ENV' ) && WPCOM_IS_VIP_ENV && ( ! defined( 'VIP_GO_ENV' ) || ! VIP_GO_ENV ) ) {
-		    define( 'WPCOM_IS_VIP_CLASSIC_TM_ENV', true );
-		}
-
 		// Both of these will have trailing slash
 		$this->_plugin_dir_path = plugin_dir_path( __FILE__ );
 		$this->_plugin_dir_url = $this->_set_plugin_dir_url();
