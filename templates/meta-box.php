@@ -53,8 +53,8 @@ if ( 'simplechart' === $screen->id && 'add' === $screen->action ) {
 			chartMetadata: <?php echo simplechart_json_encode_meta( 'save-chartMetadata' ); ?>,
 			chartOptions: <?php echo simplechart_json_encode_meta( 'save-chartOptions' ); ?>
 		<?php else : ?>
-			chartMetadata: <?php echo wp_json_encode( $default_metadata ); ?>,
-			chartOptions: <?php echo wp_json_encode( $default_options ); ?>
+			chartMetadata: <?php echo wp_json_encode( $default_metadata ?: new stdClass() ); ?>,
+			chartOptions: <?php echo wp_json_encode( $default_options ?: new stdClass() ); ?>
 		<?php endif; ?>
 	};
 	window.WPSimplechartContainer = {
