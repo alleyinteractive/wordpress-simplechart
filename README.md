@@ -95,7 +95,13 @@ Defaults to `false`. If `true`, the plugin will display extra debugging notices 
 
 ##### simplechart_api_http_headers
 
-Apply any headers to the request made to Simplechart's API before rendering a chart in a front-end template. Useful for dev sites protected by `.htaccess` passwords.
+Apply any headers to the request made to Simplechart's API before rendering a chart in a front-end template. Useful for dev sites protected by `.htaccess` passwords, for instance:
+```
+add_filter( 'simplechart_api_http_headers', function( $headers ) {
+  $headers['Authorization'] = 'Basic ' . base64_encode( 'username:password' );
+  return $headers;
+} );
+```
 
 ##### simplechart_widget_template
 
