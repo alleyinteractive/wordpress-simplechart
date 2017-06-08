@@ -13,9 +13,9 @@
 function simplechart_json_encode_meta( $key ) {
 	$raw_meta = get_post_meta( get_the_ID(), $key, true );
 	if ( empty( $raw_meta ) ) {
-		return wp_json_encode( null, JSON_FORCE_OBJECT );
+		return wp_json_encode( null );
 	}
-	return wp_json_encode( $raw_meta, JSON_FORCE_OBJECT );
+	return wp_json_encode( $raw_meta );
 }
 
 
@@ -53,8 +53,8 @@ if ( 'simplechart' === $screen->id && 'add' === $screen->action ) {
 			chartMetadata: <?php echo simplechart_json_encode_meta( 'save-chartMetadata' ); ?>,
 			chartOptions: <?php echo simplechart_json_encode_meta( 'save-chartOptions' ); ?>
 		<?php else : ?>
-			chartMetadata: <?php echo wp_json_encode( $default_metadata, JSON_FORCE_OBJECT ); ?>,
-			chartOptions: <?php echo wp_json_encode( $default_options, JSON_FORCE_OBJECT ); ?>
+			chartMetadata: <?php echo wp_json_encode( $default_metadata ?: new stdClass() ); ?>,
+			chartOptions: <?php echo wp_json_encode( $default_options ?: new stdClass() ); ?>
 		<?php endif; ?>
 	};
 	window.WPSimplechartContainer = {
