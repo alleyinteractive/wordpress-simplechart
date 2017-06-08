@@ -56,6 +56,7 @@ if ( 'simplechart' === get_post_type( $id ) && ( 'publish' === get_post_status( 
 			<p class='simplechart-credit'></p>
 		<?php endif; ?>
 	</figure>
+	<script src="<?php echo esc_url( Simplechart::instance()->get_config( 'vendor_js_url' ) ); ?>"></script>
 	<script>
 		<?php // Load Simplechart widget JS asynchronously if not already loaded ?>
 		if ( ! document.getElementById( 'simplechart-widget-js' ) ) {
