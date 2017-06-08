@@ -235,13 +235,17 @@ document.addEventListener('DOMContentLoaded', function() {
     fetchItems: function() {
       this.trigger('loading');
 
+      const date = new Date();
+      const tzOffsetSeconds = date.getTimezoneOffset() * 60;
+
       const data = {
         _nonce  : simplechart._nonce,
         service : 'simplechart',
         tab     : 'all',
         params  : this.model.get('params'),
         page    : this.model.get('page'),
-        max_id  : this.model.get('max_id')
+        max_id  : this.model.get('max_id'),
+        tz_off  : tzOffsetSeconds,
       };
 
       wp.media.ajax('simplechart_request', {

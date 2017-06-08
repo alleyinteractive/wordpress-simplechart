@@ -187,7 +187,7 @@ class Simplechart_Insert {
 				$thumb = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), array( 150, 150 ) );
 				$thumb_url = isset( $thumb[0] ) ? $thumb[0] : '';
 				$item = array();
-				$item['date'] = date( 'g:i A T - j M y', intval( get_the_time( 'U' ) ) );
+				$item['date'] = date( 'g:i A - j M y', intval( get_the_time( 'U' ) - $request['tz_off'] ) );
 				$item['id'] = absint( $post->ID );
 				$item['content'] = esc_html( get_the_title() );
 				$item['img'] = esc_url( $thumb_url );
