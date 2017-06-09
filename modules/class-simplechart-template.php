@@ -92,7 +92,7 @@ class Simplechart_Template {
 				array( 'simplechart-vendor' ), false, true
 			);
 
-			add_filter( 'script_loader_tag', array ( $this, 'async_scripts' ), 10, 3 );
+			add_filter( 'script_loader_tag', array( $this, 'async_scripts' ), 10, 3 );
 
 			require( $instance->get_plugin_dir( 'templates/embed.php' ) );
 
