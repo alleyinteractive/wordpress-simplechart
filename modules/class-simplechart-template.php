@@ -81,10 +81,23 @@ class Simplechart_Template {
 		 */
 		$disable_amp = apply_filters( 'simplechart_disable_amp', false );
 
+		$instance = Simplechart::instance();
+
 		if ( ! $this->_is_amp ) {
-			require( Simplechart::instance()->get_plugin_dir( 'templates/embed.php' ) );
+			wp_register_script( 'simplechart-vendor',
+				$instance->get_config( 'vendor_js_url' ), false, false, true
+			);
+			wp_enqueue_script( 'simplechart-widget',
+				$instance->get_config( 'widget_loader_url' ),
+				array( 'simplechart-vendor' ), false, true
+			);
+
+			add_filter( 'script_loader_tag', array( $this, 'async_scripts' ), 10, 3 );
+
+			require( $instance->get_plugin_dir( 'templates/embed.php' ) );
+
 		} else if ( ! $disable_amp ) {
-			require( Simplechart::instance()->get_plugin_dir( 'templates/amp-iframe.php' ) );
+			require( $instance->get_plugin_dir( 'templates/amp-iframe.php' ) );
 		}
 	}
 
@@ -116,6 +129,16 @@ class Simplechart_Template {
 		if ( ! is_admin() && is_singular( 'simplechart' ) ) {
 			add_filter( 'the_content', array( $this, 'filter_insert_chart' ) );
 		}
+	}
+
+	public function async_scripts( $tag, $handle, $src ) {
+		$async_scripts = array( 'simplechart-widget' );
+
+		if ( in_array( $handle, $async_scripts ) ) {
+			return '<script type="text/javascript" src="' . $src . '" async="async"></script>' . "\n";
+		}
+
+		return $tag;
 	}
 
 	// prepend chart to post_content
