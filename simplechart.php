@@ -37,20 +37,6 @@ class Simplechart {
 
 	// startup
 	private function __construct() {
-		// Handle check for Media Explorer differently on VIP CLassic™ vs VIP Go and self-hosted sites
-		if ( defined( 'WPCOM_IS_VIP_ENV' ) && WPCOM_IS_VIP_ENV && ( ! defined( 'VIP_GO_ENV' ) || ! VIP_GO_ENV ) ) {
-			define( 'WPCOM_IS_VIP_CLASSIC_TM_ENV', true );
-		}
-
-		if ( ! $this->_check_dependencies() ) {
-			add_action( 'admin_notices', array( $this, 'admin_notices' ) );
-			add_action( 'admin_init', array( $this, 'deactivate' ) );
-
-			// Continue execution if unit tests are running
-			if ( ! defined( 'SIMPLECHART_UNIT_TESTS_RUNNING' ) || ! SIMPLECHART_UNIT_TESTS_RUNNING ) {
-				return;
-			}
-		}
 		// Both of these will have trailing slash
 		$this->_plugin_dir_path = plugin_dir_path( __FILE__ );
 		$this->_plugin_dir_url = $this->_set_plugin_dir_url();
@@ -67,27 +53,6 @@ class Simplechart {
 			self::$instance = new Simplechart;
 		}
 		return self::$instance;
-	}
-
-	/**
-	 * test for plugin dependencies and add error messages to admin notices as needed
-	 */
-	private function _check_dependencies() {
-
-		// skip check for Media Explorer on VIP since it's part of WPCOM platform
-		if ( defined( 'WPCOM_IS_VIP_CLASSIC_TM_ENV' ) && WPCOM_IS_VIP_CLASSIC_TM_ENV ) {
-			return true;
-		}
-
-		$deps_found = true;
-
-		// require Media Explorer
-		if ( ! class_exists( 'Media_Explorer' ) ) {
-			$this->_admin_notices['error'][] = __( 'Media Explorer is a required plugin for Simplechart', 'simplechart' );
-			$deps_found = false;
-		}
-
-		return $deps_found;
 	}
 
 	/**
@@ -148,9 +113,9 @@ class Simplechart {
 		require_once( $this->_plugin_dir_path . 'modules/class-simplechart-save.php' );
 		$this->save = new Simplechart_Save;
 
-		// load Media Explorer extension and initialize
-		require_once( $this->_plugin_dir_path . 'modules/class-simplechart-mexp.php' );
-		add_filter( 'mexp_services', 'simplechart_mexp_init' );
+		// load WP Media extension and initialize
+		require_once( $this->_plugin_dir_path . 'modules/class-simplechart-insert.php' );
+		$this->insert = new Simplechart_Insert;
 
 		// template rendering module
 		require_once( $this->_plugin_dir_path . 'modules/class-simplechart-template.php' );
@@ -226,8 +191,8 @@ class Simplechart {
 		if ( ! is_admin() ) {
 			return;
 		}
-		wp_register_script( 'simplechart-plugin', $this->get_plugin_url( 'js/plugin/plugin.js' ), array( 'jquery' ), $this->_config['version'] );
-		wp_register_script( 'simplechart-post-edit', $this->get_plugin_url( 'js/plugin/post-edit.js' ), array( 'jquery', 'underscore' ), $this->_config['version'] );
+		wp_register_script( 'simplechart-plugin', $this->get_plugin_url( 'js/plugin/build/plugin.js' ), array( 'jquery' ), $this->_config['version'] );
+		wp_register_script( 'simplechart-post-edit', $this->get_plugin_url( 'js/plugin/build/post-edit.js' ), array( 'jquery', 'underscore' ), $this->_config['version'] );
 		wp_register_style( 'simplechart-style', $this->_plugin_dir_url . 'css/style.css', array(), $this->_config['version'] );
 		wp_enqueue_script( 'simplechart-post-edit' );
 		wp_enqueue_style( 'simplechart-style' );

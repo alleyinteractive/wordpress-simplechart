@@ -26,11 +26,11 @@
 
 	<rule ref="WordPress.Files.FileName.InvalidClassFileName">
 		<exclude-pattern>simplechart.php</exclude-pattern>
-		<exclude-pattern>modules/class-simplechart-mexp.php</exclude-pattern>
+		<exclude-pattern>modules/class-simplechart-insert.php</exclude-pattern>
 	</rule>
 
 	<rule ref="Squiz.Commenting.LongConditionClosingComment.Missing">
-		<exclude-pattern>modules/class-simplechart-mexp.php</exclude-pattern>
+		<exclude-pattern>modules/class-simplechart-insert.php</exclude-pattern>
 	</rule>
 
 	<!-- Tweak the VIP rules -->

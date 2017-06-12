@@ -1,0 +1,14 @@
+{
+  "name": "wordpress-simplechart",
+  "version": "1.0.0",
+  "description": "Wordpress plugin for Simplechart.",
+  "private": true,
+  "dependencies": {},
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-preset-env": "^1.5.2"
+  },
+  "scripts": {
+    "build": "./node_modules/.bin/babel js/plugin/src --out-dir js/plugin/build"
+  }
+}
