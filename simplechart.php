@@ -4,7 +4,7 @@ Plugin Name: Simplechart
 Plugin URI: https://github.com/alleyinteractive/wordpress-simplechart
 Description: Create and render interactive charts in WordPress using Simplechart
 Author: Drew Machat, Josh Kadis, Alley Interactive
-Version: 0.4.5
+Version: 0.5.0-beta
 Author URI: http://www.alleyinteractive.com/
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -26,12 +26,13 @@ class Simplechart {
 	// config vars that will eventually come from settings page
 	private $_config = array(
 		'web_app_iframe_src' => null,
+		'vendor_js_url' => null,
 		'web_app_js_url' => null,
 		'webpack_public_path' => null,
 		'widget_loader_url' => null,
 		'menu_page_slug' => 'simplechart_app',
-		'version' => '0.4.5',
-		'app_version' => 'a77965f',
+		'version' => '0.5.0-beta',
+		'app_version' => '87d4e39',
 	);
 
 	// startup
@@ -137,11 +138,8 @@ class Simplechart {
 	 * on the 'init' action, do frontend or backend startup
 	 */
 	public function action_init() {
-		// Allow query var, constant, or filter to force using localhost for app
-		$use_localhost = isset( $_GET[ $this->_local_dev_query_var ] ) && 1 === absint( $_GET[ $this->_local_dev_query_var ] );
-		if ( defined( 'SIMPLECHART_USE_LOCALHOST' ) && SIMPLECHART_USE_LOCALHOST ) {
-			$use_localhost = true;
-		}
+		// Allow constant or filter to force using localhost for JS files
+		$use_localhost = ( defined( 'SIMPLECHART_USE_LOCALHOST' ) && SIMPLECHART_USE_LOCALHOST );
 
 		/**
 		 * Determine if we should load the Simplechart JS app from localhost or the plugin's copy
@@ -156,10 +154,12 @@ class Simplechart {
 		// Set URLs for JS app and widget
 		if ( $use_localhost ) {
 			$this->_config['webpack_public_path'] = 'http://localhost:8080/static/';
+			$this->_config['vendor_js_url'] = $this->_config['webpack_public_path'] . 'vendor.js';
 			$this->_config['web_app_js_url'] = $this->_config['webpack_public_path'] . 'app.js';
 			$this->_config['widget_loader_url'] = $this->_config['webpack_public_path'] . 'widget.js';
 		} else {
 			$this->_config['webpack_public_path'] = $this->get_plugin_url( 'js/app/' );
+			$this->_config['vendor_js_url'] = $this->get_plugin_url( sprintf( 'js/app/vendor.%s.js', $commit_version ) );
 			$this->_config['web_app_js_url'] = $this->get_plugin_url( sprintf( 'js/app/app.%s.js', $commit_version ) );
 			$this->_config['widget_loader_url'] = $this->get_plugin_url( sprintf( 'js/app/widget.%s.js', $commit_version ) );
 		}
@@ -170,6 +170,7 @@ class Simplechart {
 		// Filters for app page and JS URLs
 		$this->_config['webpack_public_path'] = apply_filters( 'simplechart_webpack_public_path', $this->_config['webpack_public_path'] );
 		$this->_config['web_app_iframe_src'] = apply_filters( 'simplechart_web_app_iframe_src', $this->_config['web_app_iframe_src'] );
+		$this->_config['vendor_js_url'] = apply_filters( 'simplechart_vendor_js_url', $this->_config['vendor_js_url'] );
 		$this->_config['web_app_js_url'] = apply_filters( 'simplechart_web_app_js_url', $this->_config['web_app_js_url'] );
 		$this->_config['widget_loader_url'] = apply_filters( 'simplechart_widget_loader_url', $this->_config['widget_loader_url'] );
 

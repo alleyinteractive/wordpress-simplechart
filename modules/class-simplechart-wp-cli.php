@@ -163,9 +163,9 @@ class Simplechart_WP_CLI extends WP_CLI_Command {
 	/**
 	 * create new post for the chart, using already transformed data
 	 * @var array $data Post data for new chart
-	 *			array 'post_data' Arguments to pass to wp_insert_post()
-	 *			array 'post_meta' Key-value pairs to set as post meta
-	 *			array 'featured_image' Optional array of url, width, height of image to import
+	 *          array 'post_data' Arguments to pass to wp_insert_post()
+	 *          array 'post_meta' Key-value pairs to set as post meta
+	 *          array 'featured_image' Optional array of url, width, height of image to import
 	 * @return bool Success or failure
 	 */
 	private function _load_post( $data ) {

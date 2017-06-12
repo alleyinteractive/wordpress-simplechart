@@ -4,7 +4,7 @@ Simplechart lets anyone quickly create interactive data visualizations that are 
 
 ### Technical overview
 
-The plugin sets up a custom post type for Charts and launches the Simplechart app inside an iframe. After the user creates a chart through the JS app in the iframe, all the info needed to recreate it (data and settings/options) is sent via postMessage back to the parent page. Then it gets saved in postmeta when the WordPress post is saved.
+The plugin sets up a custom post type for Charts and launches the [Simplechart JS app](https://github.com/alleyinteractive/simplechart) inside an iframe. After the user creates a chart through the JS app in the iframe, all the info needed to recreate it (data and settings/options) is sent via postMessage back to the parent page. Then it gets saved in postmeta when the WordPress post is saved.
 
 When the post is rendered on the front end, this same data and settings/options are used to bootstrap redrawing the same chart.
 
@@ -17,19 +17,19 @@ When the post is rendered on the front end, this same data and settings/options 
 
 1. Your WP Admin area should now have a custom post type for Charts.
 1. Click the "Launch Simplechart App" button to create a new chart.
-1. When you're happy with your new chart, click "Send to WordPress" button
-1. **Publish** the post in WordPress
+1. When you're happy with your new chart, click the green "Publish" button to store the chart in WordPress
 1. You can now embed the Chart in any post by selecting it from the Charts section in the Media Manager, which will drop a shortcode into the post content.
 
 ### Local Development
 
-If you are working on the [Simplechart JS app](https://github.com/alleyinteractive/simplechart), you can load the main app and widget from `localhost:8080` instead of your WordPress site.
+The Simplechart Dev Mode plugin in the [dev site repo](https://github.com/alleyinteractive/simplechart-dev-site) is the easiest way to work locally.
 
-There are three different ways to do this:
+There are instructions for local development on the [JS application](https://github.com/alleyinteractive/simplechart-dev-site#local-js-app-development) or the [WordPress plugin](https://github.com/alleyinteractive/simplechart-dev-site#local-wordpress-plugin-development).
 
-1. Use the query param `?sclocaldev=1`
-1. Add `define( 'SIMPLECHART_USE_LOCALHOST', true );` to your `wp-config.php` file.
-1. Set the `simplechart_use_localhost` filter to `true`
+Additionally, you can load the Simplechart JS files from `localhost:8080` by:
+
+1. Adding `define( 'SIMPLECHART_USE_LOCALHOST', true );` to your `wp-config.php` file.
+1. Setting the `simplechart_use_localhost` filter to `true`
 
 ### AMP Considerations
 
@@ -66,6 +66,10 @@ Set the `src` attribute of the iframe for creating/editing charts in wp-admin. D
 ##### simplechart_webpack_public_path
 
 URL of the directory where Webpack assets live. Used for loading chunks and other assets. [More info](https://webpack.github.io/docs/configuration.html#output-publicpath).
+
+##### simplechart_vendor_js_url
+
+Set the URL of the JS bundle container vendor libraries. Defaults to the local static file.
 
 ##### simplechart_web_app_js_url
 
