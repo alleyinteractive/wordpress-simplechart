@@ -5,7 +5,7 @@
 
 $id = (int) Simplechart::instance()->template->current_id();
 $url = site_url( '/simplechart/iframe/' . $id . '/', 'https' );
-$height = get_post_meta( $id, 'height', true );
+$height = get_post_meta( $id, 'height', true ) ?: 400;
 
 if ( simplechart_can_render( $id ) ) : ?>
 	<amp-iframe
@@ -15,8 +15,6 @@ if ( simplechart_can_render( $id ) ) : ?>
 		frameborder="0"
 		src="<?php echo esc_url( $url ); ?>"
 	>
-		<div placeholder>
-			<?php do_action( 'simplechart_amp_iframe_placeholder', $id ); ?>
-		</div>
+		<?php echo apply_filters( 'simplechart_amp_iframe_placeholder', $id, '' ); ?>
 	</amp-iframe>
 <?php endif;
