@@ -15,6 +15,6 @@ if ( simplechart_can_render( $id ) ) : ?>
 		frameborder="0"
 		src="<?php echo esc_url( $url ); ?>"
 	>
-		<?php echo apply_filters( 'simplechart_amp_iframe_placeholder', $id, ''); ?>
+		<?php echo apply_filters( 'simplechart_amp_iframe_placeholder', $id, '' ); ?>
 	</amp-iframe>
 <?php endif;
