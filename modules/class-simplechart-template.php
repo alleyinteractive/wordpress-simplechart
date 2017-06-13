@@ -93,9 +93,8 @@ class Simplechart_Template {
 			);
 
 			add_filter( 'script_loader_tag', array( $this, 'async_scripts' ), 10, 3 );
-
+			add_action( 'simplechart_iframe_footer', array( $this, 'iframe_scripts' ) );
 			require( $instance->get_plugin_dir( 'templates/embed.php' ) );
-
 		} else if ( ! $disable_amp ) {
 			require( $instance->get_plugin_dir( 'templates/amp-iframe.php' ) );
 		}
@@ -148,5 +147,9 @@ class Simplechart_Template {
 		$template_html = $this->render( $post->ID );
 
 		return $template_html . $content;
+	}
+
+	public function iframe_scripts( ) {
+		do_action( 'wp_print_footer_scripts' );
 	}
 }
