@@ -97,7 +97,7 @@ class Simplechart_Template {
 			require( $instance->get_plugin_dir( 'templates/embed.php' ) );
 		} else if ( ! $disable_amp ) {
 			add_filter( 'simplechart_amp_iframe_placeholder',
-				array( $this, 'default_placeholder' ), 10, 2 );
+			array( $this, 'default_placeholder' ), 10, 2 );
 			require( $instance->get_plugin_dir( 'templates/amp-iframe.php' ) );
 		}
 	}
