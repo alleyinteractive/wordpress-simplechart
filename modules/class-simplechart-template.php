@@ -157,9 +157,7 @@ class Simplechart_Template {
 
 	public function default_placeholder( $id, $content ) {
 		if ( ! $content ) {
-			$src = esc_url( Simplechart::instance()->get_plugin_url( '/images/placeholder.png' ) );
-			return '<amp-img layout="fixed" width="311" height="61" src="'
-				. $src . '" placeholder></amp-img>';
+			return '<amp-fix-text layout="fill" placeholder>Loading Chart...</amp-fix-text>';
 		}
 
 		return $content;
