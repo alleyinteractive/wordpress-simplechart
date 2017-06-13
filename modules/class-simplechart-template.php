@@ -96,6 +96,7 @@ class Simplechart_Template {
 			add_action( 'simplechart_iframe_footer', array( $this, 'iframe_scripts' ) );
 			require( $instance->get_plugin_dir( 'templates/embed.php' ) );
 		} else if ( ! $disable_amp ) {
+			add_filter( 'simplechart_amp_iframe_placeholder', array( $this, 'default_placeholder'), 10, 2);
 			require( $instance->get_plugin_dir( 'templates/amp-iframe.php' ) );
 		}
 	}
@@ -149,7 +150,16 @@ class Simplechart_Template {
 		return $template_html . $content;
 	}
 
-	public function iframe_scripts( ) {
+	public function iframe_scripts() {
 		do_action( 'wp_print_footer_scripts' );
+	}
+
+	public function default_placeholder( $id, $content ) {
+		if (!$content) {
+			$src = esc_url( Simplechart::instance()->get_plugin_url('/images/placeholder.png') );
+			return '<amp-img layout="fixed" width="311" height="61" src="' . $src . '" placeholder></amp-img>';
+		}
+
+		return $content;
 	}
 }
