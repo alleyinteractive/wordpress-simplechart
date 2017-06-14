@@ -21,7 +21,6 @@ class Simplechart {
 		'error' => array(),
 	);
 	private $_plugin_id = 'wordpress-simplechart/simplechart.php';
-	private $_local_dev_query_var = 'sclocaldev';
 
 	// config vars that will eventually come from settings page
 	private $_config = array(
