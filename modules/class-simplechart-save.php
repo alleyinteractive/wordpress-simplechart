@@ -9,12 +9,13 @@ class Simplechart_Save {
 	private $_show_debug_messages = false;
 	private $_image_post_status = 'simplechart_image';
 	public $meta_field_names = array(
-		'rawData',
 		'chartData',
-		'chartType',
 		'chartMetadata',
 		'chartOptions',
+		'chartType',
+		'googleSheetId',
 		'previewImg',
+		'rawData',
 	);
 
 	function __construct() {
