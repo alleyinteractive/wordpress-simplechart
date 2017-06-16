@@ -14,6 +14,7 @@ if ( simplechart_can_render( $id ) ) : ?>
 		layout="fixed-height"
 		frameborder="0"
 		src="<?php echo esc_url( $url ); ?>"
+		style="background-color: white"
 	>
 		<?php echo apply_filters( 'simplechart_amp_iframe_placeholder', $id, '' ); ?>
 	</amp-iframe>
