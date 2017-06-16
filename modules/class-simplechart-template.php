@@ -81,10 +81,24 @@ class Simplechart_Template {
 		 */
 		$disable_amp = apply_filters( 'simplechart_disable_amp', false );
 
+		$instance = Simplechart::instance();
+
 		if ( ! $this->_is_amp ) {
-			require( Simplechart::instance()->get_plugin_dir( 'templates/embed.php' ) );
+			wp_register_script( 'simplechart-vendor',
+				$instance->get_config( 'vendor_js_url' ), false, false, true
+			);
+			wp_enqueue_script( 'simplechart-widget',
+				$instance->get_config( 'widget_loader_url' ),
+				array( 'simplechart-vendor' ), false, true
+			);
+
+			add_filter( 'script_loader_tag', array( $this, 'async_scripts' ), 10, 3 );
+			add_action( 'simplechart_iframe_footer', array( $this, 'iframe_scripts' ) );
+			require( $instance->get_plugin_dir( 'templates/embed.php' ) );
 		} else if ( ! $disable_amp ) {
-			require( Simplechart::instance()->get_plugin_dir( 'templates/amp-iframe.php' ) );
+			add_filter( 'simplechart_amp_iframe_placeholder',
+			array( $this, 'default_placeholder' ), 10, 2 );
+			require( $instance->get_plugin_dir( 'templates/amp-iframe.php' ) );
 		}
 	}
 
@@ -118,6 +132,16 @@ class Simplechart_Template {
 		}
 	}
 
+	public function async_scripts( $tag, $handle, $src ) {
+		$async_scripts = array( 'simplechart-widget' );
+
+		if ( in_array( $handle, $async_scripts ) ) {
+			return '<script type="text/javascript" src="' . $src . '" async="async"></script>' . "\n";
+		}
+
+		return $tag;
+	}
+
 	// prepend chart to post_content
 	public function filter_insert_chart( $content ) {
 		global $post;
@@ -125,5 +149,17 @@ class Simplechart_Template {
 		$template_html = $this->render( $post->ID );
 
 		return $template_html . $content;
+	}
+
+	public function iframe_scripts() {
+		do_action( 'wp_print_footer_scripts' );
+	}
+
+	public function default_placeholder( $id, $content ) {
+		if ( ! $content ) {
+			return '<amp-fix-text layout="fill" placeholder>Loading Chart...</amp-fix-text>';
+		}
+
+		return $content;
 	}
 }
