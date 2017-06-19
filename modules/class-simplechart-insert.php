@@ -119,7 +119,7 @@ class Simplechart_Insert {
 	public function ajax_request() {
 
 		if ( ! isset( $_POST['_nonce'] )
-			or ! wp_verify_nonce( $_POST['_nonce'], 'simplechart_request' )
+			or ! wp_verify_nonce( sanitize_key( $_POST['_nonce'] ), 'simplechart_request' )
 			) {
 			die( '-1' );
 		}
@@ -166,7 +166,7 @@ class Simplechart_Insert {
 
 		$query_args = array(
 			'post_type' => 'simplechart',
-			);
+		);
 
 		// pagination
 		if ( isset( $request['page'] ) && absint( $request['page'] ) > 1 ) {
@@ -210,7 +210,7 @@ class Simplechart_Insert {
 		$response['items'] = $items;
 		$response['meta'] = array(
 			'min_id' => reset( $items )['id'],
-			);
+		);
 
 		return $response;
 	}
@@ -253,7 +253,7 @@ class Simplechart_Insert {
 			'_nonce'    => wp_create_nonce( 'simplechart_request' ),
 			'base_url'  => untrailingslashit( Simplechart::instance()->get_plugin_url() ),
 			'admin_url' => untrailingslashit( admin_url() ),
-			);
+		);
 
 		wp_enqueue_script(
 			'simplechart-insert',
