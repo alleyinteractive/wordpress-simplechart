@@ -51,10 +51,13 @@ if ( 'simplechart' === $screen->id && 'add' === $screen->action ) {
 		isNewChart: <?php echo wp_json_encode( $creating_chart ); ?>,
 		<?php if ( ! $creating_chart ) : ?>
 			chartMetadata: <?php echo simplechart_json_encode_meta( 'save-chartMetadata' ); ?>,
-			chartOptions: <?php echo simplechart_json_encode_meta( 'save-chartOptions' ); ?>
+			chartOptions: <?php echo simplechart_json_encode_meta( 'save-chartOptions' ); ?>,
 		<?php else : ?>
 			chartMetadata: <?php echo wp_json_encode( $default_metadata ?: new stdClass() ); ?>,
-			chartOptions: <?php echo wp_json_encode( $default_options ?: new stdClass() ); ?>
+			chartOptions: <?php echo wp_json_encode( $default_options ?: new stdClass() ); ?>,
+		<?php endif; ?>
+		<?php if ( defined( 'SIMPLECHART_GOOGLE_API_KEY' ) ) : ?>
+			googleApiKey: <?php echo simplechart_json_encode_meta( SIMPLECHART_GOOGLE_API_KEY ) ?>,
 		<?php endif; ?>
 	};
 	window.WPSimplechartContainer = {
