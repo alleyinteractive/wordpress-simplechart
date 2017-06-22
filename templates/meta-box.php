@@ -57,7 +57,8 @@ if ( 'simplechart' === $screen->id && 'add' === $screen->action ) {
 			chartOptions: <?php echo wp_json_encode( $default_options ?: new stdClass() ); ?>,
 		<?php endif; ?>
 		<?php if ( defined( 'SIMPLECHART_GOOGLE_API_KEY' ) ) : ?>
-			googleApiKey: <?php echo simplechart_json_encode_meta( SIMPLECHART_GOOGLE_API_KEY ) ?>,
+			googleApiKey: <?php echo wp_json_encode( SIMPLECHART_GOOGLE_API_KEY ) ?>,
+			googleSheetId: <?php echo simplechart_json_encode_meta( 'save-googleSheetId' ); ?>,
 		<?php endif; ?>
 	};
 	window.WPSimplechartContainer = {
