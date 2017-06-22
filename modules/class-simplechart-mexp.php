@@ -145,7 +145,8 @@ if ( class_exists( 'MEXP_Service' ) ) {
 			$simplechart_query = new WP_Query( $query_args );
 
 			if ( $simplechart_query->have_posts() ) {
-				while ( $simplechart_query->have_posts() ) : $simplechart_query->the_post();
+				while ( $simplechart_query->have_posts() ) :
+					$simplechart_query->the_post();
 					global $post;
 
 					$thumb = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), array( 150, 150 ) );
