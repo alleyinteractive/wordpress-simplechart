@@ -32,7 +32,7 @@ if ( 'simplechart' === $screen->id && 'add' === $screen->action ) {
 	/**
 	 * Set custom default metadata.
 	 *
-	 * @param array $default_options Array of metadata. Possible keys are title, caption, credit
+	 * @param array $default_options Array of metadata. Possible keys are title, subtitle, caption, credit
 	 */
 	$default_metadata = apply_filters( 'simplechart_chart_default_metadata', array() );
 	$creating_chart = true;
