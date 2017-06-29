@@ -48,6 +48,7 @@ if ( 'simplechart' === get_post_type( $id ) && ( 'publish' === get_post_status( 
 			<?php echo wp_kses_post( $custom_template ); ?>
 		<?php else : ?>
 			<p class='simplechart-title'></p>
+			<p class='simplechart-subtitle'></p>
 			<p class='simplechart-caption'></p>
 			<div
 				class='simplechart-chart'

@@ -99,7 +99,7 @@ Apply any headers to the request made to Simplechart's API before rendering a ch
 
 ##### simplechart_widget_template
 
-Use different markup structure when rendering a chart in a frontend template. The `.simplechart-*` classes are required to render the chart, title, caption, and credit.
+Use different markup structure when rendering a chart in a frontend template. The `.simplechart-*` classes are required to render the chart, title, subtitle, caption, and credit.
 
 ##### simplechart_widget_placeholder_text
 
@@ -115,7 +115,7 @@ Set defaults for NVD3. This is where you'd set a custom palette using the `color
 
 ##### simplechart_chart_default_metadata
 
-Set default title, caption, or credit.
+Set default title, subtitle, caption, or credit.
 
 ##### simplechart_is_amp_page
 
