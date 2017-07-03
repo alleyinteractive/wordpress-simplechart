@@ -35,6 +35,17 @@ if ( 'simplechart' === $screen->id && 'add' === $screen->action ) {
 	 * @param array $default_options Array of metadata. Possible keys are title, subtitle, caption, credit
 	 */
 	$default_metadata = apply_filters( 'simplechart_chart_default_metadata', array() );
+
+	/**
+	 * Enables the subtitle field, which is disabled by default in the chart editor app.
+	 * Alternately, you can assign any truthy value to the 'subtitle' key in 'simplechart_chart_default_metadata'
+	 *
+	 * @param bool $enable_subtitle Whether to enable the subtitle field
+	 */
+	if ( ! isset( $default_metadata['subtitle'] ) && apply_filters( 'simplechart_enable_subtitle_field', false ) ) {
+		$default_metadata['subtitle'] = true;
+	}
+
 	$creating_chart = true;
 } else {
 	$default_options = null;
