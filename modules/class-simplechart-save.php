@@ -89,7 +89,7 @@ class Simplechart_Save {
 		}
 
 		// handle JSON fields
-		foreach ( array( 'chartData', 'chartOptions', 'chartMetadata' ) as $field ) {
+		foreach ( array( 'chartData', 'chartOptions', 'chartMetadata', 'googleSheetId' ) as $field ) {
 			if ( ! empty( $_POST[ 'save-' . $field ] ) ) {
 				// sanitize field name w/ esc_attr() instead of sanitize_key() because we want to preserve uppercase letters
 				update_post_meta( $post->ID, 'save-' . esc_attr( $field ), sanitize_text_field( wp_unslash( $_POST[ 'save-' . $field ] ) ) );
