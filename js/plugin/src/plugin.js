@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * On the plugins page, make sure we don't accidentally
  * try to update Simplechart as if it was hosted on WP.org

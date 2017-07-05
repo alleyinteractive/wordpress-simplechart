@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Open, close, and communicate with the iframe containing the app
  */
