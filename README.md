@@ -105,7 +105,13 @@ Set defaults for NVD3. This is where you'd set a custom palette using the `color
 
 ##### simplechart_chart_default_metadata
 
-Set default title, subtitle, caption, or credit.
+Set default values for the title, subtitle, caption, or credit.
+
+The `subtitle` field is **disabled** by default. You can use this filter to enable the field and set a default string value as with any of the other metadata.
+
+##### simplechart_enable_subtitle_field
+
+Returning a truthy value for this filter will enable the subtitle field (which is disabled by default) without setting a default value.
 
 ##### simplechart_is_amp_page
 

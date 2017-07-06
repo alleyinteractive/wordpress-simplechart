@@ -6,9 +6,18 @@
   "dependencies": {},
   "devDependencies": {
     "babel-cli": "^6.24.1",
-    "babel-preset-env": "^1.5.2"
+    "babel-loader": "^7.0.0",
+    "babel-preset-es2015": "^6.24.0",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb": "^14.1.0",
+    "eslint-loader": "^1.7.0",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jsx-a11y": "^4.0.0",
+    "eslint-plugin-react": "^6.9.0",
+    "webpack": "^2.5.0"
   },
   "scripts": {
-    "build": "./node_modules/.bin/babel js/plugin/src --out-dir js/plugin/build"
+    "build": "webpack --config webpack.config.js"
   }
 }

@@ -35,12 +35,23 @@ if ( 'simplechart' === $screen->id && 'add' === $screen->action ) {
 	 * @param array $default_options Array of metadata. Possible keys are title, subtitle, caption, credit
 	 */
 	$default_metadata = apply_filters( 'simplechart_chart_default_metadata', array() );
+
+	/**
+	 * Enables the subtitle field, which is disabled by default in the chart editor app.
+	 * Alternately, you can assign any truthy value to the 'subtitle' key in 'simplechart_chart_default_metadata'
+	 *
+	 * @param bool $enable_subtitle Whether to enable the subtitle field
+	 */
+	if ( ! isset( $default_metadata['subtitle'] ) && apply_filters( 'simplechart_enable_subtitle_field', false ) ) {
+		$default_metadata['subtitle'] = true;
+	}
+
 	$creating_chart = true;
 } else {
 	$default_options = null;
 	$default_metadata = null;
 	$creating_chart = false;
-}
+}//end if
 ?>
 <a class="button button-primary button-large" id="simplechart-launch" href="#"><?php esc_html_e( 'Launch Simplechart App', 'simplechart' ); ?></a>
 <script>
@@ -57,7 +68,7 @@ if ( 'simplechart' === $screen->id && 'add' === $screen->action ) {
 			chartOptions: <?php echo wp_json_encode( $default_options ?: new stdClass() ); ?>,
 		<?php endif; ?>
 		<?php if ( defined( 'SIMPLECHART_GOOGLE_API_KEY' ) ) : ?>
-			googleApiKey: <?php echo wp_json_encode( SIMPLECHART_GOOGLE_API_KEY ) ?>,
+			googleApiKey: <?php echo wp_json_encode( SIMPLECHART_GOOGLE_API_KEY ); ?>,
 			googleSheetId: <?php echo simplechart_json_encode_meta( 'save-googleSheetId' ); ?>,
 		<?php endif; ?>
 	};

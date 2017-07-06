@@ -31,7 +31,7 @@ class Simplechart {
 		'widget_loader_url' => null,
 		'menu_page_slug' => 'simplechart_app',
 		'version' => '0.5.4',
-		'app_version' => '0cc09d9',
+		'app_version' => '195b96b',
 	);
 
 	// startup
@@ -191,7 +191,7 @@ class Simplechart {
 			return;
 		}
 		wp_register_script( 'simplechart-plugin', $this->get_plugin_url( 'js/plugin/build/plugin.js' ), array( 'jquery' ), $this->_config['version'] );
-		wp_register_script( 'simplechart-post-edit', $this->get_plugin_url( 'js/plugin/build/post-edit.js' ), array( 'jquery', 'underscore' ), $this->_config['version'] );
+		wp_register_script( 'simplechart-post-edit', $this->get_plugin_url( 'js/plugin/build/postEdit.js' ), array( 'jquery', 'underscore' ), $this->_config['version'] );
 		wp_register_style( 'simplechart-style', $this->_plugin_dir_url . 'css/style.css', array(), $this->_config['version'] );
 		wp_enqueue_script( 'simplechart-post-edit' );
 		wp_enqueue_style( 'simplechart-style' );

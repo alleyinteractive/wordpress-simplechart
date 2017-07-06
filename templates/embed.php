@@ -58,11 +58,11 @@ if ( 'simplechart' === get_post_type( $id ) && ( 'publish' === get_post_status( 
 		<?php endif; ?>
 	</figure>
 	<script>
-		<?php // Load Simplechart widget JS asynchronously if not already loaded ?>
 		if ( ! document.getElementById( 'simplechart-widget-js' ) ) {
 			window.__simplechart_public_path__ = window.__simplechart_public_path__ ||
 				<?php echo wp_json_encode( Simplechart::instance()->get_config( 'webpack_public_path' ) ); ?>;
 		}
 	</script>
-<?php endif;
+<?php
+endif;
 
