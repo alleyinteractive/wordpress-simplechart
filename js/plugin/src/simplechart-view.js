@@ -270,12 +270,16 @@ export default function () {
       // triggered when a search is submitted
 
       const params = this.model.get('params');
-      this.$el.find('.simplechart-toolbar').find(':input').each(() => {
-        const n = jQuery(this).attr('name');
-        if (n) {
-          params[n] = jQuery(this).val();
-        }
-      });
+      this
+        .$el
+        .find('.simplechart-toolbar')
+        .find(':input')
+        .each(function setParams() {
+          const n = jQuery(this).attr('name');
+          if (n) {
+            params[n] = jQuery(this).val();
+          }
+        });
 
       this.clearSelection();
       jQuery('#simplechart-button').attr('disabled', 'disabled');
