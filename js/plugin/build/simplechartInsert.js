@@ -537,10 +537,10 @@ exports.default = function () {
       // triggered when a search is submitted
 
       var params = this.model.get('params');
-      this.$el.find('.simplechart-toolbar').find(':input').each(function setParams() {
-        var n = jQuery(this).attr('name');
+      this.$el.find('.simplechart-toolbar').find(':input').each(function (idx, el) {
+        var n = jQuery(el).attr('name');
         if (n) {
-          params[n] = jQuery(this).val();
+          params[n] = jQuery(el).val();
         }
       });
 
