@@ -35,4 +35,5 @@ if ( $id ) : ?>
 		?>
 	</body>
 </html>
-<?php endif;
+<?php
+endif;
