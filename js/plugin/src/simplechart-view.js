@@ -270,10 +270,10 @@ export default function () {
       // triggered when a search is submitted
 
       const params = this.model.get('params');
-      this.$el.find('.simplechart-toolbar').find(':input').each(() => {
-        const n = jQuery(this).attr('name');
+      this.$el.find('.simplechart-toolbar').find(':input').each((idx, el) => {
+        const n = jQuery(el).attr('name');
         if (n) {
-          params[n] = jQuery(this).val();
+          params[n] = jQuery(el).val();
         }
       });
 
