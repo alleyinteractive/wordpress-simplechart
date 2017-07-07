@@ -37,11 +37,11 @@ if ( 'simplechart' === $screen->id && 'add' === $screen->action ) {
 	$default_metadata = apply_filters( 'simplechart_chart_default_metadata', array() );
 
 	/**
-	* Change any set truthy default that isn't a string to an 
-	* empty string so that we don't get weird default subtitles 
+	* Change any set truthy default that isn't a string to an
+	* empty string so that we don't get weird default subtitles
 	* when creating charts.
 	*/
-	if ( isset( $default_metadata['subtitle'] ) && ! empty( $default_metadata['subtitle'] ) && "string" !== gettype( $default_metadata['subtitle'] ) ) {
+	if ( isset( $default_metadata['subtitle'] ) && ! empty( $default_metadata['subtitle'] ) && 'string' !== gettype( $default_metadata['subtitle'] ) ) {
 		$default_metadata['subtitle'] = '';
 	}
 
@@ -75,7 +75,7 @@ if ( ! $creating_chart && apply_filters( 'simplechart_enable_subtitle_field', fa
 	}
 	$loaded_metadata = json_decode( get_post_meta( get_the_ID(), 'save-chartMetadata', true ) );
 	$loaded_metadata->subtitle = $existing_subtitle;
-	$loaded_metadata = wp_json_encode($loaded_metadata);
+	$loaded_metadata = wp_json_encode( $loaded_metadata );
 } else {
 	$loaded_metadata = null;
 }

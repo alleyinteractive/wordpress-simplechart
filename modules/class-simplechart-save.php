@@ -98,9 +98,11 @@ class Simplechart_Save {
 		}
 
 		// save subtitle separately since we want to be able to save empty strings
-		if ( 'false' !== $_POST[ 'save-chartSubtitle' ] ) {
-			// sanitize field name w/ esc_attr() instead of sanitize_key() because we want to preserve uppercase letters
-			update_post_meta( $post->ID, 'save-chartSubtitle', sanitize_text_field( wp_unslash( $_POST[ 'save-chartSubtitle' ] ) ) );
+		if ( isset( $_POST['save-chartSubtitle'] ) ) {
+			if ( 'false' !== $_POST['save-chartSubtitle'] ) {
+				// sanitize field name w/ esc_attr() instead of sanitize_key() because we want to preserve uppercase letters
+				update_post_meta( $post->ID, 'save-chartSubtitle', sanitize_text_field( wp_unslash( $_POST['save-chartSubtitle'] ) ) );
+			}
 		}
 
 		// save error messages
