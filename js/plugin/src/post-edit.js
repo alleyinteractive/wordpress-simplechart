@@ -166,6 +166,14 @@ function WPSimplechartApp( $ ) {
 	 */
 	function saveChart( data ) {
 		Object.keys( data ).forEach( function( key ) {
+			if ('chartMetadata' === key) {
+				if ('undefined' !== typeof data[key].subtitle) {
+					saveToField('save-chartSubtitle', data[key].subtitle);
+					delete data[key].subtitle;
+				} else {
+					saveToField('save-chartSubtitle', false);
+				}
+			}
 			saveToField( 'save-' + key, data[key] );
 		} );
 

@@ -52,6 +52,19 @@ if ( 'simplechart' === $screen->id && 'add' === $screen->action ) {
 	$default_metadata = null;
 	$creating_chart = false;
 }//end if
+
+if ( ! $creating_chart && apply_filters( 'simplechart_enable_subtitle_field', false ) ) {
+	$existing_subtitle = get_post_meta( get_the_ID(), 'save-chartSubtitle', true );
+	if ( empty( $existing_subtitle ) ) {
+		$existing_subtitle = true;
+	}
+	$loaded_metadata = json_decode( get_post_meta( get_the_ID(), 'save-chartMetadata', true ) );
+	$loaded_metadata->subtitle = $existing_subtitle;
+	$loaded_metadata = wp_json_encode($loaded_metadata);
+} else {
+	$loaded_metadata = null;
+}
+
 ?>
 <a class="button button-primary button-large" id="simplechart-launch" href="#"><?php esc_html_e( 'Launch Simplechart App', 'simplechart' ); ?></a>
 <script>
@@ -61,7 +74,7 @@ if ( 'simplechart' === $screen->id && 'add' === $screen->action ) {
 		chartType: <?php echo simplechart_json_encode_meta( 'save-chartType' ); ?>,
 		isNewChart: <?php echo wp_json_encode( $creating_chart ); ?>,
 		<?php if ( ! $creating_chart ) : ?>
-			chartMetadata: <?php echo simplechart_json_encode_meta( 'save-chartMetadata' ); ?>,
+			chartMetadata: <?php echo $loaded_metadata ?:simplechart_json_encode_meta( 'save-chartMetadata' ); ?>,
 			chartOptions: <?php echo simplechart_json_encode_meta( 'save-chartOptions' ); ?>,
 		<?php else : ?>
 			chartMetadata: <?php echo wp_json_encode( $default_metadata ?: new stdClass() ); ?>,
