@@ -166,6 +166,7 @@ function WPSimplechartApp( $ ) {
 	 */
 	function saveChart( data ) {
 		Object.keys( data ).forEach( function( key ) {
+			// If subtitle is set, rip it out and save it separately
 			if ('chartMetadata' === key) {
 				if ('undefined' !== typeof data[key].subtitle) {
 					saveToField('save-chartSubtitle', data[key].subtitle);

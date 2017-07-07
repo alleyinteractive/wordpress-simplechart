@@ -36,6 +36,11 @@ if ( 'simplechart' === $screen->id && 'add' === $screen->action ) {
 	 */
 	$default_metadata = apply_filters( 'simplechart_chart_default_metadata', array() );
 
+	/**
+	* Change any set truthy default that isn't a string to an 
+	* empty string so that we don't get weird default subtitles 
+	* when creating charts.
+	*/
 	if ( isset( $default_metadata['subtitle'] ) && ! empty( $default_metadata['subtitle'] ) && "string" !== gettype( $default_metadata['subtitle'] ) ) {
 		$default_metadata['subtitle'] = '';
 	}
@@ -57,6 +62,13 @@ if ( 'simplechart' === $screen->id && 'add' === $screen->action ) {
 	$creating_chart = false;
 }//end if
 
+
+/**
+ * If we're loading an existing chart and subtitles are enabled,
+ * pull in the saved subtitle if it exists and add it to the metadata.
+ * If the field is empty, just throw in a blank string.
+ * If subtitles are disabled, do nothing and allow the existing metadata to go through.
+ */
 if ( ! $creating_chart && apply_filters( 'simplechart_enable_subtitle_field', false ) ) {
 	$existing_subtitle = get_post_meta( get_the_ID(), 'save-chartSubtitle', true );
 	if ( empty( $existing_subtitle ) ) {
