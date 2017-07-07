@@ -62,7 +62,6 @@ if ( 'simplechart' === $screen->id && 'add' === $screen->action ) {
 	$creating_chart = false;
 }//end if
 
-
 /**
  * If we're loading an existing chart and subtitles are enabled,
  * pull in the saved subtitle if it exists and add it to the metadata.
