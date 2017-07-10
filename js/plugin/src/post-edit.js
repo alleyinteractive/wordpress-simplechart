@@ -166,10 +166,22 @@ function WPSimplechartApp( $ ) {
 	 */
 	function saveChart( data ) {
 		Object.keys( data ).forEach( function( key ) {
+			// If subtitle is set, rip it out and save it separately
+			if ('chartMetadata' === key) {
+				if ('undefined' !== typeof data[key].subtitle) {
+					saveToField('save-chartSubtitle', data[key].subtitle);
+					delete data[key].subtitle;
+				} else {
+					saveToField('save-chartSubtitle', false);
+				}
+			}
 			saveToField( 'save-' + key, data[key] );
 		} );
 
-		handleSpecialCases( data );
+		// Save height to its own custom field
+		document.getElementById( 'save-height' ).value = data.chartOptions.height;
+
+		setPostTitleField( data );
 
 		// auto-publish if we are creating a new chart
 		if ( addingNewChart() ) {
@@ -193,10 +205,7 @@ function WPSimplechartApp( $ ) {
 	/**
 	 * Handle any special exceptions when receiving data from app
 	 */
-	function handleSpecialCases( data ) {
-		// Save height to its own custom field
-		document.getElementById( 'save-height' ).value = data.chartOptions.height;
-
+	function setPostTitleField( data ) {
 		// Update post_title field if needed
 		var postTitleField = document.querySelector( 'input[name="post_title"]' );
 		if ( data.chartMetadata.title ) {

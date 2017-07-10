@@ -37,13 +37,22 @@ if ( 'simplechart' === $screen->id && 'add' === $screen->action ) {
 	$default_metadata = apply_filters( 'simplechart_chart_default_metadata', array() );
 
 	/**
+	* Change any set truthy default that isn't a string to an
+	* empty string so that we don't get weird default subtitles
+	* when creating charts.
+	*/
+	if ( ! empty( $default_metadata['subtitle'] ) && 'string' !== gettype( $default_metadata['subtitle'] ) ) {
+		$default_metadata['subtitle'] = '';
+	}
+
+	/**
 	 * Enables the subtitle field, which is disabled by default in the chart editor app.
 	 * Alternately, you can assign any truthy value to the 'subtitle' key in 'simplechart_chart_default_metadata'
 	 *
 	 * @param bool $enable_subtitle Whether to enable the subtitle field
 	 */
 	if ( ! isset( $default_metadata['subtitle'] ) && apply_filters( 'simplechart_enable_subtitle_field', false ) ) {
-		$default_metadata['subtitle'] = true;
+		$default_metadata['subtitle'] = '';
 	}
 
 	$creating_chart = true;
@@ -52,6 +61,27 @@ if ( 'simplechart' === $screen->id && 'add' === $screen->action ) {
 	$default_metadata = null;
 	$creating_chart = false;
 }//end if
+
+/**
+ * If we're loading an existing chart and subtitles are enabled,
+ * pull in the saved subtitle if it exists and add it to the metadata.
+ * If the field is empty, just throw in a blank string.
+ * If subtitles are disabled, do nothing and allow the existing metadata to go through.
+ */
+if ( ! $creating_chart && apply_filters( 'simplechart_enable_subtitle_field', false ) ) {
+	$existing_subtitle = get_post_meta( get_the_ID(), 'save-chartSubtitle', true );
+	if ( empty( $existing_subtitle ) ) {
+		$existing_subtitle = '';
+	}
+	$loaded_metadata = json_decode( get_post_meta( get_the_ID(), 'save-chartMetadata', true ) );
+	if ( is_object( $loaded_metadata ) && property_exists( $loaded_metadata, 'subtitle' ) ) {
+		$loaded_metadata->subtitle = $existing_subtitle;
+		$loaded_metadata = wp_json_encode( $loaded_metadata );
+	}
+} else {
+	$loaded_metadata = null;
+}
+
 ?>
 <a class="button button-primary button-large" id="simplechart-launch" href="#"><?php esc_html_e( 'Launch Simplechart App', 'simplechart' ); ?></a>
 <script>
@@ -61,7 +91,7 @@ if ( 'simplechart' === $screen->id && 'add' === $screen->action ) {
 		chartType: <?php echo simplechart_json_encode_meta( 'save-chartType' ); ?>,
 		isNewChart: <?php echo wp_json_encode( $creating_chart ); ?>,
 		<?php if ( ! $creating_chart ) : ?>
-			chartMetadata: <?php echo simplechart_json_encode_meta( 'save-chartMetadata' ); ?>,
+			chartMetadata: <?php echo $loaded_metadata ?: simplechart_json_encode_meta( 'save-chartMetadata' ); ?>,
 			chartOptions: <?php echo simplechart_json_encode_meta( 'save-chartOptions' ); ?>,
 		<?php else : ?>
 			chartMetadata: <?php echo wp_json_encode( $default_metadata ?: new stdClass() ); ?>,
