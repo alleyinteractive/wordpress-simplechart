@@ -74,7 +74,7 @@ if ( ! $creating_chart && apply_filters( 'simplechart_enable_subtitle_field', fa
 		$existing_subtitle = '';
 	}
 	$loaded_metadata = json_decode( get_post_meta( get_the_ID(), 'save-chartMetadata', true ) );
-	if ( is_object( $loaded_metadata ) && property_exists($loaded_metadata, 'subtitle' ) ) {
+	if ( is_object( $loaded_metadata ) && property_exists( $loaded_metadata, 'subtitle' ) ) {
 		$loaded_metadata->subtitle = $existing_subtitle;
 		$loaded_metadata = wp_json_encode( $loaded_metadata );
 	}
