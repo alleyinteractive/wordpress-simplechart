@@ -107,8 +107,12 @@ class Simplechart_Request_Handler {
 				$response['metadata']['subtitle'] = get_post_meta( $id, 'save-chartSubtitle', true );
 			} else {
 				$metadata = json_decode( $response['metadata'], true );
-				$metadata['subtitle'] = get_post_meta( $id, 'save-chartSubtitle', true );
-				$response['metadata'] = wp_json_encode( $metadata );
+				if ( ! is_null( $metadata ) ) {
+					$metadata['subtitle'] = get_post_meta( $id, 'save-chartSubtitle', true );
+					$response['metadata'] = wp_json_encode( $metadata );
+				} else {
+					$response['metadata'] = null;
+				}
 			}
 		}
 
