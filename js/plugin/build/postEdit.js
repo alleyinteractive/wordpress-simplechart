@@ -251,7 +251,10 @@ function WPSimplechartApp($) {
 			saveToField('save-' + key, data[key]);
 		});
 
-		handleSpecialCases(data);
+		// Save height to its own custom field
+		document.getElementById('save-height').value = data.chartOptions.height;
+
+		setPostTitleField(data);
 
 		// auto-publish if we are creating a new chart
 		if (addingNewChart()) {
@@ -275,10 +278,7 @@ function WPSimplechartApp($) {
 	/**
   * Handle any special exceptions when receiving data from app
   */
-	function handleSpecialCases(data) {
-		// Save height to its own custom field
-		document.getElementById('save-height').value = data.chartOptions.height;
-
+	function setPostTitleField(data) {
 		// Update post_title field if needed
 		var postTitleField = document.querySelector('input[name="post_title"]');
 		if (data.chartMetadata.title) {
