@@ -93,8 +93,8 @@ if ( ! $creating_chart && apply_filters( 'simplechart_enable_subtitle_field', fa
 			chartMetadata: <?php echo ! empty( $loaded_metadata ) ? wp_json_encode( $loaded_metadata ) : simplechart_json_encode_meta( 'save-chartMetadata' ); ?>,
 			chartOptions: <?php echo simplechart_json_encode_meta( 'save-chartOptions' ); ?>,
 		<?php else : ?>
-			chartMetadata: <?php echo wp_json_encode( $default_metadata ); ?>,
-			chartOptions: <?php echo wp_json_encode( $default_options ); ?>,
+			chartMetadata: <?php echo wp_json_encode( $default_metadata ?: new stdClass() ); ?>,
+			chartOptions: <?php echo wp_json_encode( $default_options ?: new stdClass() ); ?>,
 		<?php endif; ?>
 		<?php if ( defined( 'SIMPLECHART_GOOGLE_API_KEY' ) ) : ?>
 			googleApiKey: <?php echo wp_json_encode( SIMPLECHART_GOOGLE_API_KEY ); ?>,
