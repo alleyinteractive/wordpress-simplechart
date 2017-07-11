@@ -101,6 +101,11 @@ class Simplechart_Request_Handler {
 		foreach ( array( 'Data', 'Options', 'Metadata' ) as $key ) {
 			$response[ strtolower( $key ) ] = get_post_meta( $id, 'save-chart' . $key, true );
 		}
+
+		if ( apply_filters( 'simplechart_enable_subtitle_field', false ) ) {
+			$response['metadata']['subtitle'] = get_post_meta( $id, 'save-chartSubtitle', true );
+		}
+
 		wp_send_json_success( $response );
 	}
 }
