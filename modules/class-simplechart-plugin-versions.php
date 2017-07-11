@@ -125,7 +125,7 @@ class Simplechart_Plugin_Versions {
 	 * @return object         $args   Mock response object for Simplechart
 	 */
 	public function mock_plugins_api( $res, $action, $args ) {
-		if ( 'plugin-information' !== $action && 'wordpress-simplechart' !== $args->slug ) {
+		if ( 'plugin-information' !== $action && ! empty( $args->slug ) && 'wordpress-simplechart' !== $args->slug ) {
 			return $res;
 		}
 		$copy_generated = sprintf(
