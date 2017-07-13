@@ -41,7 +41,7 @@ if ( 'simplechart' === $screen->id && 'add' === $screen->action ) {
 	* empty string so that we don't get weird default subtitles
 	* when creating charts.
 	*/
-	if ( isset( $default_metadata['subtitle'] ) && ! empty( $default_metadata['subtitle'] ) && 'string' !== gettype( $default_metadata['subtitle'] ) ) {
+	if ( ! empty( $default_metadata['subtitle'] ) && 'string' !== gettype( $default_metadata['subtitle'] ) ) {
 		$default_metadata['subtitle'] = '';
 	}
 
@@ -73,9 +73,10 @@ if ( ! $creating_chart && apply_filters( 'simplechart_enable_subtitle_field', fa
 	if ( empty( $existing_subtitle ) ) {
 		$existing_subtitle = '';
 	}
-	$loaded_metadata = json_decode( get_post_meta( get_the_ID(), 'save-chartMetadata', true ) );
-	$loaded_metadata->subtitle = $existing_subtitle;
-	$loaded_metadata = wp_json_encode( $loaded_metadata );
+	$loaded_metadata = json_decode( get_post_meta( get_the_ID(), 'save-chartMetadata', true ), true );
+	if ( ! isset( $loaded_metadata['subtitle'] ) ) {
+		$loaded_metadata['subtitle'] = $existing_subtitle;
+	}
 } else {
 	$loaded_metadata = null;
 }
@@ -89,11 +90,11 @@ if ( ! $creating_chart && apply_filters( 'simplechart_enable_subtitle_field', fa
 		chartType: <?php echo simplechart_json_encode_meta( 'save-chartType' ); ?>,
 		isNewChart: <?php echo wp_json_encode( $creating_chart ); ?>,
 		<?php if ( ! $creating_chart ) : ?>
-			chartMetadata: <?php echo $loaded_metadata ?:simplechart_json_encode_meta( 'save-chartMetadata' ); ?>,
+			chartMetadata: <?php echo ! empty( $loaded_metadata ) ? wp_json_encode( $loaded_metadata ) : simplechart_json_encode_meta( 'save-chartMetadata' ); ?>,
 			chartOptions: <?php echo simplechart_json_encode_meta( 'save-chartOptions' ); ?>,
 		<?php else : ?>
-			chartMetadata: <?php echo wp_json_encode( $default_metadata ?: new stdClass() ); ?>,
-			chartOptions: <?php echo wp_json_encode( $default_options ?: new stdClass() ); ?>,
+			chartMetadata: <?php echo wp_json_encode( $default_metadata ?: '{}' ); ?>,
+			chartOptions: <?php echo wp_json_encode( $default_options ?: '{}' ); ?>,
 		<?php endif; ?>
 		<?php if ( defined( 'SIMPLECHART_GOOGLE_API_KEY' ) ) : ?>
 			googleApiKey: <?php echo wp_json_encode( SIMPLECHART_GOOGLE_API_KEY ); ?>,

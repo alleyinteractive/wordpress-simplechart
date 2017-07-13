@@ -101,6 +101,21 @@ class Simplechart_Request_Handler {
 		foreach ( array( 'Data', 'Options', 'Metadata' ) as $key ) {
 			$response[ strtolower( $key ) ] = get_post_meta( $id, 'save-chart' . $key, true );
 		}
+
+		if ( apply_filters( 'simplechart_enable_subtitle_field', false ) ) {
+			if ( is_array( $response['metadata'] ) ) {
+				$response['metadata']['subtitle'] = get_post_meta( $id, 'save-chartSubtitle', true );
+			} else {
+				$metadata = json_decode( $response['metadata'], true );
+				if ( ! is_null( $metadata ) ) {
+					$metadata['subtitle'] = get_post_meta( $id, 'save-chartSubtitle', true );
+					$response['metadata'] = wp_json_encode( $metadata );
+				} else {
+					$response['metadata'] = null;
+				}
+			}
+		}
+
 		wp_send_json_success( $response );
 	}
 }
