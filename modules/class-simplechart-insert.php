@@ -21,7 +21,7 @@ class Simplechart_Insert {
 		// Add actions to WP hooks
 		add_action( 'print_media_templates', array( $this, 'action_print_media_templates' ) );
 		add_action( 'wp_ajax_simplechart_request', array( $this, 'ajax_request' ) );
-		add_action( 'wp_enqueue_media',      array( $this, 'action_enqueue_media' ) );
+		add_action( 'wp_enqueue_media', array( $this, 'action_enqueue_media' ) );
 	}
 
 	/**
