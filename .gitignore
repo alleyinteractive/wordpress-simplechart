@@ -2,7 +2,6 @@
 *.DS_Store*
 *.css.map
 css/.sass-cache/
-js/plugin/build/*.js.map
 github_token.txt
 node_modules
 updateAppFilenames.js
