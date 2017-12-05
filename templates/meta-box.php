@@ -119,7 +119,12 @@ if ( ! $creating_chart && apply_filters( 'simplechart_enable_subtitle_field', fa
 		id="save-<?php echo esc_attr( $field ); ?>"
 		name="save-<?php echo esc_attr( $field ); ?>"
 		type="hidden"
-		value=""
+		<?php if ( ! $creating_chart && 'chartSubtitle' === $field ) : ?>
+			<?php /* Prevents subtitle from disappearing if post is resaved without launching JS app */ ?>
+			value="<?php echo esc_attr( $existing_subtitle ); ?>"
+		<?php else : ?>
+			value=""
+		<?php endif; ?>
 	/>
 <?php endforeach; ?>
 <input type="hidden" id="save-height" name="save-height" value="" />
