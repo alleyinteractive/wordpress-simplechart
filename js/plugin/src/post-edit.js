@@ -165,11 +165,13 @@ function WPSimplechartApp( $ ) {
 	 * save individual elements of data from chart editor
 	 */
 	function saveChart( data ) {
+		var newSubtitle;
 		Object.keys( data ).forEach( function( key ) {
 			// If subtitle is set, rip it out and save it separately
 			if ('chartMetadata' === key) {
 				if ('undefined' !== typeof data[key].subtitle) {
-					saveToField('save-chartSubtitle', data[key].subtitle);
+					newSubtitle = data[key].subtitle;
+					saveToField('save-chartSubtitle', newSubtitle);
 					delete data[key].subtitle;
 				} else {
 					saveToField('save-chartSubtitle', false);
@@ -187,6 +189,8 @@ function WPSimplechartApp( $ ) {
 		if ( addingNewChart() ) {
 			publishPost();
 		} else {
+			// Re-apply subtitle to chartMetadata, so new values are reflected in chart preview.
+			data.chartMetadata.subtitle = newSubtitle;
 			updateWidget( data );
 			hideModal();
 		}
