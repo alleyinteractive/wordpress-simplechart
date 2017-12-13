@@ -34,8 +34,16 @@
 	</rule>
 
 	<!-- Tweak the VIP rules -->
-	<rule ref="WordPress.XSS.EscapeOutput.OutputNotEscaped">
+	<rule ref="WordPress.Security.EscapeOutput.OutputNotEscaped">
 		<type>warning</type>
+	</rule>
+
+	<!-- https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/issues/172 -->
+	<rule ref="WordPress.VIP.ValidatedSanitizedInput.MissingUnslash">
+		<exclude-pattern>modules/class-simplechart-save.php</exclude-pattern>
+	</rule>
+	<rule ref="WordPress.Security.ValidatedSanitizedInput.MissingUnslash">
+		<exclude-pattern>modules/class-simplechart-save.php</exclude-pattern>
 	</rule>
 
 </ruleset>
