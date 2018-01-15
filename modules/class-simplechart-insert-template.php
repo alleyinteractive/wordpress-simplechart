@@ -70,7 +70,6 @@ class Simplechart_Insert_Template {
 
 			<div class="spinner"></div>
 		</form>
-	</script>
 	<?php
 	}
 
@@ -84,5 +83,14 @@ class Simplechart_Insert_Template {
 		?>
 		<script type="text/html" id="tmpl-<?php echo esc_attr( $id ); ?>">
 			<?php
+	}
+
+	/**
+	 * Outputs the markup needed after a template.
+	 */
+	final public function after_template() {
+		?>
+		</script>
+		<?php
 	}
 }
