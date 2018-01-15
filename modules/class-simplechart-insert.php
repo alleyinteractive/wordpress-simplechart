@@ -148,12 +148,14 @@ class Simplechart_Insert {
 
 			$template->before_template( $id );
 			call_user_func( array( $template, $t ), $id, 'all' );
+			$template->after_template();
 		}
 
 		$id = sprintf( 'simplechart-insert-thumbnail' );
 
 		$template->before_template( $id );
 		call_user_func( array( $template, 'thumbnail' ), $id );
+		$template->after_template();
 	}
 
 	/**
