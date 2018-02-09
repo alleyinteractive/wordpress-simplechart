@@ -157,7 +157,7 @@ class Simplechart_Template {
 
 	public function default_placeholder( $id, $content ) {
 		if ( ! $content ) {
-			return '<amp-fix-text layout="fill" placeholder>Loading Chart...</amp-fix-text>';
+			return '<amp-fit-text layout="fill" placeholder>Loading Chart...</amp-fit-text>';
 		}
 
 		return $content;
