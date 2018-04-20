@@ -17,6 +17,9 @@ if ( $id ) : ?>
 		 */
 		do_action( 'simplechart_iframe_head', $id );
 		?>
+		<style>
+			body, figure { margin: 0; }
+		</style>
 	</head>
 	<body>
 		<?php

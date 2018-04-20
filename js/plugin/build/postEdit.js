@@ -254,7 +254,7 @@ function WPSimplechartApp($) {
 		});
 
 		// Save height to its own custom field
-		document.getElementById('save-height').value = data.chartOptions.height;
+		document.getElementById('save-embedHeight').value = data.chartOptions.embedHeight;
 
 		setPostTitleField(data);
 
