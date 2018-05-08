@@ -126,5 +126,4 @@ if ( ! $creating_chart && apply_filters( 'simplechart_enable_subtitle_field', fa
 		<?php endif; ?>
 	/>
 <?php endforeach; ?>
-<input type="hidden" id="save-height" name="save-height" value="" />
 <!-- /Simplechart form fields -->
