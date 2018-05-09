@@ -17,6 +17,7 @@ class Simplechart_Save {
 		'googleSheetId',
 		'previewImg',
 		'rawData',
+		'embedHeight',
 	);
 
 	function __construct() {
@@ -84,9 +85,9 @@ class Simplechart_Save {
 			update_post_meta( $post->ID, 'save-chartType', sanitize_text_field( wp_unslash( $_POST['save-chartType'] ) ) );
 		}
 
-		// save widget height
-		if ( ! empty( $_POST['save-height'] ) ) {
-			update_post_meta( $post->ID, 'height', absint( $_POST['save-height'] ) );
+		// save embed height
+		if ( ! empty( $_POST['save-embedHeight'] ) ) {
+			update_post_meta( $post->ID, 'embedHeight', absint( $_POST['save-embedHeight'] ) );
 		}
 
 		// handle JSON fields
