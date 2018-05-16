@@ -86,6 +86,7 @@ if ( ! $creating_chart && apply_filters( 'simplechart_enable_subtitle_field', fa
 <script>
 	window.WPSimplechartBootstrap = {
 		rawData: <?php echo simplechart_json_encode_meta( 'save-rawData' ); ?>,
+		chartAnnotations: <?php echo simplechart_json_encode_meta( 'save-chartAnnotations' ); ?>,
 		chartData: <?php echo simplechart_json_encode_meta( 'save-chartData' ); ?>,
 		chartType: <?php echo simplechart_json_encode_meta( 'save-chartType' ); ?>,
 		isNewChart: <?php echo wp_json_encode( $creating_chart ); ?>,
