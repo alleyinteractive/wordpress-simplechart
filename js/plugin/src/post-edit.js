@@ -275,7 +275,8 @@ function WPSimplechartApp( $ ) {
 			detail: {
 				data: data.chartData,
 				options: data.chartOptions,
-				metadata: data.chartMetadata
+				metadata: data.chartMetadata,
+				annotations: data.chartAnnotations,
 			}
 		} );
 		document.getElementById( getWidgetId() ).dispatchEvent( widgetUpdate );

@@ -289,6 +289,7 @@ function WPSimplechartApp($) {
 			postTitleField.value = data.chartMetadata.title;
 			// hides placeholder text
 			document.getElementById('title-prompt-text').className = 'screen-reader-text';
+			setPostShouldPublish(true);
 		} else if (!postTitleField.value) {
 			addNotice('error', 'Please enter a WordPress internal identifier.');
 			setPostShouldPublish(false);
@@ -348,7 +349,8 @@ function WPSimplechartApp($) {
 			detail: {
 				data: data.chartData,
 				options: data.chartOptions,
-				metadata: data.chartMetadata
+				metadata: data.chartMetadata,
+				annotations: data.chartAnnotations
 			}
 		});
 		document.getElementById(getWidgetId()).dispatchEvent(widgetUpdate);
