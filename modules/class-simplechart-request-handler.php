@@ -98,7 +98,7 @@ class Simplechart_Request_Handler {
 
 		// Build array of save-chartData, etc. from post meta
 		$response = array();
-		foreach ( array( 'Data', 'Options', 'Metadata' ) as $key ) {
+		foreach ( array( 'Data', 'Options', 'Metadata', 'Annotations' ) as $key ) {
 			$response[ strtolower( $key ) ] = get_post_meta( $id, 'save-chart' . $key, true );
 		}
 
