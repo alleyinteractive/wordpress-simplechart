@@ -4,7 +4,7 @@ Plugin Name: Simplechart
 Plugin URI: https://github.com/alleyinteractive/wordpress-simplechart
 Description: Create and render interactive charts in WordPress using Simplechart
 Author: Dan Bowles, Drew Machat, Josh Kadis, Alley Interactive
-Version: 0.5.23
+Version: 0.5.24
 Author URI: http://www.alleyinteractive.com/
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -30,8 +30,8 @@ class Simplechart {
 		'webpack_public_path' => null,
 		'widget_loader_url' => null,
 		'menu_page_slug' => 'simplechart_app',
-		'version' => '0.5.23',
-		'app_version' => '157cf94',
+		'version' => '0.5.24',
+		'app_version' => '0213e7e',
 	);
 
 	// startup
