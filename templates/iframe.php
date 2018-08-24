@@ -34,6 +34,13 @@
 	</head>
 	<body>
 	<div id='app'></div>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.13.0/d3.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-annotation/2.2.5/d3-annotation.js"></script>
+	<script>
+		// We need d3 v3 for NVD3.  
+		// We need D3 v4 for Annotations.
+		window.d3v4 = d3;
+	</script>
 	<script src="<?php echo esc_url( Simplechart::instance()->get_config( 'vendor_js_url' ) ); ?>"></script>
 	<script src="<?php echo esc_url( Simplechart::instance()->get_config( 'web_app_js_url' ) ); ?>"></script>
 	</body>

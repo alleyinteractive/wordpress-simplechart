@@ -18,6 +18,7 @@ class Simplechart_Save {
 		'previewImg',
 		'rawData',
 		'embedHeight',
+		'chartAnnotations',
 	);
 
 	function __construct() {
@@ -91,7 +92,7 @@ class Simplechart_Save {
 		}
 
 		// handle JSON fields
-		foreach ( array( 'chartData', 'chartOptions', 'chartMetadata', 'googleSheetId' ) as $field ) {
+		foreach ( array( 'chartAnnotations', 'chartData', 'chartOptions', 'chartMetadata', 'googleSheetId' ) as $field ) {
 			if ( ! empty( $_POST[ 'save-' . $field ] ) ) {
 				// sanitize field name w/ esc_attr() instead of sanitize_key() because we want to preserve uppercase letters
 				update_post_meta( $post->ID, 'save-' . esc_attr( $field ), sanitize_text_field( $_POST[ 'save-' . $field ] ) );
