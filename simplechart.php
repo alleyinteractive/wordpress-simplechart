@@ -31,7 +31,7 @@ class Simplechart {
 		'widget_loader_url' => null,
 		'menu_page_slug' => 'simplechart_app',
 		'version' => '0.5.29',
-		'app_version' => 'abbe7e4',
+		'app_version' => 'c0c3a21',
 	);
 
 	// startup
