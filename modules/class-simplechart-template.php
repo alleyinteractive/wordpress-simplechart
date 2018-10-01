@@ -117,7 +117,7 @@ class Simplechart_Template {
 				2
 			);
 			require( $instance->get_plugin_dir( 'templates/amp-iframe.php' ) );
-		} // end if
+		} //end if
 	}
 
 	/**
