@@ -91,9 +91,11 @@ class Simplechart_Request_Handler {
 
 		// Validate post type
 		if ( empty( $id ) || 'simplechart' !== get_post_type( $id ) ) {
-			wp_send_json_error( array(
-				'message' => sprintf( __( "Post ID %d is not in 'simplechart' post type", 'simplechart' ), $id ),
-			) );
+			wp_send_json_error(
+				array(
+					'message' => sprintf( __( "Post ID %d is not in 'simplechart' post type", 'simplechart' ), $id ),
+				)
+			);
 		}
 
 		// Build array of save-chartData, etc. from post meta

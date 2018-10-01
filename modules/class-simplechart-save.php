@@ -29,13 +29,16 @@ class Simplechart_Save {
 	}
 
 	public function register_image_post_status() {
-		register_post_status( $this->_image_post_status, array(
-			'label' => __( 'Chart Image', 'simplechart' ),
-			'public' => false,
-			'exclude_from_search' => true,
-			'show_in_admin_all_list' => false,
-			'show_in_admin_status_list' => false,
-		) );
+		register_post_status(
+			$this->_image_post_status,
+			array(
+				'label' => __( 'Chart Image', 'simplechart' ),
+				'public' => false,
+				'exclude_from_search' => true,
+				'show_in_admin_all_list' => false,
+				'show_in_admin_status_list' => false,
+			)
+		);
 	}
 
 	// use remove-add to prevent infinite loop
@@ -212,10 +215,14 @@ class Simplechart_Save {
 
 		// import to media library
 		$desc = 'Chart: ' . sanitize_text_field( get_the_title( $post->ID ) );
-		$this->_attachment_id = media_handle_sideload( array(
-			'name' => $perm_file_name,
-			'tmp_name' => $temp_file['file'],
-		), $post->ID, $desc);
+		$this->_attachment_id = media_handle_sideload(
+			array(
+				'name' => $perm_file_name,
+				'tmp_name' => $temp_file['file'],
+			),
+			$post->ID,
+			$desc
+		);
 		$new_file_path = get_post_meta( $this->_attachment_id, '_wp_attached_file', true );
 		$this->_debug_messages[] = sprintf( __( 'media_handle_sideload() to %s', 'simplechart' ), $new_file_path );
 		$this->_debug_messages[] = $new_file_path === $old_file_path ? __( 'New file path matches old file path', 'simplechart' ) : __( 'New file path does NOT match old file path', 'simplechart' );

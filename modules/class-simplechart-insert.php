@@ -38,13 +38,16 @@ class Simplechart_Insert {
 			die( '-1' );
 		}
 
-		$request = wp_parse_args( stripslashes_deep( $_POST ), array(
-			'params'  => array(),
-			'tab'     => null,
-			'min_id'  => null,
-			'max_id'  => null,
-			'page'    => 1,
-		) );
+		$request = wp_parse_args(
+			stripslashes_deep( $_POST ),
+			array(
+				'params'  => array(),
+				'tab'     => null,
+				'min_id'  => null,
+				'max_id'  => null,
+				'page'    => 1,
+			)
+		);
 		$request['page'] = absint( $request['page'] );
 		$request['user_id'] = absint( get_current_user_id() );
 
@@ -142,7 +145,8 @@ class Simplechart_Insert {
 		}
 
 		foreach ( array( 'search', 'item' ) as $t ) {
-			$id = sprintf( 'simplechart-insert-%s-all',
+			$id = sprintf(
+				'simplechart-insert-%s-all',
 				esc_attr( $t )
 			);
 

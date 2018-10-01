@@ -45,7 +45,8 @@ class Simplechart_Post_Type {
 	public function action_add_meta_boxes() {
 		remove_meta_box( 'submitdiv', 'simplechart', 'side' );
 
-		add_meta_box( 'simplechart-save',
+		add_meta_box(
+			'simplechart-save',
 			__( 'Save Chart', 'simplechart' ),
 			array( $this, 'render_submit_button' ),
 			'simplechart',
@@ -53,7 +54,8 @@ class Simplechart_Post_Type {
 			'default'
 		);
 
-		add_meta_box( 'simplechart-preview',
+		add_meta_box(
+			'simplechart-preview',
 			__( 'Simplechart', 'simplechart' ),
 			array( $this, 'render_meta_box' ),
 			'simplechart',
