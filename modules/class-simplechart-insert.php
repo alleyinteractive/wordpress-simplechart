@@ -54,10 +54,12 @@ class Simplechart_Insert {
 		$response = $this->request( $request );
 
 		if ( is_wp_error( $response ) ) {
-			wp_send_json_error( array(
-				'error_code'    => $response->get_error_code(),
-				'error_message' => $response->get_error_message(),
-			) );
+			wp_send_json_error(
+				array(
+					'error_code'    => $response->get_error_code(),
+					'error_message' => $response->get_error_message(),
+				)
+			);
 
 		} else if ( is_array( $response ) ) {
 			wp_send_json_success( $response );
