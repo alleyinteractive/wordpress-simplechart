@@ -72,8 +72,8 @@ class Simplechart_Template {
 		$this->_id = $id;
 
 		/**
-		 * Set this to true for AMP pages to render as `amp-iframe`. This is handled automatically
-		 * if you're using the offical WP AMP plugin (https://wordpress.org/plugins/amp/)
+		 * Set this to true for AMP pages to render as `amp-iframe`. This is handled automatically if
+		 * you're using the offical WP AMP plugin (https://wordpress.org/plugins/amp/)
 		 *
 		 * @param bool $amp
 		 * @return bool
@@ -117,7 +117,7 @@ class Simplechart_Template {
 				2
 			);
 			require( $instance->get_plugin_dir( 'templates/amp-iframe.php' ) );
-		}
+		} // end if
 	}
 
 	/**
