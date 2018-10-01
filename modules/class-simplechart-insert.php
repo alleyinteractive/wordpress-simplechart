@@ -38,23 +38,28 @@ class Simplechart_Insert {
 			die( '-1' );
 		}
 
-		$request = wp_parse_args( stripslashes_deep( $_POST ), array(
-			'params'  => array(),
-			'tab'     => null,
-			'min_id'  => null,
-			'max_id'  => null,
-			'page'    => 1,
-		) );
+		$request = wp_parse_args(
+			stripslashes_deep( $_POST ),
+			array(
+				'params'  => array(),
+				'tab'     => null,
+				'min_id'  => null,
+				'max_id'  => null,
+				'page'    => 1,
+			)
+		);
 		$request['page'] = absint( $request['page'] );
 		$request['user_id'] = absint( get_current_user_id() );
 
 		$response = $this->request( $request );
 
 		if ( is_wp_error( $response ) ) {
-			wp_send_json_error( array(
-				'error_code'    => $response->get_error_code(),
-				'error_message' => $response->get_error_message(),
-			) );
+			wp_send_json_error(
+				array(
+					'error_code'    => $response->get_error_code(),
+					'error_message' => $response->get_error_message(),
+				)
+			);
 
 		} else if ( is_array( $response ) ) {
 			wp_send_json_success( $response );
@@ -142,7 +147,8 @@ class Simplechart_Insert {
 		}
 
 		foreach ( array( 'search', 'item' ) as $t ) {
-			$id = sprintf( 'simplechart-insert-%s-all',
+			$id = sprintf(
+				'simplechart-insert-%s-all',
 				esc_attr( $t )
 			);
 

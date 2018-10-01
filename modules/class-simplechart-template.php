@@ -28,16 +28,22 @@ class Simplechart_Template {
 
 	private function _amp_actions() {
 		// Hook into AMP plugin action
-		add_action( 'pre_amp_render_post', function() {
-			$this->_is_amp = true;
-		} );
+		add_action(
+			'pre_amp_render_post',
+			function() {
+				$this->_is_amp = true;
+			}
+		);
 
 		// Enable amp-iframe elements
-		add_action( 'amp_post_template_data', function( $data ) {
-			$data['amp_component_scripts']['amp-iframe'] = 'https://cdn.ampproject.org/v0/amp-iframe-0.1.js';
-			$data['amp_component_scripts']['amp-fit-text'] = 'https://cdn.ampproject.org/v0/amp-fit-text-0.1.js';
-			return $data;
-		} );
+		add_action(
+			'amp_post_template_data',
+			function( $data ) {
+				$data['amp_component_scripts']['amp-iframe'] = 'https://cdn.ampproject.org/v0/amp-iframe-0.1.js';
+				$data['amp_component_scripts']['amp-fit-text'] = 'https://cdn.ampproject.org/v0/amp-fit-text-0.1.js';
+				return $data;
+			}
+		);
 
 		do_action( 'simplechart_amp' );
 	}
@@ -85,22 +91,33 @@ class Simplechart_Template {
 		$instance = Simplechart::instance();
 
 		if ( ! $this->_is_amp ) {
-			wp_register_script( 'simplechart-vendor',
-				$instance->get_config( 'vendor_js_url' ), false, false, true
+			wp_register_script(
+				'simplechart-vendor',
+				$instance->get_config( 'vendor_js_url' ),
+				false,
+				false,
+				true
 			);
-			wp_enqueue_script( 'simplechart-widget',
+			wp_enqueue_script(
+				'simplechart-widget',
 				$instance->get_config( 'widget_loader_url' ),
-				array( 'simplechart-vendor' ), false, true
+				array( 'simplechart-vendor' ),
+				false,
+				true
 			);
 
 			add_filter( 'script_loader_tag', array( $this, 'async_scripts' ), 10, 3 );
 			add_action( 'simplechart_iframe_footer', array( $this, 'iframe_scripts' ) );
 			require( $instance->get_plugin_dir( 'templates/embed.php' ) );
 		} else if ( ! $disable_amp ) {
-			add_filter( 'simplechart_amp_iframe_placeholder',
-			array( $this, 'default_placeholder' ), 10, 2 );
+			add_filter(
+				'simplechart_amp_iframe_placeholder',
+				array( $this, 'default_placeholder' ),
+				10,
+				2
+			);
 			require( $instance->get_plugin_dir( 'templates/amp-iframe.php' ) );
-		}
+		}//end if
 	}
 
 	/**
