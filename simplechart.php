@@ -30,8 +30,8 @@ class Simplechart {
 		'webpack_public_path' => null,
 		'widget_loader_url' => null,
 		'menu_page_slug' => 'simplechart_app',
-		'version' => '0.5.37',
-		'app_version' => 'b8035ae',
+		'version' => '0.5.38',
+		'app_version' => 'e5e9c28',
 	);
 
 	// startup
