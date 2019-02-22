@@ -49,12 +49,12 @@ if ( 'simplechart' === get_post_type( $id ) && ( 'publish' === get_post_status( 
 		<?php else : ?>
 			<p class='simplechart-title'></p>
 			<p class='simplechart-subtitle'></p>
-			<p class='simplechart-caption'></p>
+			<p class='simplechart-notes'></p>
 			<div
 				class='simplechart-chart'
 				style='<?php echo esc_attr( $this->height_style( $id ) ); ?>'
 			></div>
-			<p class='simplechart-credit'></p>
+			<p class='simplechart-source'></p>
 		<?php endif; ?>
 	</figure>
 	<script>
