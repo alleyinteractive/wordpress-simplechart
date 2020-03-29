@@ -63,13 +63,6 @@ if ( 'simplechart' === get_post_type( $id ) && ( 'publish' === get_post_status( 
 				<?php echo wp_json_encode( Simplechart::instance()->get_config( 'webpack_public_path' ) ); ?>;
 		}
 	</script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.13.0/d3.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-annotation/2.2.5/d3-annotation.js"></script>
-	<script>
-		// We need d3 v3 for NVD3.  
-		// We need D3 v4 for Annotations.
-		window.d3v4 = d3;
-	</script>
 <?php
 endif;
 
