@@ -279,6 +279,12 @@
 	<rule ref="WordPress.DateTime.RestrictedFunctions.date_date">
 		<severity>0</severity>
 	</rule>
+	<rule ref="Squiz.Commenting.BlockComment.HasEmptyLineBefore">
+		<severity>0</severity>
+	</rule>
+	<rule ref="Generic.PHP.NoSilencedErrors.Forbidden">
+		<severity>0</severity>
+	</rule>
 	<!--
 	<rule ref="">
 		<severity>0</severity>
