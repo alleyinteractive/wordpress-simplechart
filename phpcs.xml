@@ -225,15 +225,6 @@
 	<rule ref="WordPress.Security.EscapeOutput.OutputNotEscaped">
 		<severity>0</severity>
 	</rule>
-	<rule ref="WordPress.Variables.GlobalVariables.OverrideProhibited">
-		<severity>0</severity>
-	</rule>
-	<rule ref="WordPress.VIP.FileSystemWritesDisallow.file_ops_unlink">
-		<severity>0</severity>
-	</rule>
-	<rule ref="WordPress.VIP.SuperGlobalInputUsage.AccessDetected">
-		<severity>0</severity>
-	</rule>
 	<rule ref="WordPress.WhiteSpace.PrecisionAlignment.Found">
 		<severity>0</severity>
 	</rule>
@@ -264,10 +255,28 @@
 	<rule ref="WordPressVIPMinimum.Variables.VariableAnalysis.UndefinedVariable">
 		<severity>0</severity>
 	</rule>
-	<rule ref="WordPressVIPMinimum.VIP.ErrorControl.ErrorControl">
+	<rule ref="WordPress.WP.GlobalVariablesOverride.Prohibited">
 		<severity>0</severity>
 	</rule>
-	<rule ref="WordPressVIPMinimum.VIP.RestrictedFunctions.wp_remote_get_wp_remote_get">
+	<rule ref="WordPressVIPMinimum.Files.IncludingFile.UsingCustomConstant">
+		<severity>0</severity>
+	</rule>
+	<rule ref="PSR2.Classes.PropertyDeclaration.Underscore">
+		<severity>0</severity>
+	</rule>
+	<rule ref="WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_unlink">
+		<severity>0</severity>
+	</rule>
+	<rule ref="WordPressVIPMinimum.Functions.RestrictedFunctions.wp_remote_get_wp_remote_get">
+		<severity>0</severity>
+	</rule>
+	<rule ref="WordPressVIPMinimum.Files.IncludingFile.UsingVariable">
+		<severity>0</severity>
+	</rule>
+	<rule ref="WordPress.PHP.DisallowShortTernary.Found">
+		<severity>0</severity>
+	</rule>
+	<rule ref="WordPress.DateTime.RestrictedFunctions.date_date">
 		<severity>0</severity>
 	</rule>
 	<!--
