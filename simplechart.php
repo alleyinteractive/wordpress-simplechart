@@ -29,8 +29,8 @@ class Simplechart {
 		'webpack_public_path' => null,
 		'widget_loader_url' => null,
 		'menu_page_slug' => 'simplechart_app',
-		'version' => '0.5.42',
-		'app_version' => 'a5cd4bc',
+		'version' => '0.5.43',
+		'app_version' => 'b5ac1a6',
 	);
 
 	// startup
@@ -166,7 +166,6 @@ class Simplechart {
 		// Filters for app page and JS URLs
 		$this->_config['webpack_public_path'] = apply_filters( 'simplechart_webpack_public_path', $this->_config['webpack_public_path'] );
 		$this->_config['web_app_iframe_src'] = apply_filters( 'simplechart_web_app_iframe_src', $this->_config['web_app_iframe_src'] );
-		// $this->_config['vendor_js_url'] = apply_filters( 'simplechart_vendor_js_url', $this->_config['vendor_js_url'] );
 		$this->_config['web_app_js_url'] = apply_filters( 'simplechart_web_app_js_url', $this->_config['web_app_js_url'] );
 		$this->_config['widget_loader_url'] = apply_filters( 'simplechart_widget_loader_url', $this->_config['widget_loader_url'] );
 
