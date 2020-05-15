@@ -120,7 +120,7 @@ if ( ! $creating_chart && apply_filters( 'simplechart_enable_subtitle_field', fa
 		id="save-<?php echo esc_attr( $field ); ?>"
 		name="save-<?php echo esc_attr( $field ); ?>"
 		type="hidden"
-		<?php if ( ! $creating_chart && 'chartSubtitle' === $field ) : // Special case, see PR #106 ?>
+		<?php if ( ! $creating_chart && 'chartSubtitle' === $field && isset( $existing_subtitle ) ) : // Special case, see PR #106 ?>
 			value="<?php echo esc_attr( $existing_subtitle ); ?>"
 		<?php else : ?>
 			value=""
